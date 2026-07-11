@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Reflection.BusinessLogic
 {
+    //Payment process business logic class
     public class ACC_T001BL_PaymentPocess : ReflectionBusinessLogic
     {
 
