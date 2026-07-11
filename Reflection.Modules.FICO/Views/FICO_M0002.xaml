@@ -1,0 +1,234 @@
+﻿<!-- Payment Terms -->
+<Local:WindowElement x:Class="Reflection.Modules.FICO.Views.FICO_M0002"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+              
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+             Title="{x:Static Local:AppSessionState.ViewTitle}" >
+    <Grid MinHeight="300" MinWidth="300"   >
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+            </Style>
+        </Grid.Resources>
+        <TabControl SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="370" Width="750" >
+            <TabItem Header="Transaction" >
+                <Grid   >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Payment Terms Code" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,5,0,0"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" Name="txtPayTrsCode" VerticalAlignment="Top" HorizontalAlignment="Left" Width="150" Text="{Binding MasterEntity.pt_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsHitTestVisible="{Binding MoveFlag,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />
+
+                    <TextBlock Text="Payment Terms" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Margin="10,5,0,0" />
+                    <TextBox Grid.Row="1" Grid.Column="1"  Grid.ColumnSpan="3" Margin="10,0,0,0" Name="txtPayTrsName" VerticalAlignment="Top" HorizontalAlignment="Left" Width="500"  TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"  Text="{Binding MasterEntity.pt_name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock Text="Note" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Margin="10,5,0,0" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="10,0,0,0" Name="txtPatNtDesc" VerticalAlignment="Top" HorizontalAlignment="Left" Width="500"   TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding MasterEntity.short_text,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                    
+                    <TextBlock Text="Active" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center"  />
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3">
+                        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding MasterEntity.active,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Center" Content="Default" IsChecked="{Binding MasterEntity.ind_default,Converter={StaticResource ActiveConvertor},Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                    </StackPanel>
+                    
+
+                    <TabControl Background="Transparent" Grid.Row="3" Grid.ColumnSpan="4" Height="250" >
+                        <TabItem Header="Payments Details"  >
+                            <Grid >
+                                <DataGrid x:Name="dgSalesData"  CanUserDeleteRows="False" GridLinesVisibility="All" BorderBrush="Black" VerticalAlignment="Top" IsReadOnly="False" IsSynchronizedWithCurrentItem="True" 
+                                                     Margin="0,0,0,0" Height="215" Width="710" AutoGenerateColumns="False" CanUserSortColumns="False" 
+                                                     SelectedIndex="{Binding dgSelectedIndexDetails,UpdateSourceTrigger=PropertyChanged,Mode=OneWayToSource}" 
+                                                     ItemsSource="{Binding ItemsEntity ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Background="Transparent" CanUserAddRows="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible">
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Sr No" IsReadOnly="True" DisplayIndex="0" Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={Local:RowToIndexConverter}}" >
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="HorizontalAlignment" Value="Center" />
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Days" Width="Auto" Binding="{Binding days,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DataGridTextColumn Header="Amount (%)" Width="Auto" Binding="{Binding pay_amount,StringFormat=N2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DataGridTextColumn Header="Disc Type" Width="Auto" Binding="{Binding disc_type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DataGridTextColumn Header="Discount(%)" Width="Auto" Binding="{Binding discount,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DataGridTextColumn Header="Fix Days" Width="Auto" Binding="{Binding fix_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DataGridTextColumn Header="Add Month" Width="Auto" Binding="{Binding add_month,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DataGridTemplateColumn Header="Del.Ind." >
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox Width="auto" HorizontalAlignment="Center" IsChecked="{Binding ind_delivery,Converter={StaticResource ActiveConvertor}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="True" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Bill.Ind." >
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox Width="auto" HorizontalAlignment="Center" IsChecked="{Binding ind_billing,Converter={StaticResource ActiveConvertor}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="True" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Active" >
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox Width="auto" HorizontalAlignment="Center" IsChecked="{Binding active, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="True" IsThreeState="False"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Action">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4"
+                                                                Command="{Binding Path=DataContext.CmdDeleteDataGridRowEntity,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                                CommandParameter="{Binding SelectedIndex, ElementName=dgSalesData}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Image Height="20" Width="20" Source="{StaticResource imgTrash}"   >
+                                                            </Image>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="View"  >
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ToggleButton x:Name="btnFilterSearch" Grid.Column="0" Width="30" HorizontalAlignment="Left">
+                            <Image Height="15" Width="20" Source="{StaticResource imgSearch}">
+                            </Image>
+                        </ToggleButton>
+                        <Local:ReflectionPopup x:Name="popFilterSearch" AllowsTransparency="True" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnFilterSearch}" StaysOpen="False" 
+                                               PlacementTarget="{Binding ElementName=btnFilterSearch}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                            <Border BorderBrush="Gray" BorderThickness="5" CornerRadius="2">
+                                <Grid Background="CornflowerBlue" >
+                                    <Grid Background="CornflowerBlue" >
+                                        <Grid Margin="10,10,10,10" Width="450">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="From Date " />
+                                            <DatePicker Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedDate="{Binding REQ_PARA_OBJ.from_date,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" />
+
+                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="To Date " Margin="5,0,0,0" />
+                                            <DatePicker Grid.Row="0" Grid.Column="3" Width="120" HorizontalAlignment="Left" SelectedDate="{Binding REQ_PARA_OBJ.to_date,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" />
+
+
+                                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Status" Margin="5,0,0,0" />
+                                            <TextBox x:Name="txtViewStatus" Grid.Row="1" Grid.Column="3" Text="{Binding REQ_PARA_OBJ.t_status}" Width="50" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                            <TextBlock Grid.Row="2" Grid.Column="2" Text="Active"  Margin="5,0,0,0" VerticalAlignment="Top"/>
+                                            <CheckBox Grid.Row="2" Grid.Column="3" Margin="5,0,0,10" IsChecked="{Binding REQ_PARA_OBJ.active_code,Converter={StaticResource ActiveConvertor},Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" />
+
+                                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Doc Type" />
+                                            <TextBox x:Name="txtViewDocType" Grid.Row="1" Grid.Column="1" Text="{Binding REQ_PARA_OBJ.doc_type}" Width="50" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Company" Margin="0,0,0,0"/>
+                                            <TextBox x:Name="txtViewCompany" Grid.Row="2" Grid.Column="1" Text="{Binding REQ_PARA_OBJ.comp_code}" Width="50" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Location" Margin="0,0,0,0"/>
+                                            <TextBox x:Name="txtlocation" Grid.Row="3" Grid.Column="1" Text="{Binding REQ_PARA_OBJ.location_id}" Width="50" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                            <Button Grid.Column="4" Width="30" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource ExecuteButton}"
+                                                Command="{Binding Path=cmdLoadBackFlip}" CommandParameter="ReferenceDocument" />
+
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </Local:ReflectionPopup>
+                        <Local:SearchTextBox Grid.Column="1" Height="25" Width="950" Name="txtSearchBox" Background="Transparent" Text="{Binding FLTR_STR_BACKFLIP,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" />
+                    </Grid>
+                    <DataGrid x:Name="DataLV" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                              ItemsSource="{Binding BACKFLIP_COLLECTION}" Width="730" Height="300"  AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow"
+                                Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtSearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"                                                                        
+                                Background="Transparent" RowBackground="Transparent" GridLinesVisibility="Horizontal" BorderThickness="1" SelectionMode="Single"  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="2" Margin="0,0,0,-0.286">
+                        <DataGrid.Resources>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns >
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button x:Name="btndocno" Width="20" Height="20"
+                                                    Command="{Binding Path=DataContext.cmdLoadDocument, RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                    CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                    Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Center" >
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="{StaticResource imgArrow_right}"   >
+                                                </Image>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Code" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="5,0,0,5" >
+                                                <Hyperlink 
+                                                    Command="{Binding Path=DataContext.cmdLoadDocument,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                    CommandParameter="{Binding SelectedItems, ElementName=DataLV}" Background="Transparent" >
+                                                <Hyperlink.Inlines> 
+                                                    <Run Text="{Binding pt_code}"/>
+                                                </Hyperlink.Inlines>                                     
+                                                </Hyperlink>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Short text" Binding="{Binding short_text}"  IsReadOnly="True" Width="Auto"/>
+                            <DataGridTextColumn Header="Description" Binding="{Binding pt_name}"  IsReadOnly="True" Width="Auto"/>
+                            <DataGridTextColumn Header="Active" Binding="{Binding active}"  IsReadOnly="True"  Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Local:WindowElement>

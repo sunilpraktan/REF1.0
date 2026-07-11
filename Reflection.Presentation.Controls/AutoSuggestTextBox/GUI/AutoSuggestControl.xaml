@@ -1,0 +1,74 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
+	xmlns:GUI="clr-namespace:Reflection.Presentation.Controls.AutoSuggestTextBox.GUI"
+	>
+
+    <!--AutoSuggestControl_Default_SuggestionsTemplate-->
+    <ControlTemplate x:Key="AutoSuggestControl_Default_SuggestionsTemplate">
+        <DataGrid
+			x:Name="PART_Selector"
+			SelectionMode="Single" IsReadOnly="True" HeadersVisibility="None" EnableRowVirtualization="True" GridLinesVisibility="None"
+			ItemsSource="{Binding SuggestionPreviews}"
+			AutoGenerateColumns="{Binding AutoGenerateColumns, RelativeSource={RelativeSource AncestorType=GUI:AutoSuggestControl}}"
+			DisplayMemberPath="{Binding DisplayMemberPath, RelativeSource={RelativeSource AncestorType=GUI:AutoSuggestControl}}"
+			MinWidth="{Binding TextTokensControlTarget.ActualWidth, RelativeSource={RelativeSource AncestorType=GUI:AutoSuggestControl}}"
+			/>
+    </ControlTemplate>
+
+    <!--AutoSuggestControl_Default_CommandsTemplate-->
+    <ControlTemplate x:Key="AutoSuggestControl_Default_CommandsTemplate">
+        <ItemsControl IsTabStop="False" ItemsSource="{Binding}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Height="25"
+						Command="{Binding}"
+						Content="{Binding Header}">
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel x:Name="buttonMenuPanel" Orientation="Horizontal" VerticalAlignment="Top">
+                    </StackPanel>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </ControlTemplate>
+
+    <!--AutoSuggestControl_Default_Template-->
+    <ControlTemplate x:Key="AutoSuggestControl_Default_Template" TargetType="{x:Type GUI:AutoSuggestControl}">
+        <Border
+			Background="{TemplateBinding Background}"
+			BorderBrush="{TemplateBinding BorderBrush}"
+			BorderThickness="{TemplateBinding BorderThickness}"
+			>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="_searchCriteriaRow" Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Label
+					x:Name="PART_SearchCriteria" Height="0" Grid.Row="0"/>
+
+                <Control
+					x:Name="_suggestionsContentPresenter" Grid.Row="1"
+					Template="{Binding SuggestionsTemplate, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+					MinWidth="{Binding TextTokensControlTarget.ActualWidth, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+					DataContext="{Binding SuggestionPreviews}"/>
+
+                <Control
+					x:Name="_commandsContentPresenter" Grid.Row="2"
+					Template="{TemplateBinding CommandsTemplate}"
+					DataContext="{Binding Commands}"/>
+            </Grid>
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="AutoSuggestControl_Default_Style" TargetType="GUI:AutoSuggestControl">
+    </Style>
+</ResourceDictionary>

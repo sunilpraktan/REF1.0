@@ -1,0 +1,538 @@
+﻿<!-- Customer Master POS SDM_M0014 is customer Master regular, if This screen work for both then we can use same for all purpose, even for Supplier also -->
+<Reflection:WindowElement x:Class="Reflection.Modules.SDM.Views.SDM_M0021"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:Reflection="http://Reflection/schemas/2010/xaml"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:Reflection.Modules.SDM.Views" 
+        xmlns:Local="http://Reflection/schemas/2010/xaml"
+        Style="{StaticResource DefaultWorkspaceWindowStyleReport}"  Title="{x:Static Reflection:AppSessionState.ViewTitle}" >
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}" 
+                                   CommandParameter="{Binding Text, ElementName=txtPartyCode}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left" MinHeight="500" Width="900" >
+        <Grid.Resources>
+            <Local:RadioButtonValueConverter x:Key="rdbConverterKey" />
+            
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+            </Style>
+        </Grid.Resources>
+        <TabControl SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+            <TabItem Header="Create/Edit">
+                <!--Transaction Side-->
+                <Grid Margin="0,0,0,0" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <!--<RowDefinition Height="Auto"/>-->
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto"  />
+                            <ColumnDefinition Width="Auto"  />
+                            <ColumnDefinition Width="Auto"  />
+                            <ColumnDefinition Width="Auto"  />
+                            <ColumnDefinition Width="Auto"  />
+                            <ColumnDefinition Width="Auto"  />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Account No" Margin="5,0,0,0" VerticalAlignment="Center" />
+                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                            <TextBox  x:Name="txtPartyCode" Width="150" Text="{Binding MasterEntity.party_code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,0" CharacterCasing="Upper" HorizontalAlignment="Left" IsReadOnly="True" TabIndex="0"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Category" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            
+                            <Reflection:AutoCompleteTextBox x:Name="txtCategory" Width="40" AutoCompleteHeight="150" AutoCompleteWidth="250" Margin="5,0,0,0" CharacterCasing="Upper" HorizontalAlignment="Left" TabIndex="0"
+                                SelectedItem="{Binding MasterEntity.ind_cat,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource UpperCaseConvertor}}" 
+                                AutoCompletePlacementTarget="{Binding ElementName=txtCategory}" AutoCompletePlacement="Bottom" 
+                                AutoCompleteItemSource="{Binding CAT_LIST}" 
+                            >
+                                <Reflection:AutoCompleteTextBox.AutoCompleteColumns>
+                                    <DataGridTextColumn Header="CODE" Binding="{Binding ind_cat}" Width="30" />
+                                    <DataGridTextColumn Header="NAME" Binding="{Binding short_text}" Width="Auto" />
+                                </Reflection:AutoCompleteTextBox.AutoCompleteColumns>
+                            </Reflection:AutoCompleteTextBox>
+                        </StackPanel>
+                        
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Account Name" Margin="5,0,0,0"  />
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                            <Local:AutoCompleteTextBox x:Name="txtSalutation" TabIndex="1"  Padding="0" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                SelectedItem="{Binding MasterEntity.sal_text,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                AutoCompleteHeight="200" AutoCompleteWidth="250"
+                                AutoCompletePlacementTarget="{Binding ElementName=txtSalutation}" AutoCompletePlacement="Bottom" Width="50"
+                                AutoCompleteItemSource="{Binding SAL_LIST}"
+                            >
+                            <Local:AutoCompleteTextBox.AutoCompleteColumns>
+                                <DataGridTextColumn Header="STEXT" Binding="{Binding short_text}" Width="Auto"/>
+                            </Local:AutoCompleteTextBox.AutoCompleteColumns>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding cmdInsertSalutation}" CommandParameter="{Binding SelectedItem, ElementName=txtSalutation}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Local:AutoCompleteTextBox>
+                            
+                            <TextBox  x:Name="txtPartyName" Text="{Binding MasterEntity.party_name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" HorizontalAlignment="Left" Width="300" Margin="5,0,0,0" TabIndex="1" Visibility="{Binding visibility_entity,FallbackValue=Visible}" />
+
+                            <TextBlock Text="First name" VerticalAlignment="Center" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}"  />
+                            <TextBox  x:Name="txtFName" Text="{Binding MasterEntity.f_name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" HorizontalAlignment="Left" Width="140" Margin="5,0,0,0" TabIndex="1" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}" />
+                            <TextBlock Text="Middle" VerticalAlignment="Center" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}"  />
+                            <TextBox  x:Name="txtMName" Text="{Binding MasterEntity.m_name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" HorizontalAlignment="Left" Width="130" Margin="5,0,0,0" TabIndex="1" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}" />
+                            <TextBlock Text="Last" VerticalAlignment="Center" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}"  />
+                            <TextBox  x:Name="txtLName" Text="{Binding MasterEntity.l_name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" HorizontalAlignment="Left" Width="130" Margin="5,0,0,0" TabIndex="1" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}" />
+                            <TextBlock Text="*" VerticalAlignment="Center" Foreground="Red" FontSize="15" FontWeight="Bold" />
+
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Abbreviation" Margin="5,0,0,0" Visibility="{Binding visibility_entity,FallbackValue=Visible}" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                            <TextBox x:Name="txtPartyabb" Text="{Binding MasterEntity.abbr,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CharacterCasing="Upper" Margin="5,0,0,0" Width="70" HorizontalAlignment="Left" TabIndex="2" Visibility="{Binding visibility_entity,FallbackValue=Visible}"/>
+                            <!--<TextBlock Text="*" VerticalAlignment="Center" Foreground="Red" FontSize="15" FontWeight="Bold" />-->
+                            
+                            <TextBlock Text="{Binding date_title}" VerticalAlignment="Center" Margin="5,0,0,0"  />
+                            <DatePicker x:Name="dtpDOEB" HorizontalAlignment="Left" Margin="0,0,0,0"  SelectedDate="{Binding MasterEntity.doe,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Width="115" TabIndex="12"/>
+                           
+                            <TextBlock Text="Age(Approx)" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}" />
+                            <TextBox x:Name="txtAge" Text="{Binding MasterEntity.age,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,0" Width="40" HorizontalAlignment="Left" TabIndex="2" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}" LostFocus="TxtAge_LostFocus"/>
+                            
+                            <!--<TextBlock Text="Gender" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}" />
+                            <TextBox x:Name="txtGender" Text="{Binding MasterEntity.ind_gender,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CharacterCasing="Upper" Margin="5,0,0,0" Width="40" HorizontalAlignment="Left" TabIndex="2" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}"/>
+                            <TextBlock Text="(M/F/T)" VerticalAlignment="Center" Margin="0,0,0,0" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}" />-->
+
+
+                            <RadioButton IsChecked="{Binding MasterEntity.ind_gender,Converter={StaticResource rdbConverterKey},ConverterParameter=M,UpdateSourceTrigger=PropertyChanged,FallbackValue=True}" Margin="5,0,0,0" GroupName="Gender" VerticalAlignment="Center" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}">Male</RadioButton>
+                            <RadioButton IsChecked="{Binding MasterEntity.ind_gender,Converter={StaticResource rdbConverterKey},ConverterParameter=F,UpdateSourceTrigger=PropertyChanged,FallbackValue=True}" Margin="5,0,0,0" GroupName="Gender" VerticalAlignment="Center" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}">Female</RadioButton>
+                            <RadioButton IsChecked="{Binding MasterEntity.ind_gender,Converter={StaticResource rdbConverterKey},ConverterParameter=T,UpdateSourceTrigger=PropertyChanged,FallbackValue=True}" Margin="5,0,0,0" GroupName="Gender" VerticalAlignment="Center" Visibility="{Binding visibility_induvidual,FallbackValue=Collapsed}">Trans</RadioButton>
+                            
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Place" Margin="5,0,0,0" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
+                            <TextBox  x:Name="txtLocation" Text="{Binding MasterEntity.place, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="150" Margin="5,0,0,0" TabIndex="3"/>
+                            <!--<TextBlock Text="*" VerticalAlignment="Center" Foreground="Red" FontSize="15" FontWeight="Bold" />-->
+                        </StackPanel>
+
+                    </Grid>
+
+                    <StackPanel Grid.Row="1" Height="20" Background="AliceBlue" Margin="0,5,0,5" >
+                        <TextBlock Text="ADDRESS DETAILS" Foreground="Gray" FontWeight="Bold" Margin="5,0,0,5" FontStyle="Italic" />
+                    </StackPanel>
+
+                    <Grid Grid.Row="2" Margin="0,0,0,0" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--<TextBlock Grid.Row="0" Grid.Column="0" Text="Code" Margin="5,0,0,0" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtAddressCode" Width="100" HorizontalAlignment="Left" Text="{Binding AddressEntity.add_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="0,0,0,0" Height="27" VerticalAlignment="Top" />-->
+
+                        <!--<TextBlock Grid.Row="1" Grid.Column="0" Text="Place" Margin="5,0,0,0"  />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtAddLocation" Width="150" HorizontalAlignment="Left" Text="{Binding AddressEntity.place, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />-->
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Address" Margin="5,0,0,0"  />
+                        <TextBox x:Name="txtAddLine1" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"  Width="500" Text="{Binding AddressEntity.add_line1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,0,0,0" />
+
+                        <!--<TextBlock Grid.Row="3" Grid.Column="0" Text="Address Line 2" Margin="5,0,0,0"  />
+                        <TextBox x:Name="txtAddLine2" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"  Width="500" Text="{Binding AddressEntity.add_line2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,0,0,0" />
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="City" Margin="5,0,0,0"  />
+                        <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtCity" Width="200" HorizontalAlignment="Left" Text="{Binding AddressEntity.city, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />
+
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Land Mark" Margin="5,0,0,0"  />
+                        <TextBox Grid.Row="5" Grid.Column="1" x:Name="txtLandMark" Width="200" HorizontalAlignment="Left" Text="{Binding AddressEntity.land_mark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />
+
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="PIN/ZIP Code" Margin="5,0,0,0"  />
+                        <TextBox Grid.Row="6" Grid.Column="1" x:Name="txtPinCode" Width="100" HorizontalAlignment="Left" Text="{Binding AddressEntity.postal_code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />
+
+                        <TextBlock Grid.Row="4" Grid.Column="2" Text="Country" Margin="5,0,0,0"  />
+                        <StackPanel Grid.Row="4" Grid.Column="3" Orientation="Horizontal">
+                            <TextBox x:Name="txtCountry" Width="100" HorizontalAlignment="Left" Text="{Binding AddressEntity.ctry_code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />
+                            <Reflection:PopupAutoSuggest x:Name="ppCountry" Placement="Bottom" PlacementTarget="{Binding ElementName=txtCountry}">
+                                <Reflection:AutoSuggestControl x:Name="asCountry" Focusable="False" OwnerPopup="{Binding ElementName=ppCountry}" 
+                                    TextTokensControlTarget="{Binding ElementName=txtCountry, Mode=OneTime}"
+				                    FrameworkElement.DataContext="{Binding Path=DataContext.AS_COUNTRY.AutoSuggestVM,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Reflection:WindowElement},AncestorLevel=1}}">
+                                    <Reflection:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Reflection:AutoSuggestControl.Background>
+                                    <Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" 
+                                                RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" 
+                                                Margin="2" MaxHeight="300" MaxWidth="200" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                                                CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" GridLinesVisibility="All">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="CODE" Binding="{Binding ctry_code}" />
+                                                    <DataGridTextColumn Header="NAME" Binding="{Binding ctry_name}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                </Reflection:AutoSuggestControl>
+                            </Reflection:PopupAutoSuggest>
+                        </StackPanel>
+                        
+
+                        <TextBlock Grid.Row="5" Grid.Column="2" Text="State/Region" Margin="5,0,0,0"  />
+                        <StackPanel Grid.Row="5" Grid.Column="3" Orientation="Horizontal">
+                            <TextBox x:Name="txtState" Width="100" HorizontalAlignment="Left" Text="{Binding AddressEntity.state_code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />
+                            <Reflection:PopupAutoSuggest x:Name="ppState" Placement="Bottom" PlacementTarget="{Binding ElementName=txtState}">
+                                <Reflection:AutoSuggestControl x:Name="asState" Focusable="False" OwnerPopup="{Binding ElementName=ppState}" 
+                                    TextTokensControlTarget="{Binding ElementName=txtState, Mode=OneTime}" FrameworkElement.DataContext="{Binding AS_STATE.AutoSuggestVM}" >
+                                    <Reflection:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Reflection:AutoSuggestControl.Background>
+                                    <Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" 
+                                                RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" 
+                                                Margin="2" MaxHeight="300" MaxWidth="200" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                                                CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" GridLinesVisibility="All">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="CODE" Binding="{Binding value_code}" />
+                                                    <DataGridTextColumn Header="NAME" Binding="{Binding value_name}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                </Reflection:AutoSuggestControl>
+                            </Reflection:PopupAutoSuggest>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="6" Grid.Column="2" Text="Business Place" Margin="5,0,0,0"  />
+                        <StackPanel Grid.Row="6" Grid.Column="3" Orientation="Horizontal">
+                            <TextBox x:Name="txtBussPlace" Width="100" HorizontalAlignment="Left" Text="{Binding AddressEntity.buss_place, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />
+                            <Reflection:PopupAutoSuggest x:Name="ppBussPlace" Placement="Bottom" PlacementTarget="{Binding ElementName=txtBussPlace}">
+                                <Reflection:AutoSuggestControl x:Name="asBussPlace" Focusable="False" OwnerPopup="{Binding ElementName=ppBussPlace}" 
+                                    TextTokensControlTarget="{Binding ElementName=txtBussPlace, Mode=OneTime}" FrameworkElement.DataContext="{Binding AS_BUSS_PLACE.AutoSuggestVM}" >
+                                    <Reflection:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Reflection:AutoSuggestControl.Background>
+                                    <Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" 
+                                                RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" 
+                                                Margin="2" Height="300" Width="350" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                                                CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" GridLinesVisibility="All">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="CODE" Binding="{Binding value_code}" />
+                                                    <DataGridTextColumn Header="NAME" Binding="{Binding value_name}" />
+                                                    <DataGridTextColumn Header="CODE" Binding="{Binding para1}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                </Reflection:AutoSuggestControl>
+                            </Reflection:PopupAutoSuggest>
+                        </StackPanel>
+                        
+                        <CheckBox Grid.Row="2" Grid.Column="3" Content="Active"  IsChecked="{Binding AddressEntity.active,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="60" HorizontalAlignment="Left"  Margin="5,0,0,0"/>-->
+
+                    </Grid>
+
+                    <StackPanel Grid.Row="3" Height="20" Background="AliceBlue" Margin="0,5,0,0" Visibility="Collapsed" >
+                        <TextBlock Text="COMMUNICATION DETAILS" Foreground="Gray" FontWeight="Bold" FontStyle="Italic"  Margin="5,0,0,0" />
+                    </StackPanel>
+
+                    <TabControl x:Name="tbcMaster" Height="200" Width="680" Grid.Row="4" Margin="0,0,0,0" HorizontalAlignment="Left" >
+                        <TabItem Header="Communication" HorizontalAlignment="Left" >
+                            <DataGrid x:Name="dgContacts" ColumnHeaderHeight="25" RowHeight="25"  CanUserDeleteRows="False" CanUserSortColumns="False" GridLinesVisibility="All" BorderBrush="Transparent" 
+                                VerticalAlignment="Top" IsReadOnly="False" IsSynchronizedWithCurrentItem="True" FontSize="12" AutoGenerateColumns="False" 
+                                SelectedItem="{Binding CNEntity, Mode=TwoWay,Delay=200}" CellEditEnding="HandleMainDataGridCellEditEnding"
+                                ItemsSource="{Binding ContactEntity ,Mode=TwoWay,UpdateSourceTrigger=LostFocus}" Background="Transparent" 
+                                VerticalScrollBarVisibility="Auto" Height="150" MaxWidth="800" HorizontalAlignment="Left"   >
+                                <DataGrid.Columns>
+                                    <!--<DataGridTextColumn Header="CODE"  Binding="{Binding cn_code}" Width="70"  IsReadOnly="True"/>-->
+                                    <DataGridTextColumn Header="TYPE"  Binding="{Binding type_name}" Width="100" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="DESCRIPRION"  Binding="{Binding cn_text}" Width="200" />
+                                    <DataGridTextColumn Header="EXTN"  Binding="{Binding ext_no}" Width="55" />
+                                    <!--<DataGridTextColumn Header="NAME"  Binding="{Binding acc_name}" Width="200" />-->
+                                    <DataGridCheckBoxColumn Header="PRIMARY"  Binding="{Binding ind_primary,Converter={StaticResource ActiveConvertor}}" Width="40" />
+                                    <DataGridTextColumn Header="NOTE"  Binding="{Binding short_text}" Width="200" />
+                                    <DataGridTemplateColumn Header="Active"  Width="30">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox VerticalAlignment="Center" Width="30" IsChecked="{Binding active,Converter={StaticResource ActiveConvertor}, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </TabItem>
+                        <TabItem Header="Detils" >
+                            <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto"  />
+                                    <ColumnDefinition Width="Auto"  />
+                                    <ColumnDefinition Width="Auto"  />
+                                    <ColumnDefinition Width="Auto"  />
+                                    <ColumnDefinition Width="Auto"  />
+                                    <ColumnDefinition Width="Auto"  />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Tax Reg No" Margin="10,0,0,0"  />
+                                <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtRegNo" Width="150" HorizontalAlignment="Left" Text="{Binding MasterEntity.vat_no, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />
+
+                                <!--<TextBlock Grid.Row="0" Grid.Column="4" Text="Active" Margin="5,0,0,0" />-->
+                                <CheckBox Grid.Row="0" Grid.Column="4" Content="Active"  IsChecked="{Binding MasterEntity.active,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,0"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Currency" Margin="10,0,0,0" HorizontalAlignment="Left" />
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                    <TextBox x:Name="txtCurrency" Text="{Binding MasterEntity.curr_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="150" HorizontalAlignment="Left"/>
+                                    <TextBlock Text="*" VerticalAlignment="Center" Foreground="Red" FontSize="15" FontWeight="Bold" />
+                                    <Reflection:PopupAutoSuggest x:Name="ppCurrency" Placement="Bottom" PlacementTarget="{Binding ElementName=txtCurrency}">
+                                        <Reflection:AutoSuggestControl x:Name="asCurrency" Focusable="False" OwnerPopup="{Binding ElementName=ppCurrency}" 
+                                    TextTokensControlTarget="{Binding ElementName=txtCurrency, Mode=OneTime}" FrameworkElement.DataContext="{Binding AS_CURRENCY.AutoSuggestVM}" >
+                                            <Reflection:AutoSuggestControl.Background>
+                                                <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                            </Reflection:AutoSuggestControl.Background>
+                                            <Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                                <ControlTemplate>
+                                                    <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" 
+                                                RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" 
+                                                Margin="2" MaxHeight="300" MaxWidth="200" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                                                CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" GridLinesVisibility="All">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="CODE" Binding="{Binding curr_code}" />
+                                                            <DataGridTextColumn Header="CURRENCY" Binding="{Binding curr_name}" />
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                        </Reflection:AutoSuggestControl>
+                                    </Reflection:PopupAutoSuggest>
+                                </StackPanel>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Accounting Group" Margin="10,0,0,0" />
+                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" >
+                                    <TextBox  x:Name="txtACGroup" Width="150" Text="{Binding MasterEntity.acc_group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" />
+                                    <TextBlock Text="*" VerticalAlignment="Center" Foreground="Red" FontSize="15" FontWeight="Bold" />
+                                    <Reflection:PopupAutoSuggest x:Name="ppACGroup" Placement="Bottom" PlacementTarget="{Binding ElementName=txtACGroup}">
+                                        <Reflection:AutoSuggestControl x:Name="asACGroup" Focusable="False" OwnerPopup="{Binding ElementName=ppACGroup}"
+				                        TextTokensControlTarget="{Binding ElementName=txtACGroup, Mode=OneTime}" FrameworkElement.DataContext="{Binding AS_ACC_GROUP.AutoSuggestVM}">
+                                            <Reflection:AutoSuggestControl.Background>
+                                                <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                            </Reflection:AutoSuggestControl.Background>
+                                            <Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                                <ControlTemplate>
+                                                    <DataGrid  x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="GRP.CODE" Binding="{Binding group_code}"/>
+                                                            <DataGridTextColumn Header="NAME" Binding="{Binding group_name}"/>
+                                                            <!--<DataGridTextColumn Header="Type" Binding="{Binding acc_group_type}"/>-->
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                        </Reflection:AutoSuggestControl>
+                                    </Reflection:PopupAutoSuggest>
+                                </StackPanel>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Reconcile Account" Margin="10,0,0,0" HorizontalAlignment="Left"/>
+                                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                                    <TextBox  x:Name="txtReconAcc" Width="150" 
+                                     HorizontalAlignment="Left" Text="{Binding MasterEntity.recon_acc, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Margin="0,0,0,0.571">
+                                        <!--<i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="LostFocus">
+                                                <i:InvokeCommandAction Command="{Binding DataContext.cmdInsertReconAccount, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type Local:WindowElement}}}" 
+                                                               CommandParameter="{Binding Text, ElementName=txtReconAcc}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>-->
+                                    </TextBox>
+                                    <Reflection:PopupAutoSuggest x:Name="popup_ReconAcc" Placement="Bottom" PlacementTarget="{Binding ElementName=txtReconAcc}">
+                                        <Reflection:AutoSuggestControl x:Name="AutoSuggestReconAcc" Focusable="False" OwnerPopup="{Binding ElementName=popup_ReconAcc}"
+				                        TextTokensControlTarget="{Binding ElementName=txtReconAcc, Mode=OneTime}" DataContext="{Binding AS_RECON_ACC.AutoSuggestVM}">
+                                            <Reflection:AutoSuggestControl.Background>
+                                                <SolidColorBrush Color="White" Opacity=".9"/>
+                                            </Reflection:AutoSuggestControl.Background>
+                                            <Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                                <ControlTemplate>
+                                                    <DataGrid  x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Reconcile Account" Binding="{Binding gl_code}"/>
+                                                            <DataGridTextColumn Header="Description" Binding="{Binding gl_name}"/>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Reflection:AutoSuggestControl.SuggestionsTemplate>
+                                        </Reflection:AutoSuggestControl>
+                                    </Reflection:PopupAutoSuggest>
+                                    <TextBlock Text="*" VerticalAlignment="Center" Foreground="Red" FontSize="15" FontWeight="Bold" />
+                                </StackPanel>
+                                
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Vendor Code" Margin="10,0,0,0"  />
+                                <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtVendorCd" Width="150" HorizontalAlignment="Left" Text="{Binding MasterEntity.vendor_code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0" />
+
+                            </Grid>
+                        </TabItem>
+                        
+                    </TabControl>
+
+                    <StackPanel Grid.Row="5" Background="AliceBlue" Margin="10,5,0,0" Orientation="Horizontal" VerticalAlignment="Center" >
+                        <Button Width="70" Height="23" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" TabIndex="14" Style="{StaticResource NormalButtonStyle}"
+                                Command="{Binding Path=cmdSelectCustomer}" CommandParameter="{Binding Text,ElementName=txtPartyCode}"  Content="Back" />
+                        
+                        <Button Width="70" Height="23" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" TabIndex="14" Style="{StaticResource NormalButtonStyle}"
+                                Command="{Binding Path=cmdSave}" CommandParameter="{Binding Text,ElementName=txtPartyCode}"  Content="Save" />
+
+                        <Button Width="70" Height="23" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" TabIndex="14" Style="{StaticResource NormalButtonStyle}"
+                                Command="{Binding Path=cmdClear}" CommandParameter="{Binding Text,ElementName=txtPartyCode}"  Content="Clear" />
+                    </StackPanel>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="View" >
+                <!--View Side-->
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ToggleButton x:Name="btnFilterSearch" Grid.Column="0">
+                            <Image Height="15" Width="20" Source="{StaticResource imgSearch}">
+                            </Image>
+                        </ToggleButton>
+                        <Reflection:ReflectionPopup x:Name="popFilterSearch" AllowsTransparency="True" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnFilterSearch}" StaysOpen="False" 
+                                               PlacementTarget="{Binding ElementName=btnFilterSearch}" Placement="Bottom" PopupAnimation="Slide" Reflection:PopupBehavior.ClosesOnInput="False" >
+                            <Border BorderBrush="Gray" BorderThickness="5" CornerRadius="2">
+                                <Grid Background="CornflowerBlue" >
+                                    <Grid Margin="10,10,10,10" Width="580">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Company"  Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                        <TextBox x:Name="txtCompanyView" Grid.Row="0" Grid.Column="1" Text="{Binding REQ_PARA.comp_code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CharacterCasing="Upper" MinWidth="80" />
+
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Active"  Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="10,0,0,0">
+                                            <CheckBox Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" IsChecked="{Binding REQ_PARA.active,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" />
+                                        </StackPanel>
+
+
+                                        <Button Grid.Row="1" Grid.Column="4" Width="30" Height="25" Margin="25,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource ExecuteButton}"
+                                                Command="{Binding Path=cmdLoadBackFlip}" CommandParameter="ReferenceDocument" />
+
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </Reflection:ReflectionPopup>
+                        <Reflection:SearchTextBox Height="25" Grid.Column="1" Name="SearchBox" Width="830" Background="Transparent" Text="{Binding FLTR_STR_BACKFLIP, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Aquamarine" />
+                        <Button Grid.Row="0" Grid.Column="2" Height="25" Margin="4,0,0,0" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding ExportCommand}">Export</Button>
+                    </Grid>
+
+                    <DataGrid Grid.Row="1" x:Name="dgBackFlip" ItemsSource="{Binding BACKFLIP_COLLECTION}" AutoGenerateColumns="False" IsReadOnly="True"
+                              Width="980" Height="460" HorizontalAlignment="Left" SelectionMode="Single" SelectionUnit="FullRow"
+                              Reflection:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"
+                              Background="Transparent" RowBackground="Transparent" GridLinesVisibility="Horizontal" BorderThickness="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="SELECT">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton x:Name="btnitmprts"
+                                                      Command="{Binding Path=DataContext.cmdLoadByDocNo, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                      CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                      Style="{StaticResource CircleToggleButtonStyle}" Width="25" Height="25" Content="{Binding SetQty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" >
+                                        </ToggleButton>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="CUSTOMER ID" MinWidth="90" Binding="{Binding party_code}"/>
+                            <DataGridTextColumn Header="CUSTOMER NAME" MinWidth="90" Binding="{Binding party_name}"/>
+                            <DataGridTextColumn Header="LOCATION" MinWidth="90" Binding="{Binding location}"/>
+                            <DataGridTextColumn Header="CONTACT" MinWidth="90" Binding="{Binding cn_text}"/>
+                            <!--<DataGridTextColumn Header="CONTACT PERSON" MinWidth="90" Binding="{Binding cp_name}" />-->
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!--we made this collaps because entity parameter is different than master and it conflicts with verious vm code-->
+                    <StackPanel Grid.Row="2" Background="AliceBlue" Margin="0,5,0,0" Visibility="Collapsed" >
+                        <Button Width="70" Height="23" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" TabIndex="14" Style="{StaticResource NormalButtonStyle}"
+                                Command="{Binding Path=cmdSelectCustomer}" CommandParameter="{Binding SelectedItem,ElementName=dgBackFlip}"  Content="OK" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+
+</Reflection:WindowElement>

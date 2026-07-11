@@ -1,0 +1,783 @@
+﻿<Local:WindowElement x:Class="Reflection.Modules.CustomerRelation.Views.FormReceivedFrmCustomer"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:Child="clr-namespace:Reflection.Modules.CustomerRelation.Views"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"                       
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+                     mc:Ignorable="d"
+             Title="{x:Static Local:AppSessionState.ViewTitle}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtStatus}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid MinHeight="450" Width="820" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+        <TabControl  x:Name="tbcMaster" SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0">
+
+            <TabItem Header="Transaction">
+                <Grid Margin="0,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0" Width="780" Height="180">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Entry No" />
+                        <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" x:Name="txtEntryNo" Tag="{Binding MasterEntity.entry_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.entry_no,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="140" />
+
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Entry Date" />
+                        <DatePicker Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" x:Name="dtpEntry_date"  Width="110"  SelectedDate="{Binding MasterEntity.entry_dt,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Background="Transparent"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Serial No"  />
+                        <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" x:Name="txtSerialNo" Tag="{Binding MasterEntity.serial_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.serial_no,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="80" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Issue Date"/>
+                        <DatePicker Grid.Row="1" Grid.Column="3"  x:Name="dtpIssue_date"  Width="110" HorizontalAlignment="Left"  SelectedDate="{Binding MasterEntity.issue_dt,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Background="Transparent"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="* Customer" />
+                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                            <TextBox Width="80" x:Name="txtCustomer" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.PartyId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.PartyId" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddCustomer,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtCustomer}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popup_Customer" Placement="Bottom" PlacementTarget="{Binding ElementName=txtCustomer}">
+                                <Local:AutoSuggestControl x:Name="AutoSuggestCustomer" Focusable="False" OwnerPopup="{Binding ElementName=popup_Customer}"
+				                  TextTokensControlTarget="{Binding ElementName=txtCustomer, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASCustomer.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Party Id" Binding="{Binding PartyId}" />
+                                                    <DataGridTextColumn Header="Party Name" Binding="{Binding PartyName}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                            <TextBlock Text="{Binding MasterEntity.PartyNm,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Customer Reference No"/>
+                        <TextBox Grid.Row="3" Grid.Column="3" HorizontalAlignment="Left" x:Name="txtCRN" Tag="{Binding MasterEntity.cust_ref_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   Text="{Binding MasterEntity.cust_ref_no,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="110" />
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="* Form Type" />
+                        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                            <TextBox Width="280" x:Name="txtFormType" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.description,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.description" Mode="TwoWay"  UpdateSourceTrigger="LostFocus" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddFormType,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtFormType}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popup_FormType" Placement="Bottom" PlacementTarget="{Binding ElementName=txtFormType}">
+                                <Local:AutoSuggestControl x:Name="AutoSuggestFormType" Focusable="False" OwnerPopup="{Binding ElementName=popup_FormType}"
+				                  TextTokensControlTarget="{Binding ElementName=txtFormType, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASFormType.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Form Type" Binding="{Binding description}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="* Financial Year" />
+                        <!--<TextBox Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Width="120" IsReadOnly="True" Text="{Binding MasterEntity.fin_year,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>-->
+                        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                            <TextBox Width="80" x:Name="txtFinYear" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.fin_year,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.fin_year" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddFinYear,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtFinYear}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popup_FinYear" Placement="Bottom" PlacementTarget="{Binding ElementName=txtFinYear}">
+                                <Local:AutoSuggestControl x:Name="AutoSuggestFinYear" Focusable="False" OwnerPopup="{Binding ElementName=popup_FinYear}"
+				                  TextTokensControlTarget="{Binding ElementName=txtFinYear, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASFinYear.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Financial Year" Binding="{Binding fin_year}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="4" Grid.Column="2" Text="* Quarter" />
+                        <StackPanel Grid.Row="4" Grid.Column="3" Orientation="Horizontal">
+                            <TextBox  x:Name="txtQuarter" Width="110"  Local:ValidationBehavior.HasError="{Binding ErrorValue}" >
+                                <TextBox.Text>
+                                    <Binding Path="MasterEntity.qtr" Mode="TwoWay"  UpdateSourceTrigger="Default" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                        <Binding.ValidationRules >
+                                            <Local:InputValidator />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInsertQuarter,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtQuarter}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popup_Quarter" Placement="Bottom" PlacementTarget="{Binding ElementName=txtQuarter}">
+                                <Local:AutoSuggestControl x:Name="AutoSuggestQuarter" Focusable="False" OwnerPopup="{Binding ElementName=popup_Quarter}"
+				                  TextTokensControlTarget="{Binding ElementName=txtQuarter, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASQuarter.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector"  EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Quarter" Binding="{Binding qtr,Mode=OneWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                            <Button  Height="28" Style="{StaticResource ExecuteButton}" Command="{Binding Path=cmdLoadInvoice}" />
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Remark" />
+                        <TextBox Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" x:Name="txtRemark" Tag="{Binding MasterEntity.remark,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   Text="{Binding MasterEntity.remark,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Grid.ColumnSpan="3" Width="684"/>
+
+                    </Grid>
+                    <Grid Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <TabControl x:Name="tbcDetail" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Top" SelectedIndex="{Binding Path=SelectedTabIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="780" Height="265" HorizontalAlignment="Left">
+                            <TabItem Header="Invoice Details" Margin="0"  TabIndex="1">
+                                <Grid  VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <DataGrid x:Name="dgInvoiceData" Grid.Row="0" Grid.Column="0" CanUserAddRows="True" CanUserDeleteRows="False" AutoGenerateColumns="False"   
+                                                   ItemsSource="{Binding DetailEntity ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CanUserSortColumns="False"
+                                                   SelectedIndex="{Binding dgSelectedIndexDetail,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" 
+                                                   VerticalAlignment="Top" IsReadOnly="False" Margin="0,0,0,0"  GridLinesVisibility="All" Width="760" Height="230" Background="Transparent"
+                                                   IsSynchronizedWithCurrentItem="True" BorderBrush="Transparent" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                                                   >
+                                        <DataGrid.Resources>
+                                            <Local:DictionaryConverter x:Key="DictionaryConvertorTax"/>
+                                            <Local:DisplayPropertyConverter x:Key="DisplayConverter" />
+                                            <Local:ItemsSourceConverter x:Key="SourceConverter" />
+                                            <Local:TaxConverter  x:Key="TaxConverter" />
+                                            <Style x:Key="TTD" TargetType="{x:Type ToolTip}" >
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ToolTip}">
+                                                            <!--<DataGrid AutoGenerateColumns="false" MinHeight="100" MinWidth="150" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}, Path=DataContext.SalesDataCollectionShow,UpdateSourceTrigger=PropertyChanged}">
+                                                                <DataGrid.Columns>
+                                                                    <DataGridTextColumn Header="ItemCode" Binding="{Binding ItemCode}" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn Header="Sku" Binding="{Binding sku}" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn Header="Party Id" Binding="{Binding PartyId}" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn Header="SO No." Binding="{Binding sono}" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn Header="SO Date" Binding="{Binding sodate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}"/>
+                                                                    <DataGridTextColumn Header="Unit Price" Binding="{Binding unit_price}" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn Header="Qty" Binding="{Binding quantity}" IsReadOnly="True"/>
+                                                                </DataGrid.Columns>
+                                                            </DataGrid>-->
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </DataGrid.Resources>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="SrNo" IsReadOnly="True" Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={Local:RowToIndexConverter}}" />
+                                            <DataGridTemplateColumn Header="Invoice No" Width="150" >
+                                                <DataGridTemplateColumn.CellTemplate >
+                                                    <DataTemplate>
+                                                        <Grid x:Name="gridInvoiceNo">
+                                                            <Grid.Resources>
+                                                                <Local:VisibilityValueConverter x:Key="IntToBoolConvertor" />
+                                                            </Grid.Resources>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="6*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock x:Name="txtInvoiceNo" Grid.Column="0" Text="{Binding inv_no, Mode=OneWay,UpdateSourceTrigger=LostFocus}" ToolTip="{Binding inv_no, Mode=OneWay,UpdateSourceTrigger=LostFocus}" >
+                                                                <i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="MouseDoubleClick">
+                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInvoke_Reference_Document, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Local:WindowElement}}}" 
+                                                                                    CommandParameter="{Binding Path=Text, ElementName=txtInvoiceNo}" />
+                                                                </i:EventTrigger>
+                                                            </i:Interaction.Triggers>
+                                                            </TextBlock>
+                                                            <ToggleButton x:Name="btninvoice" Grid.Column="1" Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Margin="0,0,4,0">
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Image Height="20" Width="20" Source="{StaticResource imgList1}" />
+                                                                </StackPanel>
+                                                                <ToggleButton.Style>
+                                                                    <Style TargetType="{x:Type ToggleButton}">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding id, Converter={StaticResource IntToBoolConvertor}}" Value="True">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding id, Converter={StaticResource IntToBoolConvertor}}" Value="False">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </ToggleButton.Style>
+                                                            </ToggleButton>
+                                                            <Local:ReflectionPopup x:Name="Invoice_PopUp"  IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btninvoice}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btninvoice}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                                                                <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                                    <Grid Background="CornflowerBlue">
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition Height="Auto" />
+                                                                            <RowDefinition Height="Auto" />
+                                                                            <RowDefinition Height="Auto" />
+                                                                        </Grid.RowDefinitions>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="7*"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <TextBox Name="txtSearchInvoice" Grid.Row="0" Background="Aqua" Text="{Binding Path=DataContext.FilterString_DetailListPopup, Mode=TwoWay, 
+                                                                                                RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1},UpdateSourceTrigger=PropertyChanged}"/>
+                                                                        <DataGrid x:Name="dgPopupInvoice"  AutoGenerateColumns="False" FrozenColumnCount="0"  Grid.Row="2" 
+                                                                            ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}, Path=DataContext.PopupInvoiceCollection,UpdateSourceTrigger=PropertyChanged}" 
+                                                                            Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtSearchInvoice, Path=Text, UpdateSourceTrigger=PropertyChanged}" 
+                                                                            CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" 
+                                                                            Margin="2"  MaxHeight="300" MaxWidth="800" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"  >
+                                                                            <DataGrid.Columns>
+                                                                                <DataGridTemplateColumn Header="Check">
+                                                                                    <DataGridTemplateColumn.CellTemplate>
+                                                                                        <DataTemplate>
+                                                                                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                                                                                         IsChecked="{Binding Path=Select, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}">
+                                                                                                <i:Interaction.Triggers>
+                                                                                                    <i:EventTrigger EventName="Click">
+                                                                                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddInvoice ,
+                                                                                                                RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupInvoice}" />
+                                                                                                    </i:EventTrigger>
+                                                                                                </i:Interaction.Triggers>
+                                                                                            </CheckBox>
+                                                                                        </DataTemplate>
+                                                                                    </DataGridTemplateColumn.CellTemplate>
+                                                                                </DataGridTemplateColumn>
+                                                                                <DataGridTextColumn Header="Invoice No" Binding="{Binding bill_doc}"/>
+                                                                                <DataGridTextColumn Header="Invoice Date" Binding="{Binding doc_date}"/>
+                                                                                <DataGridTextColumn Header="Value of Goods" Binding="{Binding ass_value}"/>
+                                                                                <DataGridTextColumn Header="Tax" Binding="{Binding tax_amount}"/>
+                                                                                <DataGridTextColumn Header="Total Invoice Amount(ERP)" Binding="{Binding invoice_amt}"/>
+                                                                                <!--<DataGridTextColumn Header="Total Invoice Amount(Form)" Binding="{Binding total_form}"/>-->
+                                                                                <!--<DataGridTextColumn Header="Remark" Binding="{Binding remark}"/>-->
+                                                                            </DataGrid.Columns>
+                                                                            <i:Interaction.Triggers>
+                                                                                <!--<Local:SpaceKeyDownEventTrigger  EventName="KeyUp">
+                                                                                    <i:ChangePropertyAction TargetObject="{Binding ElementName=Invoice_PopUp}" PropertyName="IsOpen"  Value="False"/>
+                                                                                </Local:SpaceKeyDownEventTrigger>-->
+                                                                            </i:Interaction.Triggers>
+                                                                        </DataGrid>
+                                                                        <Button Width="100" Height="20" Grid.Row="2" Content="OK">
+                                                                            <Button.Triggers>
+                                                                                <EventTrigger RoutedEvent="Button.Click">
+                                                                                    <BeginStoryboard>
+                                                                                        <Storyboard>
+                                                                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsChecked" Storyboard.TargetName="btninvoice">
+                                                                                                <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="False" />
+                                                                                            </BooleanAnimationUsingKeyFrames>
+                                                                                        </Storyboard>
+                                                                                    </BeginStoryboard>
+                                                                                </EventTrigger>
+                                                                            </Button.Triggers>
+                                                                        </Button>
+                                                                    </Grid>
+                                                                </Border>
+                                                            </Local:ReflectionPopup>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellEditingTemplate >
+                                                    <DataTemplate>
+                                                        <Grid x:Name="gridInvoiceNo">
+                                                            <Grid.Resources>
+                                                                <Local:VisibilityValueConverter x:Key="IntToBoolConvertor" />
+                                                            </Grid.Resources>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="6*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox x:Name="txtInvoiceNo" Grid.Column="0" ToolTip="{Binding inv_no, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Local:CustomeValidationInput.ListObject="{Binding Path=DataContext.StringListInvoice,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Local:WindowElement}}}" Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding Path=DataContext.StringListInvoice,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Local:WindowElement}}}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" Validation.ErrorTemplate="{StaticResource ValidationErrorTemplateGrid}" >
+                                                                <TextBox.Text >
+                                                                    <Binding Path="inv_no" Mode="TwoWay"  UpdateSourceTrigger="LostFocus" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                                                        <Binding.ValidationRules >
+                                                                            <Local:InputValidator />
+                                                                        </Binding.ValidationRules>
+                                                                    </Binding>
+                                                                </TextBox.Text>
+                                                                <i:Interaction.Triggers>
+                                                                    <i:EventTrigger EventName="LostFocus">
+                                                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddInvoice, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Local:WindowElement}}}" 
+                                                                                        CommandParameter="{Binding Path=Text, ElementName=txtInvoiceNo}" />
+                                                                    </i:EventTrigger>
+                                                                </i:Interaction.Triggers>
+                                                            </TextBox>
+                                                            <Local:PopupAutoSuggest x:Name="popup_InvoiceNo" Placement="Bottom" PlacementTarget="{Binding ElementName=txtInvoiceNo}">
+                                                                <Local:AutoSuggestControl x:Name="autoSuggestInvoiceNo" Focusable="False" OwnerPopup="{Binding ElementName=popup_InvoiceNo}" 
+                                                                        TextTokensControlTarget="{Binding ElementName=txtInvoiceNo, Mode=OneTime}"
+				                                                        FrameworkElement.DataContext="{Binding Path=DataContext.ASInvoiceNo.AutoSuggestVM,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Local:WindowElement},AncestorLevel=1}}">
+                                                                    <Local:AutoSuggestControl.Background>
+                                                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                                                    </Local:AutoSuggestControl.Background>
+                                                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                                                        <ControlTemplate>
+                                                                            <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" 
+                                                                                           RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" 
+                                                                                           Margin="2" MaxHeight="300" MaxWidth="600" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                                                                                          CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" GridLinesVisibility="All">
+                                                                                <DataGrid.Columns>
+                                                                                    <DataGridTemplateColumn Header="Check">
+                                                                                        <DataGridTemplateColumn.CellTemplate>
+                                                                                            <DataTemplate>
+                                                                                                <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                                                                                         IsChecked="{Binding Path=Select, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}">
+                                                                                                    <i:Interaction.Triggers>
+                                                                                                        <i:EventTrigger EventName="Click">
+                                                                                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddInvoice ,
+                                                                                                                RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupInvoice}" />
+                                                                                                        </i:EventTrigger>
+                                                                                                    </i:Interaction.Triggers>
+                                                                                                </CheckBox>
+                                                                                            </DataTemplate>
+                                                                                        </DataGridTemplateColumn.CellTemplate>
+                                                                                    </DataGridTemplateColumn>
+                                                                                    <DataGridTextColumn Header="Invoice No" Binding="{Binding bill_doc}"/>
+                                                                                    <DataGridTextColumn Header="Invoice Date" Binding="{Binding doc_date}"/>
+                                                                                    <DataGridTextColumn Header="Tax" Binding="{Binding tax_amount}"/>
+                                                                                    <DataGridTextColumn Header="Total Invoice Amount(ERP)" Binding="{Binding invoice_amt}"/>
+                                                                                </DataGrid.Columns>
+                                                                            </DataGrid>
+                                                                        </ControlTemplate>
+                                                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                                                </Local:AutoSuggestControl>
+                                                            </Local:PopupAutoSuggest>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Invoice Date"  Binding="{Binding inv_dt,Mode=TwoWay, UpdateSourceTrigger=LostFocus,StringFormat={}{0:dd/MM/yyyy} }" IsReadOnly="True"/>
+                                            <DataGridTextColumn Header="Value of Goods" Binding="{Binding val_of_goods,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />
+                                            <DataGridTextColumn Header="Tax" Binding="{Binding tax,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True"/>
+                                            <DataGridTextColumn Header="Total Invoice Amount(ERP)" Binding="{Binding total,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                            <DataGridTextColumn Header="Total Invoice Amount(Form)" Binding="{Binding total_form,StringFormat='#0.00#',Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <DataGridTextColumn Header="Difference of Amount" Binding="{Binding total_inv_amt,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <DataGridTextColumn Header="Remark" Binding="{Binding remark,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <!--<DataGridCheckBoxColumn Binding="{Binding active, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="Active" Width="auto"/>-->
+                                            <DataGridTemplateColumn Header="Active">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate >
+                                                        <CheckBox x:Name="Active"  HorizontalAlignment="center" IsChecked="{Binding Path=active, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                                                        </CheckBox>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Action">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4"
+                                                                Command="{Binding Path=DataContext.CmdDeleteDataGridRowDetail,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                                CommandParameter="{Binding SelectedIndex, ElementName=dgInvoiceData}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Image Height="20" Width="20" Source="{StaticResource imgTrash}"   >
+                                                                </Image>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Info">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Image Height="20" Width="20" Source="{StaticResource imgInformation}"   >
+                                                                </Image>
+                                                            </StackPanel>
+                                                            <Button.ToolTip >
+                                                                <ToolTip Style="{StaticResource TTD}" />
+                                                            </Button.ToolTip>
+                                                            <i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="MouseEnter">
+                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdItemInfo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Local:WindowElement}}}" 
+                                                                                        CommandParameter="{Binding Path=SelectedIndex, ElementName=dgInvoiceData}" />
+                                                                </i:EventTrigger>
+                                                            </i:Interaction.Triggers>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Attachments" Width="50">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4"
+                                                                Command="{Binding Path=DataContext.cmdOpenAttachments,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgInvoiceData}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Image Height="20" Width="20" Source="{StaticResource imgAttachment}"/>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="View" >
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25*"/>
+                            <ColumnDefinition Width="14*"/>
+                            <ColumnDefinition Width="651*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Local:SearchTextBox Grid.Column="0" Name="SearchBox" Text="{Binding FilterString, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="3"  />
+                        <Button Grid.Column="3" Height="25" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding ExportCommand}">Export</Button>
+                    </Grid>
+
+                    <DataGrid x:Name="DataLV" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="790" Height="380"
+                                ItemsSource="{Binding DataGridCollection}"  AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow"
+                                Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"                                                                        
+                                Background="Transparent" RowBackground="Transparent" GridLinesVisibility="All" BorderThickness="1" SelectionMode="Single"  VerticalScrollBarVisibility="Visible"  HorizontalScrollBarVisibility="Visible"  >
+
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Select">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton x:Name="btnlabtrs"
+                                                      Command="{Binding Path=DataContext.CmdLoadDocumentByDocumentNumber, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                         Style="{StaticResource CircleToggleButtonStyle}" Width="25" Height="25" Content="{Binding SetQty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" >
+                                        </ToggleButton>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Entry No" Binding="{Binding entry_no}" Width="auto" IsReadOnly="True"/>
+                            <!--<DataGridTextColumn Header="Entry Date"  Binding="{Binding entry_dt, StringFormat={}{0:dd/MM/yyyy}}"  IsReadOnly="True"/>-->
+                            <!--<DataGridTextColumn Header="Party ID" Binding="{Binding PartyId}" Width="auto" IsReadOnly="True"/>-->
+                            <DataGridTextColumn Header="Party Name"  Binding="{Binding PartyName}" Width="auto" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Quarter" Binding="{Binding qtr}" Width="auto" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Financial Year" Binding="{Binding fin_year}" Width="auto" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Report">
+                <Grid Margin="0,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0" Width="780" Height="140">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Customer" />
+                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" >
+                            <TextBox Width="80" x:Name="txtCustomer1" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.PartyIdReport,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.PartyIdReport" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddCustomerReport,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtCustomer1}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popup_Customer1" Placement="Bottom" PlacementTarget="{Binding ElementName=txtCustomer1}">
+                                <Local:AutoSuggestControl x:Name="AutoSuggestCustomer1" Focusable="False" OwnerPopup="{Binding ElementName=popup_Customer1}"
+				                TextTokensControlTarget="{Binding ElementName=txtCustomer1, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASCustomerReport.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Party Id" Binding="{Binding PartyId}" />
+                                                    <DataGridTextColumn Header="Party Name" Binding="{Binding PartyName}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                            <TextBlock Text="{Binding MasterEntity.PartyNmReport,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Form Type"/>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" >
+                            <TextBox Width="280" x:Name="txtFormType1" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.descriptionReport,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.descriptionReport" Mode="TwoWay"  UpdateSourceTrigger="LostFocus" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddFormTypeReport,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtFormType1}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popup_FormType1" Placement="Bottom" PlacementTarget="{Binding ElementName=txtFormType1}">
+                                <Local:AutoSuggestControl x:Name="AutoSuggestFormType1" Focusable="False" OwnerPopup="{Binding ElementName=popup_FormType1}"
+				                TextTokensControlTarget="{Binding ElementName=txtFormType1, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASFormTypeReport.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="ID" Binding="{Binding id}" />
+                                                    <DataGridTextColumn Header="Form Type" Binding="{Binding description}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Financial Year"/>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" >
+                            <TextBox Width="80" x:Name="txtFinYear1" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.fin_yearReport,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.fin_yearReport" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddFinYearReport,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtFinYear1}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popup_FinYear1" Placement="Bottom" PlacementTarget="{Binding ElementName=txtFinYear1}">
+                                <Local:AutoSuggestControl x:Name="AutoSuggestFinYear1" Focusable="False" OwnerPopup="{Binding ElementName=popup_FinYear1}"
+				                TextTokensControlTarget="{Binding ElementName=txtFinYear1, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASFinYearReport.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Financial Year" Binding="{Binding fin_year}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Quarter" />
+                        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" >
+                            <!--<TextBox  x:Name="txtQuarter1" Width="110"  Local:ValidationBehavior.HasError="{Binding ErrorValue}" >
+                                <TextBox.Text>
+                                    <Binding Path="MasterEntity.qtrReport" Mode="TwoWay"  UpdateSourceTrigger="Default" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                        <Binding.ValidationRules >
+                                            <Local:InputValidator />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInsertQuarterReport,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                            CommandParameter="{Binding Text, ElementName=txtQuarter1}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>-->
+                            <TextBox Width="80" x:Name="txtQuarter1" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.qtrReport,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.qtrReport" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInsertQuarterReport,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtQuarter1}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popup_Quarter1" Placement="Bottom" PlacementTarget="{Binding ElementName=txtQuarter1}">
+                                <Local:AutoSuggestControl x:Name="AutoSuggestQuarter1" Focusable="False" OwnerPopup="{Binding ElementName=popup_Quarter1}"
+				                TextTokensControlTarget="{Binding ElementName=txtQuarter1, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASQuarterReport.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector"  EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Quarter" Binding="{Binding qtr,Mode=OneWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                        </StackPanel>
+
+                        <Button Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Height="25" Width="150" Style="{StaticResource NormalButtonStyle}" Command="{Binding Path=cmdLoadInvoiceReport}">Load Pending Invoice</Button>
+                        <Button Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="3" Height="25" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding Path=cmdPrintReport}">Print</Button>
+                        
+                    </Grid>
+                    <Grid Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <TabControl Grid.Row="1" Grid.Column="1"  VerticalAlignment="Top" SelectedIndex="{Binding Path=SelectedTabIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="780" Height="265" HorizontalAlignment="Left">
+                            <TabItem Header="Pending Invoice Details" Margin="0"  TabIndex="1">
+                                <Grid  VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <DataGrid x:Name="dgInvoiceDataReport" Grid.Row="0" Grid.Column="0" CanUserAddRows="True" CanUserDeleteRows="False" AutoGenerateColumns="False"   
+                                                   ItemsSource="{Binding ReportEntity ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CanUserSortColumns="False"
+                                                   SelectedIndex="{Binding dgSelectedIndexReport,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" 
+                                                   VerticalAlignment="Top" IsReadOnly="False" Margin="0,0,0,0"  GridLinesVisibility="All" Width="760" Height="230" Background="Transparent"
+                                                   IsSynchronizedWithCurrentItem="True" BorderBrush="Transparent" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                                                   >
+                                        <DataGrid.Resources>
+                                            <Local:DictionaryConverter x:Key="DictionaryConvertorTax"/>
+                                            <Local:DisplayPropertyConverter x:Key="DisplayConverter" />
+                                            <Local:ItemsSourceConverter x:Key="SourceConverter" />
+                                            <Local:TaxConverter  x:Key="TaxConverter" />
+                                            <Style x:Key="TTD" TargetType="{x:Type ToolTip}" >
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ToolTip}">
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </DataGrid.Resources>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="SrNo" IsReadOnly="True" Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={Local:RowToIndexConverter}}" />
+                                            <DataGridTextColumn Header="Invoice No" Binding="{Binding bill_doc,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />                                            
+                                            <DataGridTextColumn Header="Invoice Date"  Binding="{Binding doc_date,Mode=TwoWay, UpdateSourceTrigger=LostFocus,StringFormat={}{0:dd/MM/yyyy} }" IsReadOnly="True"/>
+                                            <DataGridTextColumn Header="Party Name" Binding="{Binding PartyName,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />
+                                            <DataGridTextColumn Header="Value of Goods" Binding="{Binding ass_value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />
+                                            <DataGridTextColumn Header="Tax" Binding="{Binding tax_amount,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True"/>
+                                            <DataGridTextColumn Header="Total Invoice Amount(ERP)" Binding="{Binding invoice_amt,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                            <!--<DataGridTextColumn Header="Total Invoice Amount(Form)" Binding="{Binding total_form,StringFormat='#0.00#',Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>-->
+                                            <DataGridTextColumn Header="Difference of Amount" Binding="{Binding total_inv_amt,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </Grid>
+
+            </TabItem>
+
+        </TabControl>
+
+    </Grid>
+</Local:WindowElement>
+
+
+
+
+
+

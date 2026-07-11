@@ -1,0 +1,200 @@
+﻿<Reflection:WindowElement x:Class="Reflection.Modules.PPC.Views.PPC_C001"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Reflection="http://Reflection/schemas/2010/xaml"
+             xmlns:local="clr-namespace:Reflection.Modules.PPC.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" Style="{StaticResource DefaultWorkspaceWindowStyleReport}" 
+             Title="{x:Static Reflection:AppSessionState.ViewTitle}" ShowMinimizeButton="False" ShowMaximizeButton="False" >
+ 
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Height="380" Width="1000">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Reflection:NullToBoolRevertConverter x:Key="BoolRevertConverter"/>
+        </Grid.Resources>
+        <DataGrid x:Name="DataLV" Grid.Row="0" AutoGenerateColumns="False" Width="1000" Height="350" HorizontalAlignment="Left" 
+            ItemsSource="{Binding GRID_COLLECTION}" SelectionMode="Single" SelectionUnit="FullRow" BorderBrush="Black" RowHeight="25"
+            SelectedItem="{Binding SO_OBJ,UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False"
+            GridLinesVisibility="All" BorderThickness="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+        >
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="STATUS" Width="10">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Ellipse Fill="{Binding Path=color_code}" HorizontalAlignment="Center" Height="10" Width="10" ToolTip="{Binding Path=t_display,Mode=OneWay}"></Ellipse>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="SELECT" Width="10" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox x:Name="chkSelect" Width="Auto" HorizontalAlignment="Center" IsChecked="{Binding selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTipService.ShowOnDisabled="True"
+                                      IsEnabled="{Binding ind_rule, Converter={StaticResource BoolRevertConverter}}" 
+                                      ToolTip="{Binding note}"
+                                      Command="{Binding Path=DataContext.cmdSelectRequestBulk,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}"
+                                        CommandParameter="{Binding SelectedItems, ElementName=DataLV}"
+                                      >
+                                
+                                <!--<i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdSelectRequestBulk, RelativeSource={RelativeSource AncestorType=local:WindowElement,AncestorLevel=1}}"
+                                   CommandParameter="{Binding SelectedItems, ElementName=DataLV}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>-->
+                            </CheckBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="EXEC. SERVICE ORDER" Width="40" Visibility="Collapsed">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Width="Auto">
+                                <!--<TextBlock ToolTip="Service order" Margin="5,0,0,5" VerticalAlignment="Center" >
+                                    <Hyperlink 
+                                        Command="{Binding Path=DataContext.CommandLoadDocumentByByDocumentNumber,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}"
+                                        CommandParameter="{Binding SelectedItems, ElementName=DataLV}" Background="Transparent" >
+                                        <Hyperlink.Inlines>
+                                            <Run Text="{Binding order_no}"/>
+                                        </Hyperlink.Inlines> 
+                                    </Hyperlink>
+                                </TextBlock>-->
+
+                                <Button x:Name="btnSelect" MaxWidth="40" MaxHeight="20" 
+                                    Command="{Binding Path=DataContext.cmdExecuteOrder, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                    CommandParameter="NR"                                                    
+                                    Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Fill="{Binding Path=color_code}" HorizontalAlignment="Center" Height="13" Width="13" ToolTip="{Binding Path=t_display,Mode=OneWay}"></Ellipse>
+                                        <Image Source="{StaticResource imgArrow_right}" ToolTip="Service Order"  >
+                                        </Image>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            
+                            
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridTemplateColumn Header="SERVICE ORDER" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Hyperlink 
+                                Command="{Binding Path=DataContext.cmdInvoke_Reference_Document,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}"
+                                CommandParameter="{Binding SelectedItem, ElementName=DataLV}" Background="Transparent" >
+                                <Hyperlink.Inlines>
+                                    <Run Text="{Binding order_no}"/>
+                                </Hyperlink.Inlines>
+                            </Hyperlink>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+                <DataGridTemplateColumn Header="SERVICE ORDER" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource InvisibleButton }"
+                                Command="{Binding Path=DataContext.cmdInvoke_Reference_Document,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}"
+                                CommandParameter="{Binding SelectedItem, ElementName=DataLV}" Background="Transparent" >
+                                <TextBlock Text="{Binding order_no}" Foreground="Blue" />
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="DATE" Binding="{Binding order_date,StringFormat=dd/MM/yyyy}"  Width="Auto" Visibility="{Binding bool_indicator}"/>
+                <DataGridTextColumn Header="SERVICE"  Binding="{Binding tl_name}" Width="Auto" MaxWidth="250"/>
+                <!--<DataGridTextColumn Header="SERICE ORDER"  Binding="{Binding order_no}" Width="Auto" Visibility="{Binding bool_indicator}"/>-->
+                
+                <DataGridTextColumn Header="OBJECT"  Binding="{Binding item_code}" Width="Auto" MaxWidth="120"/>
+                <DataGridTextColumn Header="OBJECT NAME"  Binding="{Binding item_name}" Width="Auto" MaxWidth="250"/>
+                <DataGridTextColumn Header="CONTNER/OBJECT"  Binding="{Binding equip_no}" Width="70"/>
+                <DataGridTextColumn Header="BATCH"  Binding="{Binding barcode}" Width="Auto"/>
+                <DataGridTextColumn Header="BARCODE"  Binding="{Binding barcode}" FontSize="20" FontWeight="Bold" FontFamily="{StaticResource BarcodeFonts}" Width="Auto"/>
+                <DataGridTemplateColumn Header="ORDER NO" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox x:Name="txtOrderNo" Text="{Binding doc_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Margin="0,0,0,-1" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInvoke_Reference_Document, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Reflection:WindowElement}}}" 
+                                                                    CommandParameter="{Binding Path=Text, ElementName=txtOrderNo}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="DESCRIPTION"  Binding="{Binding item_name_party}" Width="Auto" MaxWidth="250"/>
+                <DataGridTextColumn Header="START DATE" Binding="{Binding date_start,StringFormat=dd/MM/yyyy}"  Width="Auto" Visibility="{Binding bool_indicator}"/>
+                <DataGridTextColumn Header="END DATE" Binding="{Binding date_end,StringFormat=dd/MM/yyyy}"  Width="Auto" Visibility="{Binding bool_indicator}"/>
+                <DataGridTextColumn Header="EMPLOYEE"  Binding="{Binding emp_name}" Width="Auto" MaxWidth="120"/>
+                <DataGridTextColumn Header="EXE. LOCATION"  Binding="{Binding order_to_plant}" Width="30" />
+                <DataGridTextColumn Header="LOCATION"  Binding="{Binding location_id}" Width="30" />
+                <DataGridTextColumn Header="COMPANY"  Binding="{Binding comp_code}" Width="30" />
+                <DataGridTemplateColumn Header="QR" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image  Grid.Column="1" Height="25" Width="25" Source="{StaticResource imgQR}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="STATUS"  Binding="{Binding t_display}" Width="Auto" />
+                <DataGridTemplateColumn Header="Active">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox VerticalAlignment="Center" Width="30" IsChecked="{Binding active, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Action">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4"
+                                                                Command="{Binding Path=DataContext.CommandDeleteDataGridRowItem,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}"
+                                                                CommandParameter="{Binding SelectedIndex, ElementName=DataLV}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Height="20" Width="20" Source="{StaticResource imgTrash}"   >
+                                    </Image>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Cancelled">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button  Width="60" Height="15" Background="Transparent" Style="{StaticResource NormalButtonStyle}"  FontSize="12"  IsEnabled ="{Binding Path=DataContext.post,  RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1 }}"
+                                                                Command="{Binding Path=DataContext.CmdForCancelMachine, RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1 }}"                                                               
+                                                                CommandParameter="{Binding SelectedIndex, ElementName=dgData}"  Content="Cancelled"  >
+
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Stopped">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button  Width="60" Height="15" Background="Transparent" Style="{StaticResource NormalButtonStyle}"  FontSize="12"  IsEnabled ="{Binding Path=DataContext.stop,  RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1 }}"
+                                                                Command="{Binding Path=DataContext.CmdForStopMachine, RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1 }}"                                                               
+                                                                CommandParameter="{Binding SelectedIndex, ElementName=dgData}"  Content="Stopped"  >
+
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" >
+            <Button Margin="10,0,0,0" Width="60" VerticalAlignment="Top" Grid.Row="0" Grid.Column="11" HorizontalAlignment="Left" Height="25" Content="Execute" Style="{StaticResource NormalButtonStyle}" 
+                                    Command="{Binding Path= cmdExecuteBulkOrders}" CommandParameter="ReferenceDocument" >
+            </Button>
+        </StackPanel>
+        
+    </Grid>
+</Reflection:WindowElement>

@@ -1,0 +1,310 @@
+﻿ <!--Usage Decision : Inspection_Processing_UD-->
+<Local:WindowElement x:Class="Reflection.Modules.QMS.Views.QMS_T014"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:Child="clr-namespace:Reflection.Modules.QMS.Views"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"            
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+            xmlns:he= "clr-namespace:Reflection.HtmlEditor;assembly=Reflection.HtmlEditor"
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}" 
+             Title="{x:Static Local:AppSessionState.ViewTitle}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" CommandParameter="{Binding Text, ElementName=txtStatus}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            <Local:StringToBooleanConverter x:Key="CharToBoolConvertor"/>
+            <Style x:Key="ReadOnlyTextBox" TargetType="TextBox">
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+                <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Grid x:Name="RootElement">
+                                <ScrollViewer x:Name="ContentElement"
+                             Margin="{TemplateBinding Margin}"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             IsTabStop="{TemplateBinding IsTabStop}"
+                             Padding="{TemplateBinding Padding}" 
+                             HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
+                             VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="Object" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3">
+                <TextBox  Text="{Binding MasterEntity.item_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="130" HorizontalAlignment="Left"/>
+                <TextBlock Text="{Binding MasterEntity.item_name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Lot Number" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding MasterEntity.doc_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="130" HorizontalAlignment="Left" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Insp. End date" HorizontalAlignment="Left"/>
+            <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding MasterEntity.insp_end_date,Mode=TwoWay,StringFormat={}{0:dd/MM/yyyy},UpdateSourceTrigger=PropertyChanged}" Width="130" HorizontalAlignment="Left" TabIndex="3" />
+            
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="Status" HorizontalAlignment="Left"/>
+            <TextBox x:Name="txtStatus" Grid.Row="1" Grid.Column="3" Text="{Binding MasterEntity.t_status,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" />
+        </Grid>
+
+        <he:HtmlEditor x:Name="txtObservation" Grid.Row="2"  Width="850" Height="300" BindingContent="{Binding MasterEntity.ip_text,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"  >
+        </he:HtmlEditor>
+        <!--<TextBox x:Name="txtObservation" Grid.Row="2" Text="{Binding UD_OBJ.long_text,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="850" Height="300" HorizontalAlignment="Left" TextWrapping="Wrap" AcceptsReturn ="True" />-->
+        
+        <!--<TabControl x:Name="tbcDetail" Grid.Row="2"  HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="860">
+            <TabItem x:Name="tbObservations"  Header="Observations/NC">
+                <Grid x:Name="gdObservations" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.ColumnSpan="4" Orientation="Horizontal">
+                        <TextBlock Text="No Of Observations" HorizontalAlignment="Left"  />
+                        <TextBox x:Name="txtDefectsNo" Text="{Binding UD_OBJ.defect_nos,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" />
+
+                        <TextBlock Text="QNotif." HorizontalAlignment="Left" Margin="50,0,0,0" />
+                        <TextBox x:Name="txtQNotify" Text="{Binding UD_OBJ.defect_nos,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" />
+                    </StackPanel>
+                    
+                    <DataGrid x:Name="dgObservations" Grid.Row="1" Grid.ColumnSpan="4" Height="150" Width="600" RowHeight="25" VerticalAlignment="Top" HorizontalAlignment="Left" GridLinesVisibility="All" CanUserDeleteRows="False" 
+                        CellEditEnding="HandleMainDataGridCellEditEnding" GotFocus="HandleDataGridGotFocus" PreviewKeyDown="DataGrid_PreviewKeyDown" AutoGenerateColumns="false" BorderBrush="Transparent" Background="White"  
+                        ItemsSource="{Binding DefectsEntity ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" 
+                        SelectedItem="{Binding DEFECT_OBJ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"      
+                    >
+                        <DataGrid.Resources>
+                            <Local:CustomDecimalConverter x:Key="CustomConverter" />
+                            <Local:DisplayPropertyConverter x:Key="DisplayConverter"/>
+                            <Local:DataGridColumnVisibilityConverter x:Key="dgColumnVisibiltyConverter" />
+                            --><!--<Local:StringToBooleanConverter x:Key="CharToBoolConvertor"--><!--
+                            <Local:BindingProxy x:Key="proxy" Data="{Binding SelectedItemsRRB.ind_mv}"/>
+
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Item" IsReadOnly="False" Binding="{Binding char_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+                            <DataGridTextColumn Header="Profile" IsReadOnly="True" Binding="{Binding char_name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+                            <DataGridTextColumn Header="Char" Binding="{Binding target_value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="70"/>
+                            <DataGridTextColumn Header="Observation" IsReadOnly="True" Binding="{Binding specifications,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+                            <DataGridTextColumn Header="Nos" IsReadOnly="True" Binding="{Binding unit_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+                            <DataGridTextColumn Binding="{Binding sample_size,StringFormat='#0.00#',Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50"  >
+                                <DataGridTextColumn.Header>
+                                    <TextBlock Text="Sample Size" TextTrimming="CharacterEllipsis" Foreground="White" />
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Binding="{Binding v_code_text,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" >
+                                <DataGridTextColumn.Header>
+                                    <TextBlock Text="Valuation" TextTrimming="CharacterEllipsis" Foreground="White" />
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Insp. note" Binding="{Binding short_desc,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Usage Decision"  Grid.ColumnSpan="7" Margin="0,15,0,5" Background="LightBlue"/>
+                    
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="UD Action" HorizontalAlignment="Left"/>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                        <Local:AutoCompleteTextBox x:Name="txtUDValue" TabIndex="1"  Padding="0" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center"
+                            SelectedItem="{Binding UD_OBJ.char_value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                            Text="{Binding char_value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            AutoCompletePlacementTarget="{Binding ElementName=txtUDValue}" AutoCompletePlacement="Bottom" AutoCompleteMode="Single"
+                            AutoCompleteItemSource="{Binding UD_LIST}"
+                            Width="50" AutoCompleteHeight="200" AutoCompleteWidth="250"
+                        >
+                            <Local:AutoCompleteTextBox.AutoCompleteColumns>
+                                <DataGridTextColumn Header="VALUE" Binding="{Binding char_value}" Width="Auto" SortMemberPath="char_value" />
+                                <DataGridTextColumn Header="TEXT" Binding="{Binding short_text}" Width="Auto" SortMemberPath="short_text" />
+                            </Local:AutoCompleteTextBox.AutoCompleteColumns>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInsertUD,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding SelectedItem, ElementName=txtUDValue}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Local:AutoCompleteTextBox>
+                        <TextBlock Text="{Binding UD_OBJ.short_text}" HorizontalAlignment="Left"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Valuation Code" HorizontalAlignment="Left"/>
+                    <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox x:Name="txtValuation" Text="{Binding UD_OBJ.v_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" />
+                        <TextBlock Text="{Binding UD_OBJ.v_name}" HorizontalAlignment="Left"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Quality Score" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding UD_OBJ.q_score,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" />
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Fallow-up Action" HorizontalAlignment="Left"/>
+                    <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox x:Name="txtFAction" Text="{Binding UD_OBJ.fa_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" />
+                    </StackPanel>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Insp. lot Stock Posting" >
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" MinHeight="325" Height="{Binding Path=ActualHeight,ElementName=gdObservations}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Lot Qty" HorizontalAlignment="Left"/>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox Text="{Binding UD_OBJ.insp_lot_qty,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="80" />
+                        <TextBlock Text="Sample SIze"/>
+                        <TextBox Text="{Binding UD_OBJ.sample_size,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="80" />
+                        <TextBlock Text="{Binding UD_OBJ.unit_code_sample}"/>
+                    </StackPanel>
+
+                    
+                    <TextBlock Grid.Row="2" Text="Stock Quantity Posting" Grid.ColumnSpan="6" Background="LightBlue" Margin="0,10,0,10" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Total Stock Posted"  />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="Total Stock Posted"  />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="To Unristricted Use"  />
+                    <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox  Text="{Binding UD_OBJ.qty_unrestrict_stock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="80" HorizontalAlignment="Left" />
+                        <TextBox x:Name="txtStoreCode" Text="{Binding UD_OBJ.store_loc_unr_stock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" />
+                        <Local:PopupAutoSuggest x:Name="popStoreCode" Placement="Bottom" PlacementTarget="{Binding ElementName=txtStoreCode}">
+                            <Local:AutoSuggestControl x:Name="asStoreCode" Focusable="False" OwnerPopup="{Binding ElementName=popStoreCode}" 
+				                                            FrameworkElement.DataContext="{Binding ASStoreCode.AutoSuggestVM}" TextTokensControlTarget= "{Binding ElementName=txtStoreCode, Mode=OneTime}" >
+                                <Local:AutoSuggestControl.Background>
+                                    <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                </Local:AutoSuggestControl.Background>
+                                <Local:AutoSuggestControl.SuggestionsTemplate>
+                                    <ControlTemplate>
+                                        <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" 
+                                                        CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" 
+                                                        GridLinesVisibility="All" MinHeight="170" MaxHeight="300" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Code" Binding="{Binding store_code }" />
+                                                <DataGridTextColumn Header="Storage Location " Binding="{Binding store_name }" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </ControlTemplate>
+                                </Local:AutoSuggestControl.SuggestionsTemplate>
+                            </Local:AutoSuggestControl>
+                        </Local:PopupAutoSuggest>
+                    </StackPanel>
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="To Scrap"  />
+                    <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox  Text="{Binding UD_OBJ.qty_scrap,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="80" HorizontalAlignment="Left" />
+                    </StackPanel>
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="To Sample Use"  />
+                    <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox  Text="{Binding UD_OBJ.qty_sample,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="80" HorizontalAlignment="Left" />
+                    </StackPanel>
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="To Blocked Stock"  />
+                    <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox  Text="{Binding UD_OBJ.qty_block_stock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="80" HorizontalAlignment="Left" />
+                        <TextBox x:Name="txtStoreCodeB" Text="{Binding UD_OBJ.store_loc_unr_block_stock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" />
+                        <Local:PopupAutoSuggest x:Name="popStoreCodeB" Placement="Bottom" PlacementTarget="{Binding ElementName=txtStoreCodeB}">
+                            <Local:AutoSuggestControl x:Name="asStoreCodeB" Focusable="False" OwnerPopup="{Binding ElementName=popStoreCodeB}" 
+				                                            FrameworkElement.DataContext="{Binding ASStoreCodeB.AutoSuggestVM}" TextTokensControlTarget= "{Binding ElementName=txtStoreCodeB, Mode=OneTime}" >
+                                <Local:AutoSuggestControl.Background>
+                                    <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                </Local:AutoSuggestControl.Background>
+                                <Local:AutoSuggestControl.SuggestionsTemplate>
+                                    <ControlTemplate>
+                                        <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" 
+                                                        CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" 
+                                                        GridLinesVisibility="All" MinHeight="170" MaxHeight="300" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Code" Binding="{Binding store_code }" />
+                                                <DataGridTextColumn Header="Storage Location " Binding="{Binding store_name }" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </ControlTemplate>
+                                </Local:AutoSuggestControl.SuggestionsTemplate>
+                            </Local:AutoSuggestControl>
+                        </Local:PopupAutoSuggest>
+                    </StackPanel>
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Return Stock"  />
+                    <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox  Text="{Binding UD_OBJ.qty_return,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="80" HorizontalAlignment="Left" />
+                    </StackPanel>
+
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Observation" >
+                <TextBox x:Name="txtObservation" Text="{Binding UD_OBJ.long_text,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="850" Height="300" HorizontalAlignment="Left" TextWrapping="Wrap" AcceptsReturn ="True" />
+
+            </TabItem>
+        </TabControl>-->
+    </Grid>
+</Local:WindowElement>

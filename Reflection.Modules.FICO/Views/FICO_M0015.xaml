@@ -1,0 +1,108 @@
+﻿<!-- Posting Key Master -->
+<Local:WindowElement x:Class="Reflection.Modules.FICO.Views.FICO_M0015"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+              
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+             Title="{x:Static Local:AppSessionState.ViewTitle}" >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                   CommandParameter="{Binding Text, ElementName=txtStatus}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid Height="250" Width="700" VerticalAlignment="Top" HorizontalAlignment="Left" >
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </Grid.Resources>
+        <TabControl SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0">
+
+            <TabItem Header="Transaction" FontSize="15">
+                <Grid x:Name="gRoot" VerticalAlignment="Top" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Posting Key" Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtPosting_key" Width="140" Text="{Binding MasterEntity.posting_key, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" MaxLength="10" IsReadOnly="{Binding ReadOnlyFlag, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Text="Posting Type" Grid.Row="1" Grid.Column="0" Margin="0,0,0,0" />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtPosting_type" Width="140" Text="{Binding MasterEntity.posting_type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" MaxLength="10" />
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Description" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Width="250" Height="50" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" Text="{Binding MasterEntity.posting_desc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" MaxLength="50" />
+
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="View" FontSize="15" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" VerticalAlignment="Top" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Local:SearchTextBox Grid.Column="0" Name="SearchBox" Background="Transparent" Text="{Binding FilterString_FlipGrid, UpdateSourceTrigger=PropertyChanged}"  />
+                        <Button Grid.Row="0" Grid.Column="1" Height="20" Margin="4,0,0,0" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding ExportCommand}">Export</Button>
+                    </Grid>
+
+                    <DataGrid x:Name="DataLV" Grid.Row="1" HorizontalAlignment="Left" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow"
+                                Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"                                                                        
+                                Background="Transparent" RowBackground="Transparent" GridLinesVisibility="All" BorderThickness="1" SelectionMode="Single"  VerticalScrollBarVisibility="Visible"  HorizontalScrollBarVisibility="Visible" 
+                                Width="680" Height="180" >
+                        <DataGrid.Columns>
+
+                            <DataGridTemplateColumn Header="Select">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton x:Name="btnlabtrs"
+                                                      Command="{Binding Path=DataContext.CmdLoadDocumentByDocumentNumber, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                         Style="{StaticResource CircleToggleButtonStyle}" Width="25" Height="25" Content="{Binding SetQty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" >
+
+
+                                        </ToggleButton>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Header="Posting Key" Binding="{Binding posting_key}" Width="180" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Posting Type" Binding="{Binding posting_type}" Width="Auto" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Uncertainty" Binding="{Binding posting_desc}" Width="Auto" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Local:WindowElement>

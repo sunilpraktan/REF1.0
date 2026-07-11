@@ -1,0 +1,238 @@
+﻿<Local:WindowElement x:Class="Reflection.Modules.QMS.Views.MIS_QMS_CT"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:Child="clr-namespace:Reflection.Modules.QMS.Views"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+               
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"            
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}" 
+             Title="{x:Static Local:AppSessionState.ViewTitle}">
+
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Height="400" Width="800">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Report Type"   Margin="0,0,0,0" />
+            <ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="246" Height="23" Margin="3,0,0,0" 
+                      ItemsSource="{Binding ItemsDictionary}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValue="{Binding ReportParameters.ReportCode,UpdateSourceTrigger=PropertyChanged}" Text="{Binding ReportParameters.ReportName,UpdateSourceTrigger=PropertyChanged}">
+            </ComboBox>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Inspection Type" />
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <TextBox Width="200" x:Name="txtSubCat" HorizontalAlignment="Left" ToolTip="{Binding ReportParameters.insp_type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                    <TextBox.Text >
+                        <Binding Path="ReportParameters.insp_type_name" Mode="TwoWay" UpdateSourceTrigger="Default" >
+                        </Binding>
+                    </TextBox.Text>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddInspType,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtSubCat}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Local:PopupAutoSuggest x:Name="popup_SubCat" Placement="Bottom" PlacementTarget="{Binding ElementName=txtSubCat}">
+                    <Local:AutoSuggestControl x:Name="AutoSuggestSubCat" Focusable="False" OwnerPopup="{Binding ElementName=popup_SubCat}"
+				                  TextTokensControlTarget="{Binding ElementName=txtSubCat, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASInspType.AutoSuggestVM}">
+                        <Local:AutoSuggestControl.Background>
+                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                        </Local:AutoSuggestControl.Background>
+                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                            <ControlTemplate>
+                                <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Inspection Type" Binding="{Binding insp_type}" />
+                                        <DataGridTextColumn Header="Inspection Type Name" Binding="{Binding insp_type_name}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ControlTemplate>
+                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                    </Local:AutoSuggestControl>
+                </Local:PopupAutoSuggest>
+            </StackPanel>
+
+            <TextBlock Text="Test Name" Grid.Row="2" Grid.Column="0"/>
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                <TextBox Width="180" x:Name="txtTestNm" HorizontalAlignment="Left" Tag="{Binding ReportParameters.test_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.Text >
+                        <Binding Path="ReportParameters.test_name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" >
+                        </Binding>
+                    </TextBox.Text>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddTest,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtTestNm}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Local:PopupAutoSuggest x:Name="popup_Test" Placement="Bottom" PlacementTarget="{Binding ElementName=txtTestNm}">
+                    <Local:AutoSuggestControl x:Name="AutoSuggestTest" Focusable="False" OwnerPopup="{Binding ElementName=popup_Test}"
+				                        TextTokensControlTarget="{Binding ElementName=txtTestNm, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASTest.AutoSuggestVM}">
+                        <Local:AutoSuggestControl.Background>
+                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                        </Local:AutoSuggestControl.Background>
+                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                            <ControlTemplate>
+                                <DataGrid  x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Test Code" Binding="{Binding test_code}" />
+                                        <DataGridTextColumn Header="Test Name" Binding="{Binding test_name}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ControlTemplate>
+                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                    </Local:AutoSuggestControl>
+                </Local:PopupAutoSuggest>
+            </StackPanel>
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Instrument Type" />
+            <ComboBox Name="cmbCaltype" Grid.Row="3" Grid.Column="1" Foreground="Black" Margin="3,0,0,0" Text="{Binding ReportParameters.inst_type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="110" Height="20">
+                <sys:String>External</sys:String>
+                <sys:String>Internal</sys:String>
+            </ComboBox>
+            
+            <TextBlock Text="Instrument Name" Grid.Row="4" Grid.Column="0"/>
+            <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal"  >
+                <TextBox Width="180" x:Name="txtInstNm" HorizontalAlignment="Left" Tag="{Binding ReportParameters.inst_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                    <TextBox.Text >
+                        <Binding Path="ReportParameters.inst_name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" >
+                        </Binding>
+                    </TextBox.Text>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddInstrument,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtInstNm}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Local:PopupAutoSuggest x:Name="popup_inst" Placement="Bottom" PlacementTarget="{Binding ElementName=txtInstNm}">
+                    <Local:AutoSuggestControl x:Name="AutoSuggestinstrument" Focusable="False" OwnerPopup="{Binding ElementName=popup_inst}"
+				                        TextTokensControlTarget="{Binding ElementName=txtInstNm, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASInstrument.AutoSuggestVM}">
+                        <Local:AutoSuggestControl.Background>
+                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                        </Local:AutoSuggestControl.Background>
+                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                            <ControlTemplate>
+                                <DataGrid  x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Code" Binding="{Binding inst_code}" />
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding inst_name}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ControlTemplate>
+                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                    </Local:AutoSuggestControl>
+                </Local:PopupAutoSuggest>
+            </StackPanel>
+
+            <TextBlock Text="Agency/Customer" Grid.Row="5" Grid.Column="0"/>
+            <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
+                <TextBox Width="200" x:Name="txtPartyID" HorizontalAlignment="Left" >
+                    <TextBox.Text >
+                        <Binding Path="ReportParameters.PartyNm" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" >
+                        </Binding>
+                    </TextBox.Text>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddParty,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtPartyID}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Local:PopupAutoSuggest x:Name="popup_party" Placement="Bottom" PlacementTarget="{Binding ElementName=txtPartyID}">
+                    <Local:AutoSuggestControl x:Name="AutoSuggestparty" Focusable="False" OwnerPopup="{Binding ElementName=popup_party}"
+				                        TextTokensControlTarget="{Binding ElementName=txtPartyID, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASParty.AutoSuggestVM}">
+                        <Local:AutoSuggestControl.Background>
+                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                        </Local:AutoSuggestControl.Background>
+                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                            <ControlTemplate>
+                                <DataGrid  x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Party Id" Binding="{Binding PartyId}" />
+                                        <DataGridTextColumn Header="Party Name" Binding="{Binding PartyNm}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ControlTemplate>
+                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                    </Local:AutoSuggestControl>
+                </Local:PopupAutoSuggest>
+            </StackPanel>
+
+            <TextBlock Text="Lab Name" Grid.Row="6" Grid.Column="0"/>
+            <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
+                <TextBox Width="150" x:Name="txtLab" HorizontalAlignment="Left" >
+                    <TextBox.Text >
+                        <Binding Path="ReportParameters.lab_name" Mode="TwoWay"  UpdateSourceTrigger="Default" >
+                        </Binding>
+                    </TextBox.Text>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddLab,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtLab}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Local:PopupAutoSuggest x:Name="popup_lab" Placement="Bottom" PlacementTarget="{Binding ElementName=txtLab}">
+                    <Local:AutoSuggestControl x:Name="AutoSuggestLab" Focusable="False" OwnerPopup="{Binding ElementName=popup_lab}"
+				                  TextTokensControlTarget="{Binding ElementName=txtLab, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASLab.AutoSuggestVM}">
+                        <Local:AutoSuggestControl.Background>
+                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                        </Local:AutoSuggestControl.Background>
+                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                            <ControlTemplate>
+                                <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Lab Code" Binding="{Binding lab_code}" />
+                                        <DataGridTextColumn Header="Lab Name" Binding="{Binding lab_name}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ControlTemplate>
+                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                    </Local:AutoSuggestControl>
+                </Local:PopupAutoSuggest>
+            </StackPanel>
+
+            <TextBlock Grid.Row="7" Grid.Column="0" Text="Date Range" Margin="0,0,0,0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="7" Grid.Column="1">
+                <DatePicker x:Name="dtpFromdate" Width="140" Height="30" HorizontalAlignment="Left"
+                            SelectedDate="{Binding ReportParameters.FromDate,UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:dd/MM/yyyy} }"                              
+                            Background="Transparent"/>
+                <TextBlock Grid.Row="7" Grid.Column="0" Text=" To " Margin="5,0,5,0"/>
+                <DatePicker x:Name="dtpTodate" Width="140" Height="30"  Margin="10,0,0,0" SelectedDate="{Binding ReportParameters.ToDate,UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:dd/MM/yyyy} }" Background="Transparent"/>
+            </StackPanel>
+
+            <Button Grid.Row="8" Grid.Column="1" FontWeight="Bold" Width="100" Height="35" Margin="0,20,0,0" 
+                    Style="{StaticResource NormalButtonStyle}" FontSize="12" Command="{Binding Path=CmdReport}" CommandParameter="ReportCode"  Content="Report" Background="White" />
+
+        </Grid>
+    </Grid>
+</Local:WindowElement>

@@ -1,0 +1,140 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Reflection.EF.SCM.ReportEntitySCM
+{
+    public class MaterialIssueItem
+    {
+        public int id { get; set; }
+        public int line_id { get; set; }
+        public Nullable<int> sr_no { get; set; }
+        public string group_code { get; set; }
+        public string group_company { get; set; }
+        public string comp_code { get; set; }
+        public Nullable<int> doc_year { get; set; }
+        public Nullable<System.DateTime> doc_edate { get; set; }
+        public Nullable<System.DateTime> doc_date { get; set; }
+        public string doc_no { get; set; }
+        public string doc_type { get; set; }
+        public string doc_cat { get; set; }
+        public string mov_tp { get; set; }
+        public string wa_code { get; set; }
+        public string store_code { get; set; }
+        public string store_bin_code { get; set; }
+        public string mat_no { get; set; }
+        public string mov_ind { get; set; }
+        public Nullable<int> wear_mov_tp { get; set; }
+        public string wh_mov_no { get; set; }
+        public string sp_stock_ind { get; set; }
+        public string stock_type { get; set; }
+        public Nullable<decimal> c_factor { get; set; }
+        public string batch_no { get; set; }
+        public Nullable<bool> batch_split { get; set; }
+        public string batch_rus { get; set; }
+        public string ItemCode { get; set; }
+        public string sku { get; set; }
+        public string sku_desc { get; set; }
+        public string vendor { get; set; }
+        public string PartyId { get; set; }
+        public string sono { get; set; }
+        public string so_item_cd { get; set; }
+        public string curr_code { get; set; }
+        public Nullable<decimal> amt_loc { get; set; }
+        public Nullable<decimal> qty { get; set; }
+        public Nullable<decimal> challan_qty { get; set; }
+        public string unit_code { get; set; }
+        public Nullable<decimal> unit_price { get; set; }
+        public string debcr_ind { get; set; }
+        public string delv_completed_ind { get; set; }
+        public string source_doc_type { get; set; }
+        public string source_doc_no { get; set; }
+        public string po_no { get; set; }
+        public Nullable<int> po_line_no { get; set; }
+        public string fin_year_rd { get; set; }
+        public string ref_doc_no { get; set; }
+        public string ref_doc_type { get; set; }
+        public string order_doc_type { get; set; }
+        public string order_doc_no { get; set; }
+        public string ref_doc_item_cd { get; set; }
+        public string mat_doc_no { get; set; }
+        public string mat_doc_item_cd { get; set; }
+        public string receipient_party_cd { get; set; }
+        public string bus_area { get; set; }
+        public string cost_center { get; set; }
+        public string profit_center { get; set; }
+        public string order_no { get; set; }
+        public string asset_no { get; set; }
+        public string fin_year { get; set; }
+        public string per_posting { get; set; }
+        public string acc_doc_no { get; set; }
+        public Nullable<int> acc_doc_line { get; set; }
+        public string res_no { get; set; }
+        public Nullable<int> res_line { get; set; }
+        public string ri_item { get; set; }
+        public string ri_sku { get; set; }
+        public string ri_unit_cd { get; set; }
+        public Nullable<decimal> ri_qty { get; set; }
+        public string ri_plant { get; set; }
+        public string ri_wa_code { get; set; }
+        public string ri_store_code { get; set; }
+        public Nullable<int> ir_bin { get; set; }
+        public string ir_batch { get; set; }
+        public string sts_tbatch { get; set; }
+        public string tr_req_no { get; set; }
+        public string tr_req_item_cd { get; set; }
+        public string to_no { get; set; }
+        public string cons_post { get; set; }
+        public string receipt_ind { get; set; }
+        public string gl_acc_no { get; set; }
+        public Nullable<System.DateTime> shelf_life_date { get; set; }
+        public string gr_insp_sts { get; set; }
+        public string storage_tp { get; set; }
+        public string stock_cat { get; set; }
+        public string wm_mov_tp_cd { get; set; }
+        public Nullable<int> mov_reason { get; set; }
+        public Nullable<int> tax_code { get; set; }
+        public string tax_jur { get; set; }
+        public Nullable<System.DateTime> mfg_date { get; set; }
+        public string note { get; set; }
+        public Nullable<int> machine_id { get; set; }
+
+        public string mat_con { get; set; }
+        public string para1 { get; set; }
+        public string para2 { get; set; }
+        public string para3 { get; set; }
+        public string para4 { get; set; }
+        public string para5 { get; set; }
+        public bool active { get; set; }
+        public System.DateTime add_date { get; set; }
+        public string add_by { get; set; }
+        public Nullable<System.DateTime> edit_date { get; set; }
+        public string editby { get; set; }
+        public string item_cat { get; set; }
+        public Nullable<bool> item_ok { get; set; }
+        public string t_status { get; set; }
+        public string location_Id { get; set; }
+        public string vendor_batch_no { get; set; }
+        public Nullable<decimal> para6 { get; set; }
+        public Nullable<decimal> para7 { get; set; }
+        public string user_source1 { get; set; }
+        public string user_source2 { get; set; }
+        public string cash_credit_pur { get; set; }
+        public string description { get; set; }
+        public string gl_code { get; set; }
+        public string posting_period { get; set; }
+        public Nullable<bool> StockUnt { get; set; }
+        public string unit_Name { get; set; }
+        public string cost_center_Nm { get; set; }
+        public string SubCatCode { get; set; }
+        public string Plant_Name { get; set; }
+        public string machinecode { get; set; }
+        public Nullable<decimal> po_qty { get; set; }
+        public string ItemNm { get; set; }
+        public string po_code { get; set; }
+        public string pg_code { get; set; }
+        public string batch_no_b { get; set; }
+    }
+}

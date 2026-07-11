@@ -1,0 +1,696 @@
+﻿<Local:WindowElement x:Class="Reflection.Module.Project.Views.DAS_DashBoard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Reflection.Module.Project.Views"
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"  
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"         
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+             mc:Ignorable="d" 
+             Title="{x:Static Local:AppSessionState.ViewTitle}">
+
+    <Grid  VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="RacePitBorderStyle" TargetType="Border">
+                <Style.Resources>
+                    <LinearGradientBrush x:Key="RacePitBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#88000000" Offset="0.1" />
+                        <GradientStop Color="#CC000000" Offset="0.9" />
+                    </LinearGradientBrush>
+                    <LinearGradientBrush x:Key="RacePitBorderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#18000000" Offset="0.1" />
+                        <GradientStop Color="#08000000" Offset="0.9" />
+                    </LinearGradientBrush>
+                </Style.Resources>
+
+                <Setter Property="Background" Value="{StaticResource RacePitBackgroundBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource RacePitBorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Margin" Value="2,4" />
+            </Style>
+            <DataTemplate DataType="{x:Type Local:RND_T010_A2}">
+                <DataTemplate.Resources>
+                    <LinearGradientBrush x:Key="RaceInProgressBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+                        <GradientStop Color="#1100CC22" Offset="0" />
+                        <GradientStop Color="#8800CC22" Offset="0.97" />
+                        <GradientStop Color="#AA10FF18" Offset="0.999" />
+                        <GradientStop Color="#44FFFFFF" Offset="1" />
+                    </LinearGradientBrush>
+
+                    <LinearGradientBrush x:Key="FinishedBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#44FF0000" Offset="0.1" />
+                        <GradientStop Color="#11FF0000" Offset="0.9" />
+                    </LinearGradientBrush>
+
+                    <LinearGradientBrush x:Key="WinnerBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="Gold" Offset="0.1" />
+                        <GradientStop Color="#FFFFFF88" Offset="0.9" />
+                    </LinearGradientBrush>
+
+                    <Local:ProgressIndicatorWidthConverter x:Key="WidthConv" />
+                </DataTemplate.Resources>
+
+                <Border x:Name="racePit" Style="{StaticResource RacePitBorderStyle}">
+                    <Grid Width="{Binding ElementName=racePit, Path=ActualWidth}">
+                        <StackPanel Orientation="Horizontal">
+                            <!-- This Rectangle "follows" a horse as it runs the race. -->
+                            <Rectangle x:Name="progressIndicator"
+            Fill="{StaticResource RaceInProgressBrush}"
+            HorizontalAlignment="Left" 
+            RadiusX="8" 
+            RadiusY="8"
+            Margin="1"
+            >
+                                <!-- The width of the progress indicator is calculated by an instance
+                 of the RaceHorseProgressIndicatorWidthConverter class. -->
+                                <Rectangle.Width>
+                                    <MultiBinding Converter="{StaticResource WidthConv}">
+                                        <Binding Path="PercentComplete" />
+                                        <Binding ElementName="racePit" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Rectangle.Width>
+                            </Rectangle>
+
+                            <!-- Displays the picture of a race horse. -->
+                            <Image Source="{StaticResource imgArrow_right}" Height="40" Width="60"/>
+                        </StackPanel>
+
+                        <TextBlock x:Name="horseName" Text="{Binding tb_code}"  Margin="6,0" VerticalAlignment="Center" Foreground="White" />
+                    </Grid>
+
+                    <!-- Make the race pit display a tooltip which shows how much of the race the horse has completed. -->
+                    <Border.ToolTip>
+                        <ToolTip>
+                            <Grid>
+                                <TextBlock>
+              <TextBlock Text="{Binding PercentComplete}" Margin="0,0,-2,0" />
+              <Run>% finished</Run>
+            </TextBlock>
+                            </Grid>
+                        </ToolTip>
+                    </Border.ToolTip>
+                </Border>
+
+                <DataTemplate.Triggers>
+                    <!-- This MultiDataTrigger affects losers of the race. -->
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsFinished}" Value="True" />
+                            <Condition Binding="{Binding IsWinner}" Value="False" />
+                        </MultiDataTrigger.Conditions>
+                        <!-- Apply the "finished the race" brush to the horse's progress indicator. -->
+                        <Setter TargetName="progressIndicator" Property="Fill" Value="{StaticResource FinishedBrush}" />
+
+                        <!-- Fade the race pit in and out if the horse lost the race. -->
+                        <MultiDataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="racePit" Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.75" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </MultiDataTrigger.EnterActions>
+                        <MultiDataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="racePit" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.25" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </MultiDataTrigger.ExitActions>
+                    </MultiDataTrigger>
+
+                    <!-- Set special values for the winner of the race. -->
+                    <DataTrigger Binding="{Binding IsWinner}" Value="True">
+                        <Setter TargetName="progressIndicator" Property="Fill" Value="{StaticResource WinnerBrush}" />
+                        <Setter TargetName="horseName" Property="Foreground" Value="Black" />
+                        <Setter TargetName="horseName" Property="FontWeight" Value="Bold" />
+                        <Setter TargetName="horseName" Property="HorizontalAlignment" Value="Center" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+            <RotateTransform x:Key="RaceTrackRotateTrans" Angle="0" />
+        </Grid.Resources>
+        <TabControl Name="TabTB" >
+            <TabItem Header="View" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="TBDetail" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300" Height="400" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <DataGrid x:Name="dgAdminData" Grid.Row="0" Grid.Column="0" Width="300" Height="360" CanUserAddRows="True" CanUserDeleteRows="False" AutoGenerateColumns="False"   
+                                                   ItemsSource="{Binding AdminEntity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CanUserSortColumns="False"
+                                                   SelectedIndex="{Binding dgSelectedIndexAdmin,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" 
+                                                   VerticalAlignment="Top" IsReadOnly="False" Margin="0,40,0,0"  GridLinesVisibility="All"  Background="Transparent"
+                                                   IsSynchronizedWithCurrentItem="True" BorderBrush="Transparent" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="2" 
+                                                   >
+                            <DataGrid.Resources>
+                                <Local:DictionaryConverter x:Key="DictionaryConvertorTax"/>
+                                <Local:DisplayPropertyConverter x:Key="DisplayConverter" />
+                                <Local:ItemsSourceConverter x:Key="SourceConverter" />
+                                <Local:TaxConverter  x:Key="TaxConverter" />
+                                <Style x:Key="TTD" TargetType="{x:Type ToolTip}" >
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ToolTip}">
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="TB No"  Binding="{Binding tb_code,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }" />
+                                <DataGridTextColumn Header="IP Address" Binding="{Binding ip_address,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <DataGridTextColumn Header="Last Sync" Binding="{Binding last_migration,Mode=OneWay,UpdateSourceTrigger=Default,StringFormat='{}{0:dd,MMMM, yyyy, hh:mm:ss}'}" />
+                                <DataGridTextColumn Header="Next Sync" Binding="{Binding last_migration,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='{}{0:dd,MMMM, yyyy, hh:mm:ss}'}" />                                
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                    </Grid>
+                    <Grid x:Name="Synch" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="800" Height="400" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ItemsControl x:Name="TestBedTrack" Grid.Row="1" ItemsSource="{Binding AdminEntity2,Mode=Default,UpdateSourceTrigger=PropertyChanged}"
+                          HorizontalAlignment="Stretch" LayoutTransform="{StaticResource RaceTrackRotateTrans}"  Margin="8" VerticalAlignment="Center" />
+                        <Button Grid.Row="0" FontWeight="Bold" Width="120" Height="25" Margin="0,0,0,0" Style="{StaticResource NormalButtonStyle}"  HorizontalAlignment="Center"
+                            Command="{Binding Path=cmdLoadInsertTestBedRecord}" Content="Synchronization" Background="White" />
+
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Data">
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="47*"/>
+                        <ColumnDefinition Width="1133*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox  Margin="5,3,0,0" Grid.Row="0" BorderBrush="Black"  BorderThickness="0.8"  VerticalAlignment="Top" HorizontalAlignment="Left"  Height="50" Width="1175" Grid.ColumnSpan="2">
+                        <GroupBox.Header >
+                            Filter Criteria
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="TB No" Margin="10,0,0,0"/>
+                            <!--<TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" x:Name="txtTestBedNo" Tag="{Binding MasterEntity.tb_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.tb_code,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="120" />-->
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <TextBox Width="50" x:Name="txtTestBedNo" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.tb_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                    <TextBox.Text >
+                                        <Binding Path="MasterEntity.tb_code" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                        </Binding>
+                                    </TextBox.Text>
+                                    <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddCustomer,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtCustomer}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                                </TextBox>
+                                <Local:PopupAutoSuggest x:Name="popup_TestBedNo" Placement="Bottom" PlacementTarget="{Binding ElementName=txtTestBedNo}">
+                                    <Local:AutoSuggestControl x:Name="AutoSuggestTestBedNo" Focusable="False" OwnerPopup="{Binding ElementName=popup_TestBedNo}"
+				                  TextTokensControlTarget="{Binding ElementName=txtTestBedNo, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASTestBedNo.AutoSuggestVM}">
+                                        <Local:AutoSuggestControl.Background>
+                                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                        </Local:AutoSuggestControl.Background>
+                                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                                            <ControlTemplate>
+                                                <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn Header="Test Bed No" Binding="{Binding tb_code}" />
+                                                        <DataGridTextColumn Header="Test Bed Name" Binding="{Binding tb_name}" />
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
+                                            </ControlTemplate>
+                                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                                    </Local:AutoSuggestControl>
+                                </Local:PopupAutoSuggest>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Project" Margin="15,0,0,0"/>
+                            <!--<TextBox Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" x:Name="txtProject" Tag="{Binding MasterEntity.project,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.project,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="120" />-->
+                            <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
+                                <TextBox Width="90" x:Name="txtProject" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.project,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                    <TextBox.Text >
+                                        <Binding Path="MasterEntity.project" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                        </Binding>
+                                    </TextBox.Text>
+                                    <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddCustomer,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtCustomer}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                                </TextBox>
+                                <Local:PopupAutoSuggest x:Name="popup_Project" Placement="Bottom" PlacementTarget="{Binding ElementName=txtProject}">
+                                    <Local:AutoSuggestControl x:Name="AutoSuggestProject" Focusable="False" OwnerPopup="{Binding ElementName=popup_Project}"
+				                  TextTokensControlTarget="{Binding ElementName=txtProject, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASProject.AutoSuggestVM}">
+                                        <Local:AutoSuggestControl.Background>
+                                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                        </Local:AutoSuggestControl.Background>
+                                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                                            <ControlTemplate>
+                                                <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn Header="Project" Binding="{Binding project}" />
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
+                                            </ControlTemplate>
+                                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                                    </Local:AutoSuggestControl>
+                                </Local:PopupAutoSuggest>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Engine Model" Margin="15,0,0,0"/>
+                            <!--<TextBox Grid.Row="0" Grid.Column="5" HorizontalAlignment="Left" x:Name="txtEngModel" Tag="{Binding MasterEntity.eng_model,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.eng_model,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="120" />-->
+                            <StackPanel Grid.Row="0" Grid.Column="5" Orientation="Horizontal">
+                                <TextBox Width="100" x:Name="txtEngineModel" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.eng_model,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                    <TextBox.Text >
+                                        <Binding Path="MasterEntity.eng_model" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                        </Binding>
+                                    </TextBox.Text>
+                                    <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddCustomer,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtCustomer}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                                </TextBox>
+                                <Local:PopupAutoSuggest x:Name="popup_EngineModel" Placement="Bottom" PlacementTarget="{Binding ElementName=txtEngineModel}">
+                                    <Local:AutoSuggestControl x:Name="AutoSuggestEngineModel" Focusable="False" OwnerPopup="{Binding ElementName=popup_EngineModel}"
+				                  TextTokensControlTarget="{Binding ElementName=txtEngineModel, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASEngineModel.AutoSuggestVM}">
+                                        <Local:AutoSuggestControl.Background>
+                                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                        </Local:AutoSuggestControl.Background>
+                                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                                            <ControlTemplate>
+                                                <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn Header="Engine Model" Binding="{Binding eng_model}" />
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
+                                            </ControlTemplate>
+                                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                                    </Local:AutoSuggestControl>
+                                </Local:PopupAutoSuggest>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="0" Grid.Column="6" Text="Engine No" Margin="15,0,0,0"/>
+                            <!--<TextBox Grid.Row="0" Grid.Column="7" HorizontalAlignment="Left" x:Name="txtEngNo" Tag="{Binding MasterEntity.eng_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.eng_no,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="120" />-->
+                            <StackPanel Grid.Row="0" Grid.Column="7" Orientation="Horizontal">
+                                <TextBox Width="100" x:Name="txtEngineNo" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.eng_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                    <TextBox.Text >
+                                        <Binding Path="MasterEntity.eng_no" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                        </Binding>
+                                    </TextBox.Text>
+                                    <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddCustomer,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtCustomer}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                                </TextBox>
+                                <Local:PopupAutoSuggest x:Name="popup_EngineNo" Placement="Bottom" PlacementTarget="{Binding ElementName=txtEngineNo}">
+                                    <Local:AutoSuggestControl x:Name="AutoSuggestEngineNo" Focusable="False" OwnerPopup="{Binding ElementName=popup_EngineNo}"
+				                  TextTokensControlTarget="{Binding ElementName=txtEngineNo, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASEngineNo.AutoSuggestVM}">
+                                        <Local:AutoSuggestControl.Background>
+                                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                        </Local:AutoSuggestControl.Background>
+                                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                                            <ControlTemplate>
+                                                <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn Header="Engine No" Binding="{Binding eng_no}" />
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
+                                            </ControlTemplate>
+                                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                                    </Local:AutoSuggestControl>
+                                </Local:PopupAutoSuggest>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="0" Grid.Column="8" Text="Test Type" Margin="15,0,0,0"/>
+                            <!--<TextBox Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left" x:Name="txtTestType" Tag="{Binding MasterEntity.test_type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.test_type,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="120" />-->
+                            <StackPanel Grid.Row="0" Grid.Column="9" Orientation="Horizontal">
+                                <TextBox Width="80" x:Name="txtTestType" HorizontalAlignment="Left" ToolTip="{Binding MasterEntity.test_type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                    <TextBox.Text >
+                                        <Binding Path="MasterEntity.test_type" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                        </Binding>
+                                    </TextBox.Text>
+                                    <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddCustomer,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                   CommandParameter="{Binding Text, ElementName=txtCustomer}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                                </TextBox>
+                                <Local:PopupAutoSuggest x:Name="popup_TestType" Placement="Bottom" PlacementTarget="{Binding ElementName=txtTestType}">
+                                    <Local:AutoSuggestControl x:Name="AutoSuggestTestType" Focusable="False" OwnerPopup="{Binding ElementName=popup_TestType}"
+				                  TextTokensControlTarget="{Binding ElementName=txtTestType, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASTestType.AutoSuggestVM}">
+                                        <Local:AutoSuggestControl.Background>
+                                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                        </Local:AutoSuggestControl.Background>
+                                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                                            <ControlTemplate>
+                                                <DataGrid x:Name="PART_Selector" MaxHeight="300" MaxWidth="600" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" GridLinesVisibility="All" HorizontalScrollBarVisibility="Auto">
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn Header="Test Type" Binding="{Binding test_type}" />
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
+                                            </ControlTemplate>
+                                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                                    </Local:AutoSuggestControl>
+                                </Local:PopupAutoSuggest>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="0" Grid.Column="10" Text="From Date" Margin="15,0,0,0"/>
+                            <DatePicker Grid.Column="11" Width="100" HorizontalAlignment="Left" SelectedDate="{Binding MasterEntity.FromDate,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" />
+
+                            <TextBlock Grid.Row="0" Grid.Column="12" Text="To Date" Margin="15,0,0,0"/>
+                            <DatePicker Grid.Column="13" Width="100" HorizontalAlignment="Left" SelectedDate="{Binding MasterEntity.FromDate,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" />
+
+                            <Button Grid.Row="0" Grid.Column="14" FontWeight="Bold" Width="80" Height="25" Margin="15,0,0,0" Style="{StaticResource NormalButtonStyle}" HorizontalAlignment="Right"
+                                    Command="{Binding Path=cmdLoadTestBed}"  Content="Load" Background="White" />
+
+                        </Grid>
+                    </GroupBox>
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2"  >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="993"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Local:SearchTextBox Height="25" Grid.Column="0" Margin="0,10,1,0" Width="1000" Name="SearchBox" Text="{Binding FilterString, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2"/>                        
+                        <Button Grid.Column="2" Height="25" Margin="90,10,0,0" Width="70" Style="{StaticResource NormalButtonStyle}" Command="{Binding Path=cmdExportGrid}" CommandParameter="ExportToExcell">Export</Button>
+                    </Grid>
+                    <StackPanel Grid.Row="2"  Margin="0,5,0,0" Grid.ColumnSpan="2">
+                        <Grid VerticalAlignment="Top"  >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DataGrid x:Name="dgControlData" Grid.Column="0" Grid.Row="0" Width="1000" Height="300" Margin="0,10,0,0" VerticalAlignment="Top"  HorizontalAlignment="Left"
+                                                 ItemsSource="{Binding DashBoardCollection}" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow"                                                   
+                                                 Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"
+                                                 Background="Transparent" RowBackground="Transparent" GridLinesVisibility="All" BorderThickness="1" SelectionMode="Single"  VerticalScrollBarVisibility="Visible"  HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="4"                                                  
+                                                 >
+                                <DataGrid.Columns>
+                                    <!--<DataGridCheckBoxColumn Header="Select" Binding="{Binding check,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                            <DataGridCheckBoxColumn.ElementStyle>
+                                <Style>
+                                    <Setter Property="CheckBox.IsChecked" Value="{Binding check, 
+                                                            RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" />
+                                    <Setter Property="CheckBox.HorizontalAlignment" Value="Center" />
+                                </Style>
+                            </DataGridCheckBoxColumn.ElementStyle>
+                            <DataGridCheckBoxColumn.EditingElementStyle>
+                                <Style>
+                                    <Setter Property="CheckBox.IsChecked" Value="{Binding check,
+                                                            RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" />
+                                    <Setter Property="CheckBox.HorizontalAlignment" Value="Center" />
+                                </Style>
+                            </DataGridCheckBoxColumn.EditingElementStyle>
+                        </DataGridCheckBoxColumn>-->
+                                    <DataGridTextColumn Header="Pn" Binding="{Binding Pn,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="FName" Binding="{Binding f_name,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="000E_Speed"  Binding="{Binding E_Speed_000,Mode=TwoWay, UpdateSourceTrigger=LostFocus }" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="001E_Torque"  Binding="{Binding E_Torque_001,Mode=TwoWay, UpdateSourceTrigger=LostFocus }" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="002SFCReset" Binding="{Binding SFCReset_002,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="003L_Weight" Binding="{Binding L_Weight_003,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="004L_Time" Binding="{Binding L_Time_004,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="005F_Weight" Binding="{Binding F_Weight_005,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="006T_WtrOut" Binding="{Binding T_WtrOut_006,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="007T_Exhaust" Binding="{Binding T_Exhaust_007,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="008P_LubOil" Binding="{Binding P_LubOil_008,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="009Not_Prog" Binding="{Binding Not_Prog_009,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="010Not_Prog" Binding="{Binding Not_Prog_010,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="011Not_Prog" Binding="{Binding Not_Prog_011,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="012Not_Prog" Binding="{Binding Not_Prog_012,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="013Not_Prog" Binding="{Binding Not_Prog_013,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="014Not_Prog" Binding="{Binding Not_Prog_014,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="015Not_Prog" Binding="{Binding Not_Prog_015,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="016Not_Prog" Binding="{Binding Not_Prog_016,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="017Not_Prog" Binding="{Binding Not_Prog_017,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="018Not_Prog" Binding="{Binding Not_Prog_018,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="019Not_Prog" Binding="{Binding Not_Prog_019,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="020Not_Prog" Binding="{Binding Not_Prog_020,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="021Not_Prog" Binding="{Binding Not_Prog_021,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="022Not_Prog" Binding="{Binding Not_Prog_022,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="023Not_Prog" Binding="{Binding Not_Prog_023,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="024Not_Prog" Binding="{Binding Not_Prog_024,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="025Not_Prog" Binding="{Binding Not_Prog_025,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="026Not_Prog" Binding="{Binding Not_Prog_026,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="027Not_Prog" Binding="{Binding Not_Prog_027,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="028Not_Prog" Binding="{Binding Not_Prog_028,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="029Not_Prog" Binding="{Binding Not_Prog_029,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="030Not_Prog" Binding="{Binding Not_Prog_030,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="031P_Ambient" Binding="{Binding P_Ambient_031,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="032P_WtrIn" Binding="{Binding P_WtrIn_032,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="033P_WtrOut" Binding="{Binding P_WtrOut_033,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="034Not_Prog" Binding="{Binding Not_Prog_034,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="035Not_Prog" Binding="{Binding Not_Prog_035,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="036Not_Prog" Binding="{Binding Not_Prog_036,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="037Not_Prog" Binding="{Binding Not_Prog_037,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="038Not_Prog" Binding="{Binding Not_Prog_038,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="039Not_Prog" Binding="{Binding Not_Prog_039,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="040Not_Prog" Binding="{Binding Not_Prog_040,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="041Not_Prog" Binding="{Binding Not_Prog_041,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="042Not_Prog" Binding="{Binding Not_Prog_042,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="043Not_Prog" Binding="{Binding Not_Prog_043,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="044Not_Prog" Binding="{Binding Not_Prog_044,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="045Not_Prog" Binding="{Binding Not_Prog_045,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="046Not_Prog" Binding="{Binding Not_Prog_046,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="047Not_Prog" Binding="{Binding Not_Prog_047,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="048Not_Prog" Binding="{Binding Not_Prog_048,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="049Not_Prog" Binding="{Binding Not_Prog_049,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="050Not_Prog" Binding="{Binding Not_Prog_050,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="051Not_Prog" Binding="{Binding Not_Prog_051,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="052Not_Prog" Binding="{Binding Not_Prog_052,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="053Not_Prog" Binding="{Binding Not_Prog_053,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="054Not_Prog" Binding="{Binding Not_Prog_054,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="055Not_Prog" Binding="{Binding Not_Prog_055,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="056Not_Prog" Binding="{Binding Not_Prog_056,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="057Not_Prog" Binding="{Binding Not_Prog_057,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="058Not_Prog" Binding="{Binding Not_Prog_058,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="059Not_Prog" Binding="{Binding Not_Prog_059,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="060Not_Prog" Binding="{Binding Not_Prog_060,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="061Not_Prog" Binding="{Binding Not_Prog_061,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="062Not_Prog" Binding="{Binding Not_Prog_062,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="063Not_Prog" Binding="{Binding Not_Prog_063,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="064Not_Prog" Binding="{Binding Not_Prog_064,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="065Not_Prog" Binding="{Binding Not_Prog_065,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="066Not_Prog" Binding="{Binding Not_Prog_066,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="067Not_Prog" Binding="{Binding Not_Prog_067,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="068Not_Prog" Binding="{Binding Not_Prog_068,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="069Not_Prog" Binding="{Binding Not_Prog_069,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="070Not_Prog" Binding="{Binding Not_Prog_070,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="071Not_Prog" Binding="{Binding Not_Prog_071,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="072Not_Prog" Binding="{Binding Not_Prog_072,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="073Not_Prog" Binding="{Binding Not_Prog_073,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="074Not_Prog" Binding="{Binding Not_Prog_074,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="075Not_Prog" Binding="{Binding Not_Prog_075,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="076Not_Prog" Binding="{Binding Not_Prog_076,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="077Not_Prog" Binding="{Binding Not_Prog_077,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="078Not_Prog" Binding="{Binding Not_Prog_078,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="079Not_Prog" Binding="{Binding Not_Prog_079,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="080Not_Prog" Binding="{Binding Not_Prog_080,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="081Not_Prog" Binding="{Binding Not_Prog_081,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="082Not_Prog" Binding="{Binding Not_Prog_082,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="083Not_Prog" Binding="{Binding Not_Prog_083,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="084Not_Prog" Binding="{Binding Not_Prog_084,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="085Not_Prog" Binding="{Binding Not_Prog_085,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="086NotProg" Binding="{Binding NotProg_086,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="087T_WI_PID" Binding="{Binding T_WI_PID_087,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="088T_WO_PID" Binding="{Binding T_WO_PID_088,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="089T_HTnkPID" Binding="{Binding T_HTnkPID_089,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="090T_PID4" Binding="{Binding T_PID4_090,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="091Not_Prog" Binding="{Binding Not_Prog_091,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="092Not_Prog" Binding="{Binding Not_Prog_092,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="093Not_Prog" Binding="{Binding Not_Prog_093,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="094Not_Prog" Binding="{Binding Not_Prog_094,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="095Not_Prog" Binding="{Binding Not_Prog_095,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="096Not_Prog" Binding="{Binding Not_Prog_096,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="097Not_Prog" Binding="{Binding Not_Prog_097,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="098Not_Prog" Binding="{Binding Not_Prog_098,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="099Not_Prog" Binding="{Binding Not_Prog_099,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="100Not_Prog" Binding="{Binding Not_Prog_100,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="101SmkValue" Binding="{Binding SmkValue_101,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="102BlowBy" Binding="{Binding BlowBy_102,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="103SFCWt" Binding="{Binding SFCWt_103,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="104F_Time" Binding="{Binding F_Time_104,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="105C_Factor" Binding="{Binding C_Factor_105,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="106AvgTrq" Binding="{Binding AvgTrq_106,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="107NC_Power" Binding="{Binding NC_Power_107,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="108NC_SFC" Binding="{Binding NC_SFC_108,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="109Inj_Qty" Binding="{Binding Inj_Qty_109,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="110C_Trque" Binding="{Binding C_Trque_110,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="111C_Power" Binding="{Binding C_Power_111,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="112C_SFC" Binding="{Binding C_SFC_112,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="113F_Flow" Binding="{Binding F_Flow_113,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="114Fuel_Flow" Binding="{Binding Fuel_Flow_114,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="115A_Power_hp" Binding="{Binding A_Power_hp_115,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="116C_Power_hp" Binding="{Binding C_Power_hp_116,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="117A_SFC_hp" Binding="{Binding A_SFC_hp_117,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="118C_SFC_hp" Binding="{Binding C_SFC_hp_118,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="119DiffPress" Binding="{Binding DiffPress_119,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="120Not_Prog" Binding="{Binding Not_Prog_120,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="121Not_Prog" Binding="{Binding Not_Prog_121,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="122Not_Prog" Binding="{Binding Not_Prog_122,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="123Strt_Tm" Binding="{Binding Strt_Tm_123,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="124ToTal_Hrs" Binding="{Binding ToTal_Hrs_124,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="125Alarm" Binding="{Binding Alarm_125,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="TB No" Binding="{Binding tb_code,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="TB Row ID" Binding="{Binding tb_rowId,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="IP Address" Binding="{Binding ip_address,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Project" Binding="{Binding project,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Engine Model" Binding="{Binding eng_model,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Engine No" Binding="{Binding eng_no,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Test Type" Binding="{Binding test_type,Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" />
+
+                                </DataGrid.Columns>
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding label_complete_stat}" Value="False">
+                                                <Setter Property="Background" Value="LightPink"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                            </DataGrid>
+
+                            <Grid Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Margin="0,30,0,0" HorizontalAlignment="Right">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Max Value" Margin="10,0,0,0" Foreground="Yellow"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" TextAlignment="Right" x:Name="txtuntax_amt" HorizontalAlignment="Right" Margin="10,0,0,2" IsReadOnly="True" Width="100">
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="{}{0} {1:N2}" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" >
+                                            <Binding Path="MasterEntity.symbol"  />
+                                            <Binding Path="MasterEntity.untax_amt" />
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Min Value" Margin="10,0,0,0"  Foreground="Orange"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" TextAlignment="Right" HorizontalAlignment="Right" x:Name="txttax_amt" Margin="10,0,0,2" IsReadOnly="True" Width="100" >
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="{}{0} {1:N2}" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" >
+                                            <Binding Path="MasterEntity.symbol"  />
+                                            <Binding Path="MasterEntity.tax_amt" />
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Average" Margin="10,0,0,0"  Foreground="Blue"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" TextAlignment="Right" HorizontalAlignment="Right" x:Name="txtNet_amt" Margin="10,0,0,2" IsReadOnly="True" Width="100" >
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="{}{0} {1:N2}" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" >
+                                            <Binding Path="MasterEntity.symbol"  />
+                                            <Binding Path="MasterEntity.net_value" />
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Upper Limit" Margin="10,0,0,0"  Foreground="Green"/>
+                                <TextBox  Grid.Row="3" Grid.Column="1" TextAlignment="Right" HorizontalAlignment="Right" x:Name="txtOthrChrges_amt" Margin="10,0,0,2" IsReadOnly="True" Width="100" >
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="{}{0} {1:N2}" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" >
+                                            <Binding Path="MasterEntity.symbol"  />
+                                            <Binding Path="MasterEntity.other_charges" />
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Lower Limit" Margin="10,0,0,0"  Foreground="Red"/>
+                                <TextBox  Grid.Row="4" Grid.Column="1" TextAlignment="Right" HorizontalAlignment="Right" x:Name="txtTotal_amt" Margin="10,0,0,2" IsReadOnly="True" Width="100" >
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="{}{0} {1:N2}" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" >
+                                            <Binding Path="MasterEntity.symbol"  />
+                                            <Binding Path="MasterEntity.total_amt" />
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="Compare" Margin="10,0,0,0"  Foreground="Pink"/>
+                                <TextBox  Grid.Row="5" Grid.Column="1" TextAlignment="Right" HorizontalAlignment="Right" x:Name="txtRoundUp" Margin="10,0,0,2" IsReadOnly="True" Width="100" >
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="{}{0} {1:N2}" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" >
+                                            <Binding Path="MasterEntity.symbol"  />
+                                            <Binding Path="MasterEntity.round_up" />
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Local:WindowElement>

@@ -1,0 +1,577 @@
+﻿<!-- Master Inspection Charactristics -->
+<Local:WindowElement x:Class="Reflection.Modules.ENG.Views.ENG_M0011"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:Local="http://Reflection/schemas/2010/xaml"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d" 
+        Style="{StaticResource DefaultWorkspaceWindowStyle}" 
+        Title="{x:Static Local:AppSessionState.ViewTitle}">
+    
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" CommandParameter="{Binding Text, ElementName=txtStatus}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="800" MinHeight="400">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black"></Setter>
+                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                <Setter Property="FontSize" Value="12"></Setter>
+            </Style>
+            <Local:CustomDecimalConverter x:Key="CustomConverter" />
+        </Grid.Resources>
+        <TabControl x:Name="tbcMaster" HorizontalAlignment="Left" VerticalAlignment="top" SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="790" MinHeight="390">
+            <TabItem Header="Transaction">
+                <Grid HorizontalAlignment="left" VerticalAlignment="top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="top" Width="810">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Insp. Char." HorizontalAlignment="Left"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Width="150" HorizontalAlignment="Left" Text="{Binding MasterEntity.insp_char, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyFlag,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Description" HorizontalAlignment="left"></TextBlock>
+                        <TextBox Grid.Row="0" Grid.Column="3" Width="500" AcceptsReturn="True" HorizontalAlignment="Left" Text="{Binding MasterEntity.char_desc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="5"></TextBox>
+
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Plant" HorizontalAlignment="Left"></TextBlock>
+                        <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
+                            <TextBox Width="120" x:Name="txtplant" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" TabIndex="1" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.insp_char_location" Mode="TwoWay"  UpdateSourceTrigger="Default" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdPlant,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtplant}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="popupplant" Placement="Bottom" PlacementTarget="{Binding ElementName=txtplant}">
+                                <Local:AutoSuggestControl x:Name="autoSuggestplant" Focusable="False" OwnerPopup="{Binding ElementName=popupplant}" 
+				                        TextTokensControlTarget= "{Binding ElementName=txtplant, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASPlant.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" 
+                                                        CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" 
+                                                        GridLinesVisibility="All" MinHeight="200" MinWidth="100" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Plant Code" Binding="{Binding location_Id}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="1" Grid.Column="4" Text="Status" HorizontalAlignment="Left"></TextBlock>
+                        <ComboBox Name="cmbstatus" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Left" Height="24" IsReadOnly="True" Width="120" SelectedItem="{Binding MasterEntity.t_status,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True,ValidatesOnNotifyDataErrors=True, ValidatesOnDataErrors=True ,ValidatesOnExceptions=True}" Background="Transparent">
+                            <sys:String>Draft</sys:String>
+                            <sys:String>Open</sys:String>
+                            <sys:String>Release</sys:String>
+                            <sys:String>Close</sys:String>
+                        </ComboBox>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Valid From" HorizontalAlignment="Left"></TextBlock>
+                        <DatePicker Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Width="120" SelectedDate="{Binding MasterEntity.from_date,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}" Background="Transparent"></DatePicker>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Doc. Date" HorizontalAlignment="Left"></TextBlock>
+                        <DatePicker Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Width="120" SelectedDate="{Binding MasterEntity.doc_date,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}" Background="Transparent"></DatePicker>
+
+                        <TextBlock Grid.Row="2" Grid.Column="4" Text="Active" HorizontalAlignment="Left"></TextBlock>
+                        <CheckBox Grid.Row="2" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding MasterEntity.active,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+
+                        <!--<TextBlock Grid.Row="1" Grid.Column="2" Text="Insp. Method" HorizontalAlignment="Left"/>
+                        <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
+                            <TextBox Width="120" x:Name="txtmethod" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" TabIndex="1" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.insp_method" Mode="TwoWay"  UpdateSourceTrigger="Default" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdInspMethod,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtmethod}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="methodpopup" Placement="Bottom" PlacementTarget="{Binding ElementName=txtmethod}">
+                                <Local:AutoSuggestControl x:Name="autoSuggestmethod" Focusable="False" OwnerPopup="{Binding ElementName=methodpopup}" 
+				                        TextTokensControlTarget= "{Binding ElementName=txtmethod, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASMethod.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" 
+                                                        CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" 
+                                                        GridLinesVisibility="All" MinHeight="200" MinWidth="100" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Insp. Method" Binding="{Binding insp_method}" />
+                                                    <DataGridTextColumn Header="Description" Binding="{Binding method_desc}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                           </StackPanel>-->
+
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Insp. Qualification" HorizontalAlignment="Left"></TextBlock>
+                        <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
+                            <TextBox Width="120" x:Name="txtqualification" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" TabIndex="1" >
+                                <TextBox.Text >
+                                    <Binding Path="MasterEntity.inspector_qualification" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" >
+                                    </Binding>
+                                </TextBox.Text>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdQualification,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtqualification}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <Local:PopupAutoSuggest x:Name="PopQuali" Placement="Bottom" PlacementTarget="{Binding ElementName=txtqualification}">
+                                <Local:AutoSuggestControl x:Name="autoSuggestQuali" Focusable="False" OwnerPopup="{Binding ElementName=PopQuali}" 
+				                        TextTokensControlTarget= "{Binding ElementName=txtqualification, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASQuali.AutoSuggestVM}">
+                                    <Local:AutoSuggestControl.Background>
+                                        <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                    </Local:AutoSuggestControl.Background>
+                                    <Local:AutoSuggestControl.SuggestionsTemplate>
+                                        <ControlTemplate>
+                                            <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" 
+                                                        CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" 
+                                                        GridLinesVisibility="All" MinHeight="200" MinWidth="100" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Insp. Qualification" Binding="{Binding qualification}" />
+                                                    <DataGridTextColumn Header="Description" Binding="{Binding description}" />
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ControlTemplate>
+                                    </Local:AutoSuggestControl.SuggestionsTemplate>
+                                </Local:AutoSuggestControl>
+                            </Local:PopupAutoSuggest>
+                        </StackPanel>
+
+                    </Grid>
+
+                    <Grid Grid.Row="1" MinWidth="800" HorizontalAlignment="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0"  Text="Char.Type" HorizontalAlignment="Left"/>
+                        <ComboBox Name="cmbchartype" Grid.Row="0" Margin="65,0,0,0" HorizontalAlignment="Left" Height="25" Width="130" SelectedItem="{Binding MasterEntity.insp_char_type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True,ValidatesOnNotifyDataErrors=True, ValidatesOnDataErrors=True ,ValidatesOnExceptions=True}" Background="Transparent">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding CmdCharType}" CommandParameter="{Binding ElementName=cmbchartype, Path=SelectedValue}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <sys:String>Quantitative</sys:String>
+                            <sys:String>Qualitative</sys:String>
+                        </ComboBox>
+
+                        <TabControl Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top"  MinWidth="790" MinHeight="250">
+
+                            <TabItem Header="Control Indicators" Visibility="{Binding visibilityFlag1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                <Grid HorizontalAlignment="Left" VerticalAlignment="Top"  MinWidth="790" MinHeight="220" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <GroupBox Grid.Column="0" Grid.Row="0" Header="Sample" Foreground="Black" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="180" MinHeight="100">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Sample Procedure" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding MasterEntity.value3,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="SPC Characteristics" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding MasterEntity.value4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Additive Sample" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding MasterEntity.value5,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Row="3" Grid.Column="1" Text="Destructive Sample" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding MasterEntity.value6,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                        </Grid>
+
+                                    </GroupBox>
+
+                                    <GroupBox Grid.Column="1" Grid.Row="0" Header="Insp. Scope" Foreground="Black" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="180" MinHeight="100">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <RadioButton x:Name="x1" GroupName="Same" Grid.Row="0" Content="Fixed Scope" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12"
+                                                                                    IsChecked="{Binding MasterEntity.x1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click" SourceName="x1">
+                                                        <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.x1}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </RadioButton>
+
+                                            <RadioButton x:Name="x2" GroupName="Same" Grid.Row="1" Content="Scope Not Fixed" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12"
+                                                                                    IsChecked="{Binding MasterEntity.x2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click" SourceName="x2">
+                                                        <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.x2}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </RadioButton>
+
+                                            <RadioButton x:Name="x3" GroupName="Same" Grid.Row="2" Content="Smaller Scope" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12"
+                                                                                    IsChecked="{Binding MasterEntity.x3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click" SourceName="x3">
+                                                        <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.x3}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </RadioButton>
+
+                                            <RadioButton x:Name="x4" GroupName="Same" Grid.Row="3" Content="Larger Scope" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12"
+                                                                                    IsChecked="{Binding MasterEntity.x4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click" SourceName="x4">
+                                                        <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.x4}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </RadioButton>
+                                        </Grid>
+                                    </GroupBox>
+
+                                    <GroupBox Grid.Column="2" Grid.Row="0" Header="Miscellaneous" Foreground="Black" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="180" MinHeight="100">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Long Term Inspection" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding MasterEntity.value7,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Scrap Share" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding MasterEntity.value8,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+
+                                            <!--<TextBlock Grid.Row="2" Grid.Column="1" Text="RR Change Doc." HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding MasterEntity.abc,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>-->
+
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Equipment Assigned" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding MasterEntity.value9,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+
+
+                                        </Grid>
+                                    </GroupBox>
+
+                                    <GroupBox Grid.Column="3" Grid.Row="0" Header="Result Confirmation" Foreground="Black" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="180" MinHeight="100">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <RadioButton x:Name="m1" GroupName="Result" Grid.Row="0" Content="Summary Recoring" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.ColumnSpan="2"
+                                                                                    IsChecked="{Binding MasterEntity.m1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click" SourceName="m1">
+                                                        <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.m1}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </RadioButton>
+
+                                            <RadioButton x:Name="m2" GroupName="Result" Grid.Row="1" Content="No. Char.Recording" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.ColumnSpan="2"
+                                                                                    IsChecked="{Binding MasterEntity.m2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click" SourceName="m2">
+                                                        <i:InvokeCommandAction Command="{Binding CmdRadiochanged }" CommandParameter="{Binding MasterEntity.m2}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </RadioButton>
+
+                                            <RadioButton x:Name="m3" GroupName="Result" Grid.Row="2" Content="Single Result" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.ColumnSpan="2" Margin="-35,0,0,0"
+                                                                                    IsChecked="{Binding MasterEntity.m3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click" SourceName="m3">
+                                                        <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.m3}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </RadioButton>
+
+                                            <TextBlock Grid.Row="3"  Text="Defect Recording" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="50,0,0,0"/>
+                                            <CheckBox Grid.Row="3"  IsChecked="{Binding MasterEntity.value10,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="28,0,0,0"/>
+                                        </Grid>
+                                    </GroupBox>
+
+                                    <RadioButton x:Name="a1" GroupName="Group" Grid.Row="1" Grid.Column="0" Content="Required Characteristics" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Margin="0,10,0,0"
+                                                                                    IsChecked="{Binding MasterEntity.a1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click" SourceName="a1">
+                                                <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.a1}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </RadioButton>
+
+                                    <RadioButton x:Name="a2" GroupName="Group" Grid.Row="1" Grid.Column="1" Content="Optional Characteristics" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Margin="0,10,0,0"
+                                                                                    IsChecked="{Binding MasterEntity.a2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click" SourceName="a2">
+                                                <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.a2}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </RadioButton>
+
+                                    <RadioButton x:Name="a3" GroupName="Group" Grid.Row="1" Grid.Column="2" Content="After Accept" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Margin="0,10,0,0"
+                                                                                    IsChecked="{Binding MasterEntity.a3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click" SourceName="a3">
+                                                <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.a3}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </RadioButton>
+
+                                    <RadioButton x:Name="a4" GroupName="Group" Grid.Row="1" Grid.Column="3" Content="After Reject" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Margin="0,10,0,0"
+                                                                                    IsChecked="{Binding MasterEntity.a4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click" SourceName="a4">
+                                                <i:InvokeCommandAction Command="{Binding CmdRadiochanged }"                                          
+                                                            CommandParameter="{Binding MasterEntity.a4}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </RadioButton>
+
+
+                                </Grid>
+                            </TabItem>
+
+                            <TabItem Header="Quantitative Data" Visibility="{Binding visibilityFlag,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="800" Visibility="{Binding visibilityFlag,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Lower Specification Limit" HorizontalAlignment="Left"></TextBlock>
+                                    <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="120" Text="{Binding MasterEntity.lower_limit,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}"></TextBox>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Upper Specification Limit" HorizontalAlignment="Left"></TextBlock>
+                                    <TextBox Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Width="120" Text="{Binding MasterEntity.upp_limit,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}"></TextBox>
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Decimal Places" HorizontalAlignment="Left"/>
+                                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding MasterEntity.dc_place,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="120" HorizontalAlignment="Left"/>
+
+                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="Measurement Unit" HorizontalAlignment="Left" />
+                                    <StackPanel Grid.Row="4" Grid.Column="3" Orientation="Horizontal">
+                                        <TextBox Width="120" x:Name="txtunit" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" TabIndex="1" >
+                                            <TextBox.Text >
+                                                <Binding Path="MasterEntity.uom_quantitative" Mode="TwoWay"  UpdateSourceTrigger="Default" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                                </Binding>
+                                            </TextBox.Text>
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="LostFocus">
+                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdUnit,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtunit}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </TextBox>
+                                        <Local:PopupAutoSuggest x:Name="popupunit" Placement="Bottom" PlacementTarget="{Binding ElementName=txtunit}">
+                                            <Local:AutoSuggestControl x:Name="autoSuggesunit" Focusable="False" OwnerPopup="{Binding ElementName=popupunit}" 
+				                        TextTokensControlTarget= "{Binding ElementName=txtunit, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASUnit.AutoSuggestVM}">
+                                                <Local:AutoSuggestControl.Background>
+                                                    <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                                                </Local:AutoSuggestControl.Background>
+                                                <Local:AutoSuggestControl.SuggestionsTemplate>
+                                                    <ControlTemplate>
+                                                        <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" 
+                                                        CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" 
+                                                        GridLinesVisibility="All" MinHeight="100" MinWidth="100" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                                                            <DataGrid.Columns>
+                                                                <DataGridTextColumn Header="Unit Code" Binding="{Binding unit_code}" />
+                                                            </DataGrid.Columns>
+                                                        </DataGrid>
+                                                    </ControlTemplate>
+                                                </Local:AutoSuggestControl.SuggestionsTemplate>
+                                            </Local:AutoSuggestControl>
+                                        </Local:PopupAutoSuggest>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Lower Tolerance Limit" HorizontalAlignment="Left" />
+                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding MasterEntity.lower_tol_limit,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}" Width="120" HorizontalAlignment="Left" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="Upper Tolerance Limit" HorizontalAlignment="Left" />
+                                    <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding MasterEntity.upper_tol_limit,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}" Width="120" HorizontalAlignment="Left" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="1st Lower Limit" HorizontalAlignment="Left"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding MasterEntity.lower_limit1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}" Width="120" HorizontalAlignment="Left"/>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="1st Upper Limit" HorizontalAlignment="Left"/>
+                                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding MasterEntity.upp_limit1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}" Width="120" HorizontalAlignment="Left"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="2nd Lower Limit" HorizontalAlignment="Left"/>
+                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding MasterEntity.lower_limit2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}" Width="120" HorizontalAlignment="Left"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="2nd Upper Limit" HorizontalAlignment="Left"/>
+                                    <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding MasterEntity.upp_limit2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}" Width="120" HorizontalAlignment="Left"/>
+
+                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Target Value" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding MasterEntity.target_value_char,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CustomConverter}}" Width="120" HorizontalAlignment="Left"/>
+                                </Grid>
+                            </TabItem>
+
+                        </TabControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="View">
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition  Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Local:SearchTextBox Height="20" Grid.Column="0" Name="SearchBox" Background="Transparent" Text="{Binding FilterString, UpdateSourceTrigger=PropertyChanged}"  />
+                        <Button Grid.Row="0" Grid.Column="1" Height="20" Margin="0,0,0,0" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding ExportCommand}">Export</Button>
+                    </Grid>
+
+                    <DataGrid x:Name="DataLV" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding DataGridCollection}" MinWidth="790" Height="330"  AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow"
+                                Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"                                                                        
+                                Background="Transparent" RowBackground="Transparent" GridLinesVisibility="Horizontal" BorderThickness="1" SelectionMode="Single"  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+                        <DataGrid.Resources>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns >
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button x:Name="btndocno" Width="20" Height="20"
+                                                    Command="{Binding Path=DataContext.CmdLoadDocumentByDocNo, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                    CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                    Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Center" >
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="{StaticResource imgArrow_right}"   >
+                                                </Image>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Char Code" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="5,0,0,5" >
+                                                <Hyperlink 
+                                                    Command="{Binding Path=DataContext.CmdLoadDocumentByDocNo,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                    CommandParameter="{Binding SelectedItems, ElementName=DataLV}" Background="Transparent" >
+                                                <Hyperlink.Inlines> 
+                                                    <Run Text="{Binding insp_char}"/>
+                                                </Hyperlink.Inlines>                                     
+                                                </Hyperlink>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Char Name" Binding="{Binding char_desc}"  IsReadOnly="True" Width="Auto"/>
+                            <DataGridTextColumn Header="Valid From" Binding="{Binding from_date,StringFormat={}{0:MM/dd/yyyy}}" Width="Auto"/>
+                            <DataGridTextColumn Header="Char. Type" Binding="{Binding insp_char_type}"  IsReadOnly="True" Width="Auto"/>
+                            <DataGridTextColumn Header="Lower Limit" Binding="{Binding lower_limit,StringFormat='#0.000#'}"  IsReadOnly="True" Width="Auto" />
+                            <DataGridTextColumn Header="Upper Limit" Binding="{Binding upp_limit,StringFormat='#0.000#'}"  IsReadOnly="True" Width="Auto" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding t_status}"  IsReadOnly="True"  Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Local:WindowElement>

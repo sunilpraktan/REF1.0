@@ -1,0 +1,353 @@
+﻿<Local:WindowElement x:Class="Reflection.Apps.Store.Scheduler.JobScheduler"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Reflection.Apps.Store.Scheduler"
+             xmlns:Local="http://Reflection/schemas/2010/xaml" 
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"  
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"         
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+             mc:Ignorable="d" 
+             Title="{x:Static Local:AppSessionState.ViewTitle}">
+    
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+        <Grid x:Name="Synch" VerticalAlignment="Top" HorizontalAlignment="Left" Width="760" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="70">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />                                  
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>                    
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Schedule Type" Margin="20,7,0,0" />
+                <!--<ComboBox Grid.Row="0" Grid.Column="1" Width="250" Height="20" ItemsSource="{Binding ItemsDictionary,Mode=TwoWay}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValue="{Binding MasterEntity.dc_ind,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" />-->
+                <!--<ComboBox Grid.Row="0" Grid.Column="2" x:Name="comboType" Margin="20,10,0,0" HorizontalAlignment="Left" Foreground="Black" Height="25" Background="Black" IsReadOnly="True" Width="200"                                       
+                                      SelectedItem="{Binding SyncEntity.schedule_type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}"   >
+                            <sys:String >Recurring</sys:String>
+                            <sys:String >One Time</sys:String>
+                        </ComboBox>-->
+                <ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Foreground="Black" Text="{Binding ScheduleEntity.schedule_type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="170" Margin="10,10,0,0" Height="25">
+                    <sys:String>Recurring</sys:String>
+                    <sys:String>One Time</sys:String>
+                </ComboBox>
+            </Grid>
+            <GroupBox  Foreground="Black"  BorderBrush="Black" Grid.Row="1" Height="Auto" Width="750" Margin="0,-25,0,0">
+                <GroupBox.Header>
+                    <TextBlock Text="Frequency" FontWeight="Bold"/>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>                        
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Occurs" HorizontalAlignment="Left" Margin="26,0,0,0"/>
+                    <ComboBox Grid.Row="0" Grid.Column="0" x:Name="comboOccurs" HorizontalAlignment="Left" Foreground="Black" Height="25" Background="Black" IsReadOnly="True" Width="120" Margin="85,0,0,0"                                  
+                                      SelectedItem="{Binding ScheduleEntity.occurs,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}"   >
+                        <sys:String >Daily</sys:String>
+                        <sys:String >Weekly</sys:String>
+                        <sys:String >Monthly</sys:String>                       
+                    </ComboBox>
+
+                    <GroupBox Visibility="{Binding Daily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Foreground="Black"  BorderBrush="Black" Grid.Row="1"  Height="60" Width="710" Margin="10,0,0,0">                        
+                        <GroupBox.Header>
+                            <TextBlock Text="Daily" FontWeight="Bold"/>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Recurs Every:" HorizontalAlignment="Left" Margin="10,5,0,0"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" x:Name="txtRecursEvery" Margin="10,5,0,0" Tag="{Binding ScheduleEntity.recurs_every,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   Text="{Binding ScheduleEntity.recurs_every,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="50" />
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="day(s)"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Visibility="{Binding Weekly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black"  BorderBrush="Black" Grid.Row="2"  Height="60" Width="710" Margin="10,0,0,0">               
+                        <GroupBox.Header>
+                            <TextBlock Text="Weekly" FontWeight="Bold"/>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Recurs Every:" HorizontalAlignment="Left" Margin="10,5,0,0"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" x:Name="txtRecursEvery1" Margin="10,5,0,0" Tag="{Binding ScheduleEntity.recurs_every,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   Text="{Binding ScheduleEntity.recurs_every,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="50" />
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="week(s) on"/>
+                                                        
+                            <Local:MultiSelectComboList  x:Name="MC5" Grid.Row="0" Grid.Column="3" Width="420" Margin="10,5,0,0"
+                                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}, Path=DataContext.WeekDayDictionary}"
+                                SelectedItems="{Binding Path=TempWeekDayDictionary,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Text="{Binding Path=Text, RelativeSource={RelativeSource Self}}"                                                                                      
+                                Tag="{Binding ScheduleEntity.wk_day,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"   ToolTip="{Binding Path=Text, RelativeSource={RelativeSource Self}}" Height="25" VerticalAlignment="Center">
+                            </Local:MultiSelectComboList>
+                            
+                            <!--<CheckBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" IsChecked="{Binding ScheduleEntity.wk_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Monday" HorizontalAlignment="Left" />
+
+                            <CheckBox Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" IsChecked="{Binding ScheduleEntity.wk_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                            <TextBlock Grid.Row="1" Grid.Column="4" Text="Tuesday" HorizontalAlignment="Left" />
+
+                            <CheckBox Grid.Row="1" Grid.Column="5" Margin="15,0,0,0" HorizontalAlignment="Right" IsChecked="{Binding ScheduleEntity.wk_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                            <TextBlock Grid.Row="1" Grid.Column="6" Text="Wednesday" HorizontalAlignment="Left" />
+
+                            <CheckBox Grid.Row="1" Grid.Column="7" Margin="15,0,0,0" HorizontalAlignment="Right" IsChecked="{Binding ScheduleEntity.wk_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                            <TextBlock Grid.Row="1" Grid.Column="8" Text="Thursday" HorizontalAlignment="Left" />
+
+                            <CheckBox Grid.Row="1" Grid.Column="9" Margin="15,0,0,0" HorizontalAlignment="Right" IsChecked="{Binding ScheduleEntity.wk_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                            <TextBlock Grid.Row="1" Grid.Column="10" Text="Friday" HorizontalAlignment="Left" />
+
+                            <CheckBox Grid.Row="1" Grid.Column="11" Margin="15,0,0,0" HorizontalAlignment="Right" IsChecked="{Binding ScheduleEntity.wk_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                            <TextBlock Grid.Row="1" Grid.Column="12" Text="Saturday" HorizontalAlignment="Left" />
+
+                            <CheckBox Grid.Row="1" Grid.Column="13" Margin="15,0,0,0" HorizontalAlignment="Right" IsChecked="{Binding ScheduleEntity.wk_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                            <TextBlock Grid.Row="1" Grid.Column="14" Text="Sunday" HorizontalAlignment="Left" />-->
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Visibility="{Binding Monthly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black"  BorderBrush="Black" Grid.Row="3"  Height="90" Width="710" Margin="10,0,0,0">                        
+                        <GroupBox.Header>
+                            <TextBlock Text="Monthly" FontWeight="Bold"/>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                          
+                                <RadioButton GroupName="GR1" Grid.Row="0" x:Name="radioDay" Grid.Column="0" Content="Day" Margin="10,5,1,5" VerticalAlignment="Center" 
+                                 IsChecked="{Binding ScheduleEntity.day, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click" SourceName="radioDay">
+                                        <i:InvokeCommandAction Command="{Binding DayChangedCommand }"                                          
+                                            CommandParameter="{Binding ScheduleEntity.day}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </RadioButton>
+                            <TextBox Grid.Row="0" Grid.Column="1"  HorizontalAlignment="Left" x:Name="day" Margin="10,0,0,0" Tag="{Binding ScheduleEntity.month_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding ScheduleEntity.month_day,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="50" IsEnabled="{Binding MonthDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="of every"/>
+                            <TextBox Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Margin="-20,0,0,0" x:Name="month" Tag="{Binding ScheduleEntity.month,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding ScheduleEntity.month,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="50" IsEnabled="{Binding Month1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="month(s)"/>
+
+                            <RadioButton GroupName="GR1" Grid.Row="1" x:Name="radioThe" Grid.Column="0" Content="The" Margin="10,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                 IsChecked="{Binding ScheduleEntity.the, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click" SourceName="radioThe">
+                                        <i:InvokeCommandAction Command="{Binding TheChangedCommand }"                                          
+                                            CommandParameter="{Binding ScheduleEntity.the}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </RadioButton>
+                            <ComboBox Grid.Row="1" Grid.Column="1" x:Name="comboWeeks" HorizontalAlignment="Left" Foreground="Black" Height="25" Background="Black" IsReadOnly="True" Width="120" Margin="10,5,0,0"                                
+                                      SelectedItem="{Binding ScheduleEntity.the_wk,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding TheWk, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  >
+                                <sys:String >First</sys:String>
+                                <sys:String >Second</sys:String>
+                                <sys:String >Third</sys:String>
+                                <sys:String >Fourth</sys:String>
+                                <sys:String >Last</sys:String>
+                            </ComboBox>
+                            <ComboBox Grid.Row="1" Grid.Column="2" x:Name="comboDay" HorizontalAlignment="Left" Foreground="Black" Height="25" Background="Black" IsReadOnly="True" Width="120" Margin="20,5,0,0"                                       
+                                      SelectedItem="{Binding ScheduleEntity.the_day,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding TheDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  >
+                                <sys:String >Monday</sys:String>
+                                <sys:String >Tuesday</sys:String>
+                                <sys:String >Wednesday</sys:String>
+                                <sys:String >Thursday</sys:String>
+                                <sys:String >Friday</sys:String>
+                                <sys:String >Saturday</sys:String>
+                                <sys:String >Sunday</sys:String>
+                                <sys:String >Day</sys:String>
+                                <sys:String >Week day</sys:String>
+                                <sys:String >Week end day</sys:String>
+                            </ComboBox>
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="of every"/>
+                            <TextBox Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left" x:Name="months" Margin="10,5,0,0" Tag="{Binding ScheduleEntity.month,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding ScheduleEntity.month,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="50" IsEnabled="{Binding Month2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="5" Text="month(s)"/>
+
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </GroupBox>
+            <GroupBox  Foreground="Black"  BorderBrush="Black" Grid.Row="2" Height="130" Width="750">
+                <GroupBox.Header>
+                    <TextBlock Text="Daily Frequency" FontWeight="Bold"/>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <RadioButton Grid.Row="0" x:Name="radioOccursOnceAt" Grid.Column="0" Content="Occurs once at:" Margin="20,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                 IsChecked="{Binding ScheduleEntity.occurs_once_at, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click" SourceName="radioOccursOnceAt">
+                                <i:InvokeCommandAction Command="{Binding OccurrsOnceAtChangedCommand }"                                          
+                                           CommandParameter="{Binding ScheduleEntity.occurs_once_at}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </RadioButton>
+
+                    <time:TimePicker x:Name="tpOccurs" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Foreground="Black" BorderBrush="Black"
+                                             BorderThickness="1" SelectedTime="{Binding ScheduleEntity.occurs_once_tm,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh:tt:mm} }" 
+                                             Margin="10,3,0,0" Width="140" IsEnabled="{Binding Occurs_Once_Tm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <RadioButton Grid.Row="1" x:Name="radioOccursEvery" Grid.Column="0" Content="Occurs Every:" Margin="20,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                 IsChecked="{Binding ScheduleEntity.occurs_every, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click" SourceName="radioOccursEvery">
+                                <i:InvokeCommandAction Command="{Binding OccursEveryChangedCommand }"                                          
+                                           CommandParameter="{Binding ScheduleEntity.occurs_every}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </RadioButton>
+                    <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" x:Name="txtOccurs_Every" Margin="20,5,0,0" Tag="{Binding ScheduleEntity.occurs_every_int,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   Text="{Binding ScheduleEntity.occurs_every_int,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged }" Width="50" IsEnabled="{Binding Occurs_Every_Int, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ComboBox Grid.Row="1" Grid.Column="2" x:Name="combotime" HorizontalAlignment="Left" Foreground="Black" Height="25" Background="Black" IsReadOnly="True" Width="100" Margin="-70,5,0,0"                            
+                                      SelectedItem="{Binding ScheduleEntity.occurs_every_var,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}"  IsEnabled="{Binding Occurs_Every_Var, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                        <sys:String >Hour(s)</sys:String>
+                        <sys:String >Minute(s)</sys:String>
+                        <sys:String >Second(s)</sys:String>                        
+                    </ComboBox>
+
+                    <TextBlock Grid.Row="1" Grid.Column="3" Text="Starting at" Margin="30,5,0,0"/>
+                    <time:TimePicker x:Name="tpStart" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="4" Foreground="Black" BorderBrush="Black" Margin="10,5,0,0"
+                                             BorderThickness="1" SelectedTime="{Binding ScheduleEntity.start_tm,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh:tt:mm} }" 
+                                              Width="140" IsEnabled="{Binding Start_Tm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="31" VerticalAlignment="Top"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="3" Text="Ending at" Margin="30,5,0,0"/>
+                    <time:TimePicker x:Name="tpEnd" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="4" Foreground="Black" BorderBrush="Black" Margin="10,5,0,0"
+                                             BorderThickness="1" SelectedTime="{Binding ScheduleEntity.end_tm,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh:tt:mm} }" 
+                                              Width="140" IsEnabled="{Binding End_Tm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox  Foreground="Black"  BorderBrush="Black" Grid.Row="3" Height="80" Width="750">
+                <GroupBox.Header>
+                    <TextBlock Text="Duration" FontWeight="Bold"/>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Date" Margin="20,5,0,0"/>
+                    <DatePicker Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" x:Name="dtpStart_date" Margin="20,5,0,0" Width="140"  SelectedDate="{Binding ScheduleEntity.start_date,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Background="Transparent"/>
+
+                    <RadioButton Grid.Row="0" x:Name="radioEndDt" Grid.Column="3" Content="End Date" Margin="30,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                 IsChecked="{Binding ScheduleEntity.end_dt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click" SourceName="radioEndDt">
+                                <i:InvokeCommandAction Command="{Binding EndDtChangedCommand }"                                          
+                                           CommandParameter="{Binding ScheduleEntity.end_dt}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </RadioButton>
+
+                    <DatePicker Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" Margin="20,5,0,0" x:Name="dtpEnd_date"  Width="140"  SelectedDate="{Binding ScheduleEntity.end_date,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Background="Transparent" IsEnabled="{Binding End_Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <RadioButton Grid.Row="1" x:Name="radioNoEndDt" Grid.Column="3" Content="No End Date" Margin="30,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                 IsChecked="{Binding ScheduleEntity.no_end_dt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click" SourceName="radioNoEndDt">
+                                <i:InvokeCommandAction Command="{Binding NoEndDtChangedCommand }"                                          
+                                           CommandParameter="{Binding ScheduleEntity.no_end_dt}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </RadioButton>
+
+                </Grid>
+            </GroupBox>
+            <GroupBox  Foreground="Black"  BorderBrush="Black" Grid.Row="4" Height="120" Width="750">
+                <GroupBox.Header>
+                    <TextBlock Text="Summary" FontWeight="Bold"/>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50.213"/>
+                        <ColumnDefinition Width="29.787"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Description" Margin="20,28,0,28" Grid.ColumnSpan="2"/>
+                    <TextBox Grid.Row="0" Grid.Column="2" x:Name="txtnote" HorizontalAlignment="Left" Margin="10,0,0,0" Text="{Binding SelectedECRM_T002_A.description,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="650" MaxLength="250" Height="80" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" VerticalAlignment="Top"/>
+                </Grid>
+            </GroupBox>
+
+            <!--<Button Grid.Row="5" FontWeight="Bold" Width="100" Height="35" Margin="-10,5,0,0" Style="{StaticResource NormalButtonStyle}"  FontSize="12"  
+                                    Command="{Binding Path=CommandReport}"  Content="Save" Background="White" />-->
+        </Grid>
+    </Grid>
+</Local:WindowElement>

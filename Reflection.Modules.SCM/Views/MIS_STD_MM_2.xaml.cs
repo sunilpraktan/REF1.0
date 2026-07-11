@@ -1,0 +1,24 @@
+﻿using Reflection.Modules.SCM.ViewModels;
+using Reflection.Presentation.Windows.Controls;
+using System.Windows.Input;
+
+namespace Reflection.Modules.SCM.Views
+{
+    /// <summary>
+    /// Interaction logic for MIS_STD_MM_2.xaml
+    /// </summary>
+    public partial class MIS_STD_MM_2 : WindowElement
+    {
+        public MIS_STD_MM_2()
+        {
+            this.DataContext = new MIS_STD_MM_2_VM("MMI19");
+            InitializeComponent();
+        }
+        public MIS_STD_MM_2(string ts_code)
+        {
+            this.DataContext = new MIS_STD_MM_2_VM("MMI19");
+            InitializeComponent();
+        }
+        
+    }
+}

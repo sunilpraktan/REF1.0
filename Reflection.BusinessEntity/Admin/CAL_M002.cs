@@ -1,0 +1,4 @@
+﻿namespace Reflection.BusinessEntity.Admin
+{
+
+}

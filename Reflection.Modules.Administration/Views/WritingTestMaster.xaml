@@ -1,0 +1,176 @@
+﻿<Local:WindowElement x:Class="Reflection.Modules.Administration.Views.WritingTestMaster"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+             Title="{x:Static Local:AppSessionState.ViewTitle}"  MinHeight="20">
+    
+    <Grid Height="160" Width="650" Margin="20,-20,0,0">
+        <Local:ContentControl3D CameraZoomDestination="0,0,5" FontFamily="Arial" Margin="0" FontSize="10" FontWeight="Normal" Foreground="Maroon" VerticalContentAlignment="Top" >
+
+            <Local:ContentControl3D.CameraPrototype>
+                <PerspectiveCamera FieldOfView="45" Position="0,0,4.86" UpDirection="0,1,0">
+                    <PerspectiveCamera.Transform>
+                        <Transform3DGroup>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
+                            <ScaleTransform3D ScaleX="0.5" ScaleY="1" ScaleZ="1"/>
+                            <RotateTransform3D d:EulerAngles="0,0,0"/>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
+                        </Transform3DGroup>
+                    </PerspectiveCamera.Transform>
+                </PerspectiveCamera>
+            </Local:ContentControl3D.CameraPrototype>
+
+            <!-- FRONT SIDE -->
+            <Local:ContentControl3D.InputBindings>
+                <KeyBinding Modifiers="Control" Key="F" Command="Local:ContentControl3D.RotateCommand"/>
+            </Local:ContentControl3D.InputBindings>
+
+            <Local:ContentControl3D.Content >
+                <Grid  Margin="80,100,100,100"  HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock  Grid.Row="0" Grid.Column="0" Text="Tip Type" Margin="0,7,0,0" ></TextBlock>
+                    <ComboBox Grid.Row="0" Grid.Column="1" x:Name="cmbTipType" Text="{Binding SelectedZADM_M014.tip_type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="7,0,3,0" Background="Transparent" Width="166">
+                        <ComboBoxItem>GBI</ComboBoxItem>
+                        <ComboBoxItem>OBI</ComboBoxItem>
+                    </ComboBox>
+
+                    <TextBlock  Grid.Row="0" Grid.Column="2" Text="Writing Speed" Margin="5,7,0,0" ></TextBlock>
+                    <TextBox Grid.Row="0" Grid.Column="3" x:Name="txtWritingSpeed" Text="{Binding SelectedZADM_M014.writspeed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,0" MinWidth="150" MaxLength="10" Width="172"/>
+                    
+                    <TextBlock  Grid.Row="1" Grid.Column="0" Text="Paper Feed" Margin="0,7,0,0" ></TextBlock>
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtPaperFeed" Text="{Binding SelectedZADM_M014.paperfeed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="5,0,0,0" MinWidth="150" MaxLength="50" Width="172"/>
+                    
+                    <TextBlock  Grid.Row="1" Grid.Column="2" Text="Machine" Margin="5,7,0,0" ></TextBlock>
+                    <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
+                        <TextBox Grid.Row="1" Grid.Column="3" x:Name="txtMachine" MinWidth="150" Tag="{Binding SelectedZADM_M014.machine_id,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding SelectedZADM_M014.Machine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CharacterCasing="Upper" IsReadOnly="True" Margin="5,0,0,0" Width="150"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ToggleButton Grid.Column="1" x:Name="btnMachine" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Padding="4,2"/>
+                            <Popup IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnMachine}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnMachine}" Placement="Bottom" PopupAnimation="Slide" >
+                                <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                    <Grid Background="CornflowerBlue">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <TextBox Name="txtMachineList" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringMachine, UpdateSourceTrigger=PropertyChanged}"  />
+                                        <DataGrid x:Name="dgPopupMachine" AutoGenerateColumns="True" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}, Path=DataContext.CollectionMachineList}" 
+                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtMachineList, Path=Text, UpdateSourceTrigger=LostFocus}" 
+                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+                                                  Margin="2" MaxHeight="300" MaxWidth=" 300" Unloaded="dgPopupMachine_Unloaded">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.SelectionChangedCommandMachine,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupMachine}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                            <i:Interaction.Behaviors>
+                                                <Local:ColumnHeaderBehavior />
+                                            </i:Interaction.Behaviors>
+                                        </DataGrid>
+                                    </Grid>
+                                    <!--<Local:PopUpWindowSingle DataFilter="{Binding Path=DataContext.FilterStringMachine, Mode=TwoWay, 
+                                                         RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1},UpdateSourceTrigger=PropertyChanged}"
+                                                         Command="{Binding Path=DataContext.SelectionChangedCommandMachine, 
+                                                         RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"/>-->
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </StackPanel>
+
+                    <TextBlock  Grid.Row="2" Grid.Column="0" Text="Angle" Margin="0,7,0,0" ></TextBlock>
+                    <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtAngle" Text="{Binding SelectedZADM_M014.angle,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="5,0,0,0" MinWidth="150" MaxLength="50" Width="172"/>
+
+                    <TextBlock  Grid.Row="2" Grid.Column="2" Text="Weight" Margin="5,7,0,0" ></TextBlock>
+                    <TextBox Grid.Row="2" Grid.Column="3" x:Name="txtWeight" Text="{Binding SelectedZADM_M014.weight,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="5,0,0,0" MinWidth="150" MaxLength="50" Width="172"/>
+
+                    <TextBlock  Grid.Row="3" Grid.Column="0" Text="Effective Weight" Margin="0,7,0,0" ></TextBlock>
+                    <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtEffectiveWeight" Text="{Binding SelectedZADM_M014.effwt,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="5,0,0,0" MinWidth="150" MaxLength="50" Width="172"/>
+
+                    <TextBlock  Grid.Row="3" Grid.Column="2" Text="Axial Rotation" Margin="5,7,0,0" ></TextBlock>
+                    <TextBox Grid.Row="3" Grid.Column="3" x:Name="txtAxialRotation" Text="{Binding SelectedZADM_M014.arialrotation,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="5,0,0,0" MinWidth="150" MaxLength="50" Width="172"/>
+
+                    <TextBlock  Grid.Row="4" Grid.Column="0" Text="Paper Type" Margin="0,7,0,0" ></TextBlock>
+                    <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtPapertype" Text="{Binding SelectedZADM_M014.papertype,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="5,0,0,0" MinWidth="150" MaxLength="50" Width="172"/>
+
+                    <TextBlock  Grid.Row="4" Grid.Column="2" Text="Remark" Margin="5,7,0,0" ></TextBlock>
+                    <TextBox Grid.Row="4" Grid.Column="3" x:Name="txtRemark" Text="{Binding SelectedZADM_M014.remarks,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="5,0,0,0" MinWidth="150" MaxLength="50" Width="172"/>
+                
+                </Grid>
+            </Local:ContentControl3D.Content>
+
+            <!-- BACK SIDE -->
+            <Local:ContentControl3D.BackContent >
+                <Grid Margin="0,80,0,80">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBox Name="SearchBox" Text="{Binding FilterString, UpdateSourceTrigger=PropertyChanged}"  />
+                        <DataGrid x:Name="DataLV" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="False" IsReadOnly="True" Width="650" Height="100"  SelectionMode="Single" SelectionUnit="FullRow"
+                                  Background="Transparent" RowBackground="Transparent" GridLinesVisibility="Horizontal" BorderThickness="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}" 
+                                                        CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+
+                            <DataGrid.Resources>
+                            </DataGrid.Resources>
+
+                            <DataGrid.Columns>
+                                
+                                
+
+                                <DataGridTextColumn Header="Tip Type" Binding="{Binding tip_type}" />
+                                <DataGridTextColumn Header="Writing Speed" Binding="{Binding writspeed}"/>
+                                <DataGridTextColumn Header="Paper Feed" Binding="{Binding paperfeed}"/>
+                                <DataGridTextColumn Header="Machine" Binding="{Binding machine_id}" />
+                                <DataGridTextColumn Header="Angle" Binding="{Binding angle}"/>
+                                <DataGridTextColumn Header="Weight" Binding="{Binding weight}"/>
+                                <DataGridTextColumn Header="Effective Weight" Binding="{Binding effwt}" />
+                                <DataGridTextColumn Header="Axial Rotation" Binding="{Binding arialrotation}"/>
+                                <DataGridTextColumn Header="Paper Type" Binding="{Binding papertype}"/>
+                                <DataGridTextColumn Header="Remark" Binding="{Binding remarks}" />
+                                
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Grid>
+            </Local:ContentControl3D.BackContent>
+
+        </Local:ContentControl3D>
+    </Grid>
+</Local:WindowElement>

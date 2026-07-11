@@ -1,0 +1,227 @@
+﻿<!--Inspection Due-->
+<Reflection:WindowElement x:Class="Reflection.Modules.QMS.Views.QMS_T011"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Reflection="http://Reflection/schemas/2010/xaml"
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+            xmlns:Local="http://Reflection/schemas/2010/xaml"
+            mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyleReport}" 
+             Title="{x:Static Reflection:AppSessionState.ViewTitle}">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}" CommandParameter="{Binding Text, ElementName=txtSearchBox}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Height="25" Background="LightBlue">
+            <Button Width="110" Height="20" Content="Result Recording" Margin="0,0,0,0" Command="{Binding Path=cmdInspection_Processing_RR}" CommandParameter="{Binding Path=SelectedItems,ElementName=DataLV}" ></Button>
+            <Button Width="110" Height="20" Content="Usage Decision" Margin="10,0,0,0" Command="{Binding Path=cmdInspection_Processing_UD}" CommandParameter="{Binding Path=SelectedItems,ElementName=DataLV}" Visibility="Collapsed"></Button>
+            <Button Width="110" Height="20" Content="Defect Recording" Margin="10,0,0,0" Command="{Binding Path=cmdInspection_Processing_DR}" CommandParameter="{Binding Path=SelectedItems,ElementName=DataLV}" Visibility="Collapsed"></Button>
+            <Button Width="110" Height="20" Content="Valuation" Margin="10,0,0,0" Command="{Binding Path=cmdInspection_Processing_UD}" CommandParameter="{Binding Path=SelectedItems,ElementName=DataLV}" ></Button>
+            <Button Width="110" Height="20" Content="Release" Margin="10,0,0,0" Command="{Binding Path=cmdRelease}" CommandParameter="{Binding Path=SelectedItems,ElementName=DataLV}" Visibility="Collapsed"></Button>
+            <Button Width="110" Height="20" Content="Print" Margin="10,0,0,0" Command="{Binding Path=cmdPrint}" CommandParameter="{Binding Path=SelectedItems,ElementName=DataLV}"></Button>
+        </StackPanel>
+        <Grid Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ToggleButton x:Name="btnFilterSearch" Grid.Column="0" Width="30" HorizontalAlignment="Left">
+                <Image Height="15" Width="20" Source="{StaticResource imgSearch}">
+                </Image>
+            </ToggleButton>
+            <Reflection:ReflectionPopup x:Name="popFilterSearch" AllowsTransparency="True" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnFilterSearch}" StaysOpen="False" 
+                                               PlacementTarget="{Binding ElementName=btnFilterSearch}" Placement="Bottom" PopupAnimation="Slide" Reflection:PopupBehavior.ClosesOnInput="False" >
+                <Border BorderBrush="Gray" BorderThickness="5" CornerRadius="2">
+                    <Grid Background="CornflowerBlue" >
+                        <Grid Background="CornflowerBlue" >
+                            <Grid Margin="10,10,10,10" Width="450">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="From Date " />
+                                <DatePicker Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedDate="{Binding REQ_PARA.from_date,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" />
+
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="To Date " Margin="5,0,0,0" />
+                                <DatePicker Grid.Row="0" Grid.Column="3" Width="120" HorizontalAlignment="Left" SelectedDate="{Binding REQ_PARA.to_date,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" />
+
+
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="Status" Margin="5,0,0,0" />
+                                <TextBox x:Name="txtViewStatus" Grid.Row="1" Grid.Column="3" Text="{Binding REQ_PARA.t_status}" Width="50" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <TextBlock Grid.Row="2" Grid.Column="2" Text="Active"  Margin="5,0,0,0" VerticalAlignment="Top"/>
+                                <CheckBox Grid.Row="2" Grid.Column="3" Margin="5,0,0,10" IsChecked="{Binding REQ_PARA.active_code,Converter={StaticResource ActiveConvertor},Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" />
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Doc Type" />
+                                <TextBox x:Name="txtViewDocType" Grid.Row="1" Grid.Column="1" Text="{Binding REQ_PARA.doc_type}" Width="50" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Company" Margin="0,0,0,0"/>
+                                <TextBox x:Name="txtViewCompany" Grid.Row="2" Grid.Column="1" Text="{Binding REQ_PARA.comp_code}" Width="50" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Location" Margin="0,0,0,0"/>
+                                <TextBox x:Name="txtlocation" Grid.Row="3" Grid.Column="1" Text="{Binding REQ_PARA.location_id}" Width="50" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Button Grid.Column="4" Width="30" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource ExecuteButton}"
+                                                Command="{Binding Path=cmdLoadBackFlip}" CommandParameter="IL" />
+
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Reflection:ReflectionPopup>
+            <Reflection:SearchTextBox Height="25" Grid.Column="1" x:Name="txtSearchBox" HorizontalAlignment="Left" MinWidth="1200" Text="{Binding FLTR_STR_BACKFLIP,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Aquamarine"/>
+            <Button Grid.Column="2" Width="20" Height="20" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" TabIndex="14" 
+                FontWeight="Bold" FontSize="20" VerticalContentAlignment="Top" Background="LightBlue" Content="R"
+                Command="{Binding Path=cmdLoadBackFlip}" CommandParameter="IL" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Ellipse Name="Ellipse" Fill="{TemplateBinding Background}" />
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+        </Grid>
+        <DataGrid Grid.Row="2" x:Name="DataLV" ItemsSource="{Binding BACKFLIP_COLLECTION}" AutoGenerateColumns="False" CanUserAddRows="False"
+            Width="1250" Height="500" HorizontalAlignment="Left" SelectionMode="Single" SelectionUnit="FullRow" BorderBrush="Black"
+            Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtSearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"
+            GridLinesVisibility="All" BorderThickness="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+            CellEditEnding="HandleMainDataGridCellEditEnding" GotFocus="HandleDataGridGotFocus" PreviewKeyDown="DataGrid_PreviewKeyDown"
+            SelectedItem="{Binding MasterEntity,UpdateSourceTrigger=PropertyChanged}"
+        >
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="STATUS" Width="10">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Ellipse Fill="{Binding Path=color_code}" HorizontalAlignment="Center" Height="13" Width="13" ToolTip="{Binding Path=t_display,Mode=OneWay}"></Ellipse>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="SELECT" Width="10" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox x:Name="chkSelect" Width="auto" HorizontalAlignment="Center" IsChecked="{Binding selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTipService.ShowOnDisabled="True">
+                            </CheckBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridTemplateColumn Header="Inspection" Width="30" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button  BorderThickness="0"  Background="White"
+                                Command="{Binding Path=DataContext.cmdViewCalibration,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}"
+                                CommandParameter="{Binding SelectedItems, ElementName=DataLV}">
+                                <StackPanel Orientation="Horizontal" >
+                                    <Image Source="{StaticResource imgRedirect}"   >
+                                    </Image>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding t_status}" Value = "001" >
+                                    <Setter Property="IsEnabled" Value="True">
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
+                </DataGridTemplateColumn>-->
+                <DataGridTextColumn Header="INSP LOT NO"  Binding="{Binding doc_no}" Width="Auto"/>
+                <DataGridTextColumn Header="LOT DATE" Binding="{Binding doc_date,StringFormat=dd/MM/yyyy}"  Width="Auto"/>
+                <!--<DataGridTemplateColumn Header="LOT NO" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="5,0,0,5" >
+                                <Hyperlink
+                                    Command="{Binding Path=DataContext.cmdViewInspLotDocument,RelativeSource={RelativeSource AncestorType=Reflection:WindowElement,AncestorLevel=1}}"
+                                    CommandParameter="{Binding SelectedItems, ElementName=DataLV}">                                   
+                                    <Hyperlink.Inlines>
+                                        <Image Source="{StaticResource imgArrow_right}" Width="15" Height="15" VerticalAlignment="Center"/>
+                                        <Run Text="{Binding doc_no}"/>
+                                    </Hyperlink.Inlines> 
+                                </Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+                <DataGridTextColumn Header="REG_NO"  Binding="{Binding sono}" Width="Auto" Visibility="Collapsed" />
+                <DataGridTemplateColumn Header="REG_NO" Width="Auto" Visibility="Collapsed">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox x:Name="txtGrnNo" Text="{Binding ref_doc_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Margin="0,0,0,-1" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInvoke_Reference_Document, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Reflection:WindowElement}}}" 
+                                                                                    CommandParameter="{Binding Path=Text, ElementName=txtGrnNo}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridTextColumn Header="RREF DATE" Binding="{Binding posting_date,StringFormat=dd/MM/yyyy}" Width="Auto" />-->
+                <DataGridTextColumn Header="NAME"  Binding="{Binding party_name}" Width="Auto" />
+                <DataGridTextColumn Header="TEST"  Binding="{Binding tl_name}" Width="Auto" MaxWidth="350" />
+                <DataGridTextColumn Header="MAT. CODE"  Binding="{Binding item_code}" Width="Auto"  Visibility="Collapsed" />
+                <DataGridTextColumn Header="SPECIMEN"  Binding="{Binding item_name}" Width="Auto" MaxWidth="200" />
+                
+                <DataGridTextColumn Header="BATCH NO"  Binding="{Binding batch_no}" Width="Auto" />
+                <DataGridTextColumn Header="BARCODE"  Binding="{Binding barcode}" FontSize="20" FontWeight="Bold" FontFamily="{StaticResource BarcodeFonts}" Width="80"/>
+                <!--<DataGridTextColumn Header="SD DOC"  Binding="{Binding sono}" Width="Auto" Visibility="Collapsed" />-->
+                <DataGridTextColumn Header="LOT QTY" Binding="{Binding insp_lot_qty,StringFormat=N2}" Width="40" Visibility="Collapsed"/>
+                <DataGridTextColumn Header="UNIT"  Binding="{Binding unit_code_sample}" Width="Auto"/>
+                <DataGridTextColumn Header="SAMPLE SIZE" Binding="{Binding sample_size,StringFormat=N2}" Width="50" Visibility="Collapsed"/>
+                <DataGridTextColumn Header="TEST ID"  Binding="{Binding tl_code}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="EMPLOYEE"  Binding="{Binding emp_name}" Width="Auto" />
+                <DataGridTemplateColumn Header="TEST ORDER" Width="Auto" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox x:Name="txtOrderNo" Text="{Binding order_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Margin="0,0,0,-1" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInvoke_Reference_Document, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Reflection:WindowElement}}}" 
+                                                                                    CommandParameter="{Binding Path=Text, ElementName=txtOrderNo}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="START DATE" Binding="{Binding insp_start_date,StringFormat=dd/MM/yyyy}" Width="Auto" />
+                <DataGridTextColumn Header="END DATE" Binding="{Binding insp_end_date,StringFormat=dd/MM/yyyy}" Width="Auto" />
+                <DataGridTextColumn Header="M/c"  Binding="{Binding wc_code}" Width="Auto"/>
+                <DataGridTextColumn Header="BRANCH"  Binding="{Binding location_id}" Width="50" />
+                <DataGridTextColumn Header="COMPANY"  Binding="{Binding comp_code}" Width="Auto" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+    
+</Reflection:WindowElement>

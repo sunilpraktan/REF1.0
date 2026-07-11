@@ -1,0 +1,161 @@
+﻿<!--Sample split window-->
+<Local:WindowElement x:Class="Reflection.Modules.MM.Views.MM_T020"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:Local="http://Reflection/schemas/2010/xaml"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+         
+        Style="{StaticResource DefaultWorkspaceWindowStyleReport}" 
+        Title="{x:Static Local:AppSessionState.ViewTitle}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtStatus}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Document No. " Margin="5,0,0,0" VerticalAlignment="Center" />
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding MasterEntity.doc_no, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 MaxLength="20" HorizontalAlignment="Left" VerticalAlignment="Center" IsReadOnly="True" Width="130" Margin="0,0,0,0"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Margin="5,0,0,0" VerticalAlignment="Center" />
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                <TextBox x:Name="txtvendor" Margin="0,0,0,0"  Width="80" MaxLength="10" Text="{Binding MasterEntity.PartyId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="{Binding MasterEntity.vendor_name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" TextWrapping="Wrap" Width="300"/>
+            </StackPanel>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="Document Date" VerticalAlignment="Center" Margin="5,0,0,0"/>
+            <DatePicker Grid.Row="0" Grid.Column="3" SelectedDate="{Binding MasterEntity.doc_date, Mode= TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                                    HorizontalAlignment="Left" Width="120" Height="30" Margin="0,0,0,0"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="Posting Date" VerticalAlignment="Center" Margin="5,0,0,0"/>
+            <DatePicker Grid.Row="1" Grid.Column="3" SelectedDate="{Binding MasterEntity.post_date, Mode= TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                                    HorizontalAlignment="Left" Width="120" Height="30" Margin="0,0,0,0" IsHitTestVisible="{Binding MoveFlag,UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Grid.Row="0" Grid.Column="4" Text="Movement Type" Margin="5,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
+            <StackPanel Grid.Row="0" Grid.Column="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center" Visibility="Collapsed">
+                <TextBox x:Name="txtmovtype" Margin="0,0,0,0"  Width="80" Local:CustomeValidationInput.ListObject="{Binding StringListMovType,UpdateSourceTrigger=PropertyChanged}" IsHitTestVisible="{Binding MoveFlag,UpdateSourceTrigger=PropertyChanged}"
+                                     Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding StringListMovType}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" MaxLength="10">
+                    <TextBox.Text >
+                        <Binding Path="MasterEntity.mov_tp" Mode="TwoWay"  UpdateSourceTrigger="Default" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                            <Binding.ValidationRules >
+                                <Local:InputValidator />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdMovementType,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                    CommandParameter="{Binding Text, ElementName=txtmovtype}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Local:PopupAutoSuggest x:Name="popMovType" Placement="Bottom" PlacementTarget="{Binding ElementName=txtmovtype}">
+                    <Local:AutoSuggestControl x:Name="asMovType" Focusable="False" OwnerPopup="{Binding ElementName=popMovType}" 
+				                                            TextTokensControlTarget= "{Binding ElementName=txtmovtype, Mode=OneTime}" FrameworkElement.DataContext="{Binding ASMovType.AutoSuggestVM}">
+                        <Local:AutoSuggestControl.Background>
+                            <SolidColorBrush Color="White" Opacity=".9"></SolidColorBrush>
+                        </Local:AutoSuggestControl.Background>
+                        <Local:AutoSuggestControl.SuggestionsTemplate>
+                            <ControlTemplate>
+                                <DataGrid x:Name="PART_Selector" EnableRowVirtualization="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" 
+                                                        CanUserDeleteRows="False" CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="All" SelectionMode="Single" 
+                                                        GridLinesVisibility="All" MinHeight="170"  HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Code" Binding="{Binding mov_tp }" />
+                                        <DataGridTextColumn Header="Mode " Binding="{Binding mov_tp_name }" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ControlTemplate>
+                        </Local:AutoSuggestControl.SuggestionsTemplate>
+                    </Local:AutoSuggestControl>
+                </Local:PopupAutoSuggest>
+                <Local:PopupAutoSuggest x:Name="popDummy" Placement="Bottom" Visibility="Collapsed">
+                </Local:PopupAutoSuggest>
+                <TextBlock Text="{Binding MasterEntity.mov_name,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" TextWrapping="Wrap" Width="300"/>
+            </StackPanel>
+            <TextBlock Text="Status" Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBox x:Name="txtStatus" Grid.Row="0" Grid.Column="5" Text="{Binding MasterEntity.t_display, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             MaxLength="30" HorizontalAlignment="Left" VerticalAlignment="Center"  Width="100" Margin="5,0,0,0"/>
+
+
+
+
+
+        </Grid>
+        <DataGrid  x:Name="dgbatchsplit" Grid.Row="1" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True"
+            SelectedIndex="{Binding dgSelectedIndexBatch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }" 
+            ItemsSource="{Binding BatchDetailsEntity ,Mode=TwoWay,UpdateSourceTrigger=LostFocus}" Height="280" Width="970"
+            CanUserAddRows="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" 
+            IsEnabled="{Binding batchdatagrid,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" RowHeight="20" CanUserSortColumns="False" GridLinesVisibility="All"
+            >
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Split" Width="20">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="50" Height="25" x:Name="txtHU_Split_Qty" ></TextBox>
+                                <Button x:Name="btnlabtrs" Width="20" Height="20"
+                                                          Command="{Binding Path=DataContext.cmd_Split_HU, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                          CommandParameter="{Binding Path=Text, ElementName=txtHU_Split_Qty}"                                                    
+                                                          Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Center" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{StaticResource imgEditCopy}"   >
+                                        </Image>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Batch No" Width="120" Binding="{Binding batch_no, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridTextColumn Header="Order No" Width="120" Binding="{Binding order_no, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridTextColumn Header="Batch No.(Ext)" Width="120" Binding="{Binding vendor_batch_no, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridTextColumn Header="Item Code" Width="120" Binding="{Binding order_no, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridTextColumn Header="Description" Width="120" Binding="{Binding order_no, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridTextColumn Header="Quantity" Width="70" Binding="{Binding qty,StringFormat='#0.00#',Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}"/>
+                <DataGridTextColumn Header="Unit" Width="70" Binding="{Binding unit_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}"/>
+                <DataGridTextColumn Header="Handling Unit" Binding="{Binding pack_no, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="True"/>
+                <!--<DataGridTextColumn Header="Note    " Binding="{Binding description,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="120"/>-->
+                <DataGridTextColumn Header="Status"  Binding="{Binding status,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"  IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Active"  Binding="{Binding active,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }" />
+                <DataGridTemplateColumn Header="Action" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4"
+                                                    Command="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1},Path=DataContext.BatchDataGridRowDeleteCommand}"
+                                                    CommandParameter="{Binding SelectedIndex, ElementName=dgbatchsplit}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Height="20" Width="20" Source="{StaticResource imgTrash}"   >
+                                    </Image>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</Local:WindowElement>

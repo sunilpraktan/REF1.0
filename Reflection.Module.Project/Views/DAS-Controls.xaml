@@ -1,0 +1,296 @@
+﻿<Local:WindowElement x:Class="Reflection.Module.Project.Views.DAS_Controls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Reflection.Module.Project.Views"
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"  
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"         
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"                    
+             mc:Ignorable="d" 
+             Title="{x:Static Local:AppSessionState.ViewTitle}">
+
+    <Grid  VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="RacePitBorderStyle" TargetType="Border">
+                <Style.Resources>
+                    <LinearGradientBrush x:Key="RacePitBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#88000000" Offset="0.1" />
+                        <GradientStop Color="#CC000000" Offset="0.9" />
+                    </LinearGradientBrush>
+                    <LinearGradientBrush x:Key="RacePitBorderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#18000000" Offset="0.1" />
+                        <GradientStop Color="#08000000" Offset="0.9" />
+                    </LinearGradientBrush>
+                </Style.Resources>
+
+                <Setter Property="Background" Value="{StaticResource RacePitBackgroundBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource RacePitBorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Margin" Value="2,4" />
+            </Style>
+            <DataTemplate DataType="{x:Type Local:RND_T010_A2}">
+                <DataTemplate.Resources>
+                    <LinearGradientBrush x:Key="RaceInProgressBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+                        <GradientStop Color="#1100CC22" Offset="0" />
+                        <GradientStop Color="#8800CC22" Offset="0.97" />
+                        <GradientStop Color="#AA10FF18" Offset="0.999" />
+                        <GradientStop Color="#44FFFFFF" Offset="1" />
+                    </LinearGradientBrush>
+
+                    <LinearGradientBrush x:Key="FinishedBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#44FF0000" Offset="0.1" />
+                        <GradientStop Color="#11FF0000" Offset="0.9" />
+                    </LinearGradientBrush>
+
+                    <LinearGradientBrush x:Key="WinnerBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="Gold" Offset="0.1" />
+                        <GradientStop Color="#FFFFFF88" Offset="0.9" />
+                    </LinearGradientBrush>
+
+                    <Local:ProgressIndicatorWidthConverter x:Key="WidthConv" />
+                </DataTemplate.Resources>
+
+                <Border x:Name="racePit" Style="{StaticResource RacePitBorderStyle}">
+                    <Grid Width="{Binding ElementName=racePit, Path=ActualWidth}">
+                        <StackPanel Orientation="Horizontal">
+                            <!-- This Rectangle "follows" a horse as it runs the race. -->
+                            <Rectangle x:Name="progressIndicator"
+            Fill="{StaticResource RaceInProgressBrush}"
+            HorizontalAlignment="Left" 
+            RadiusX="8" 
+            RadiusY="8"
+            Margin="1"
+            >
+                                <!-- The width of the progress indicator is calculated by an instance
+                 of the RaceHorseProgressIndicatorWidthConverter class. -->
+                                <Rectangle.Width>
+                                    <MultiBinding Converter="{StaticResource WidthConv}">
+                                        <Binding Path="PercentComplete" />
+                                        <Binding ElementName="racePit" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Rectangle.Width>
+                            </Rectangle>
+
+                            <!-- Displays the picture of a race horse. -->
+                            <Image Source="{StaticResource imgArrow_right}" Height="40" Width="60"/>
+                        </StackPanel>
+
+                        <TextBlock x:Name="horseName" Text="{Binding tb_code}"  Margin="6,0" VerticalAlignment="Center" Foreground="White" />
+                    </Grid>
+
+                    <!-- Make the race pit display a tooltip which shows how much of the race the horse has completed. -->
+                    <Border.ToolTip>
+                        <ToolTip>
+                            <Grid>
+                                <TextBlock>
+              <TextBlock Text="{Binding PercentComplete}" Margin="0,0,-2,0" />
+              <Run>% finished</Run>
+            </TextBlock>
+                            </Grid>
+                        </ToolTip>
+                    </Border.ToolTip>
+                </Border>
+
+                <DataTemplate.Triggers>
+                    <!-- This MultiDataTrigger affects losers of the race. -->
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsFinished}" Value="True" />
+                            <Condition Binding="{Binding IsWinner}" Value="False" />
+                        </MultiDataTrigger.Conditions>
+                        <!-- Apply the "finished the race" brush to the horse's progress indicator. -->
+                        <Setter TargetName="progressIndicator" Property="Fill" Value="{StaticResource FinishedBrush}" />
+
+                        <!-- Fade the race pit in and out if the horse lost the race. -->
+                        <MultiDataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="racePit" Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.75" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </MultiDataTrigger.EnterActions>
+                        <MultiDataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="racePit" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.25" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </MultiDataTrigger.ExitActions>
+                    </MultiDataTrigger>
+
+                    <!-- Set special values for the winner of the race. -->
+                    <DataTrigger Binding="{Binding IsWinner}" Value="True">
+                        <Setter TargetName="progressIndicator" Property="Fill" Value="{StaticResource WinnerBrush}" />
+                        <Setter TargetName="horseName" Property="Foreground" Value="Black" />
+                        <Setter TargetName="horseName" Property="FontWeight" Value="Bold" />
+                        <Setter TargetName="horseName" Property="HorizontalAlignment" Value="Center" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+            <RotateTransform x:Key="RaceTrackRotateTrans" Angle="0" />
+        </Grid.Resources>
+        <TabControl SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+            <TabItem Header="Admin">
+                <Grid  VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <Local:SearchTextBox Height="25" Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" Width="850" Name="SearchBox" Text="{Binding FilterString, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Grid.Row="0" Grid.Column="1" Height="25" Margin="0,0,0,0" Width="80" Style="{StaticResource NormalButtonStyle}" Command="{Binding Path=cmdExportGrid}" CommandParameter="ExportToExcell">Export</Button>
+
+                    <DataGrid x:Name="dgAdminData" Grid.Row="1" Grid.Column="0" Width="950" CanUserAddRows="True" CanUserDeleteRows="False" AutoGenerateColumns="False"   
+                                                   ItemsSource="{Binding AdminEntity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CanUserSortColumns="False"
+                                                   SelectedIndex="{Binding dgSelectedIndexAdmin,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" 
+                                                   VerticalAlignment="Top" IsReadOnly="False" Margin="0,10,0,0"  GridLinesVisibility="All" Height="400" Background="Transparent"
+                                                   IsSynchronizedWithCurrentItem="True" BorderBrush="Transparent" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="2" 
+                                                   Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}" SelectionChanged="dgAdminData_SelectionChanged"
+                                                   >
+                        <!--<DataGrid  Name="dgAccessory" CanUserAddRows="True"  Grid.Row="0"  AutoGenerateColumns="False" GridLinesVisibility="All" RowHeight="25"
+                                       SelectedIndex="{Binding dgSelectedIndexAcc,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                       ItemsSource="{Binding AccessoryEntity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CanUserSortColumns="False"
+                                       SelectedItem="{Binding ASDefault.SelectedObjectValue, Mode=TwoWay,Converter={x:Static Local:IgnoreNewItemPlaceHolderConverter.Instance}}" 
+                                       CellEditEnding="HandleMainDataGridCellEditEnding" CurrentCell="{Binding CellInfo, Mode=OneWayToSource}"
+                                       Height="275" VerticalAlignment="Top" >-->
+                        <DataGrid.Resources>
+                            <Local:DictionaryConverter x:Key="DictionaryConvertorTax"/>
+                            <Local:DisplayPropertyConverter x:Key="DisplayConverter" />
+                            <Local:ItemsSourceConverter x:Key="SourceConverter" />
+                            <Local:TaxConverter  x:Key="TaxConverter" />
+                            <Style x:Key="TTD" TargetType="{x:Type ToolTip}" >
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ToolTip}">
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <!--<DataGridTextColumn Header="TB Code" IsReadOnly="True" Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={Local:RowToIndexConverter}}" />-->
+                            <DataGridTextColumn Header="Sr No" IsReadOnly="True" Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={Local:RowToIndexConverter}}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="HorizontalAlignment" Value="Center" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Test Bed No"  Binding="{Binding tb_code,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }" />
+                            <DataGridTextColumn Header="Test Bed Name"  Binding="{Binding tb_name,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }" />
+                            <DataGridTemplateColumn Header="Status">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox Text="{Binding status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ComboBoxItem>Running</ComboBoxItem>
+                                            <ComboBoxItem>Stop</ComboBoxItem>
+                                            <ComboBoxItem>Hold</ComboBoxItem>
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="IP Address" Binding="{Binding ip_address,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="Database" Binding="{Binding db,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="User ID" Binding="{Binding user_id,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Password" Binding="{Binding password,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <!--<DataGridTemplateColumn Header="Last Migration">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DatePicker Visibility="Visible" Background="Transparent"  SelectedDate="{Binding last_migration,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>-->
+                            <DataGridTextColumn Header="Last Migration" Binding="{Binding last_migration,Mode=OneWay,UpdateSourceTrigger=Default,StringFormat='{}{0:dd,MMMM, yyyy, hh:mm:ss}'}" />
+                            <DataGridTextColumn Header="Table Name" Binding="{Binding table_name,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <!--<DataGridCheckBoxColumn Header="Active"  Binding="{Binding active, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="auto"/>-->
+                            <DataGridTemplateColumn Header="Active">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox x:Name="Active"  HorizontalAlignment="center" IsChecked="{Binding Path=active, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Action">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4"
+                                                                Command="{Binding Path=DataContext.CmdDeleteDataGridRowDetail,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                                CommandParameter="{Binding SelectedIndex, ElementName=dgAdminData}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Height="20" Width="20" Source="{StaticResource imgTrash}"   >
+                                                </Image>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Info">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Height="20" Width="20" Source="{StaticResource imgInformation}"   >
+                                                </Image>
+                                            </StackPanel>
+                                            <Button.ToolTip >
+                                                <ToolTip Style="{StaticResource TTD}" />
+                                            </Button.ToolTip>
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseEnter">
+                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdItemInfo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Local:WindowElement}}}" 
+                                                                                        CommandParameter="{Binding Path=SelectedItems, ElementName=dgItemData}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Attachments" Width="50">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4"
+                                                                Command="{Binding Path=DataContext.cmdOpenAttachments,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgItemData}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Height="20" Width="20" Source="{StaticResource imgAttachment}"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Synchronization" >
+                <Grid x:Name="Synch" VerticalAlignment="Top" HorizontalAlignment="Left" Width="950" Height="400">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ItemsControl x:Name="TestBedTrack" Grid.Row="1" ItemsSource="{Binding AdminEntity2,Mode=Default,UpdateSourceTrigger=PropertyChanged}"
+                          HorizontalAlignment="Stretch" LayoutTransform="{StaticResource RaceTrackRotateTrans}"  Margin="8" VerticalAlignment="Center" />
+                    <Button Grid.Row="0" FontWeight="Bold" Width="120" Height="25" Margin="0,0,0,0" Style="{StaticResource NormalButtonStyle}"  HorizontalAlignment="Center"
+                            Command="{Binding Path=cmdLoadInsertTestBedRecord}" Content="Synchronization" Background="White" />
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Local:WindowElement>

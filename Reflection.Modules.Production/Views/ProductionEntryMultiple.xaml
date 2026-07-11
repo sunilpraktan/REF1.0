@@ -1,0 +1,372 @@
+﻿<Local:WindowElement x:Class="Reflection.Modules.Production.Views.ProductionEntryMultiple"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml" 
+             xmlns:Child="clr-namespace:Reflection.Modules.Production.Views"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                         
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"
+                     
+             xmlns:system="clr-namespace:System;assembly=mscorlib"                     
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+             Title="{x:Static Local:AppSessionState.ViewTitle}" MinHeight="300">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtStatus}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid x:Name="gdLayout" Height="450" MinWidth="900" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Local:ContentControl3D CameraZoomDestination="0,0,5" FontFamily="Arial" FontSize="12" FontWeight="Normal" Foreground="Maroon" VerticalContentAlignment="Top" HorizontalContentAlignment="Left">
+            <Local:ContentControl3D.CameraPrototype>
+                <PerspectiveCamera FieldOfView="46" Position="0,0,12" UpDirection="0,1,0">  
+                    <PerspectiveCamera.Transform>
+                        <Transform3DGroup>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
+                            <ScaleTransform3D ScaleX="0.2" ScaleY="0.40" ScaleZ="1"/>
+                            <RotateTransform3D d:EulerAngles="0,0,0"/>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0.01" OffsetZ="0"/>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0.01" OffsetZ="0"/>
+                        </Transform3DGroup>
+                    </PerspectiveCamera.Transform>
+                </PerspectiveCamera>
+            </Local:ContentControl3D.CameraPrototype>
+            <!-- FRONT SIDE -->
+            
+            <Local:ContentControl3D.InputBindings>
+                <KeyBinding Modifiers="Control" Key="F" Command="Local:ContentControl3D.RotateCommand"/>
+            </Local:ContentControl3D.InputBindings>
+            
+            <Local:ContentControl3D.Content>
+
+                <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid  Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition  Width="100"/>
+                                <ColumnDefinition  Width="100"/>
+                                <ColumnDefinition  Width="*"/>
+                                <ColumnDefinition  Width="*"/>
+                                <!--<ColumnDefinition  Width="*"/>
+                                <ColumnDefinition  Width="*"/>-->
+                                <!--<ColumnDefinition  Width="*"/>-->
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text=" Entry Date " Margin="100,5,0,0" />
+                            <DatePicker Grid.Row="0" Grid.Column="3" x:Name="dtpDate" Margin="0,0,0,0" SelectedDate="{Binding SelectedPPC_T002_A.entrydt,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,StringFormat='dd/MM/yyy'}" Background="Transparent" Width="150"  HorizontalAlignment="Left" />
+             
+                            <!--<Button Name="button1" Margin="15,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="6"  FontSize="12" Command="{Binding Path=ButtonClickCommand}" FontWeight="Bold"   Content="Load"   Background="White"  Width="80" Height="25" />-->
+
+                        </Grid>
+
+                        <Grid Grid.Row="1" Grid.Column="1">
+                            <TabControl Height="340">
+                                <TabItem Header="Job Running Progress">
+                                    <Grid VerticalAlignment="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                          <DataGrid   x:Name="dgData" AutoGenerateColumns="False"  Background="Transparent" SelectedIndex="{Binding dgSelectedIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                              ItemsSource="{Binding GoodsDetails, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="300" Width="900" RowBackground="Transparent" GridLinesVisibility="All"
+                                              CanUserAddRows="True"    BorderThickness="1" BorderBrush="Transparent" VerticalScrollBarVisibility="Visible"  HorizontalScrollBarVisibility="Visible"  >
+                                            <DataGrid.Resources>
+
+                                                <Local:DictionaryConverter x:Key="DictionaryConvertorTax"/>
+                                                <Local:NumberToWordConvertor x:Key="WordConvertor" />
+                                                <Local:DisplayPropertyConverter x:Key="DisplayConverter" />
+                                                <Local:ItemsSourceConverter x:Key="SourceConverter" />
+                                                <Local:TaxConverter  x:Key="TaxConverter" />
+                                            </DataGrid.Resources>
+                                            <DataGrid.Columns>
+                                                
+                                                <DataGridTemplateColumn Header=" Select " Width="auto">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Select, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsThreeState="False">
+                                                            </CheckBox>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridComboBoxColumn Header=" Entry Type "  SelectedItemBinding="{Binding Path=entrytype,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Draft">
+                                                    <DataGridComboBoxColumn.ItemsSource >
+                                                        <CompositeCollection>
+                                                            <system:String> FG </system:String>
+                                                            <system:String> WIP </system:String>
+                                                        </CompositeCollection>
+                                                    </DataGridComboBoxColumn.ItemsSource>
+                                                </DataGridComboBoxColumn>
+
+                                                <DataGridTemplateColumn Header=" From Date ">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <DatePicker Background="Transparent"  SelectedDate="{Binding fromdate,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTemplateColumn Header=" From Time ">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>                                                            
+                                                            <time:TimePicker x:Name="tpStartTime1" HorizontalAlignment="Left"  BorderBrush="Silver" 
+                                                              BorderThickness="1" SelectedTime="{Binding Path=fromtime,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:hh:tt:mm}}" 
+                                                             Margin="15,0,0,0" Width="135" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>                                                 
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTemplateColumn Header=" To Date ">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <DatePicker Background="Transparent"  SelectedDate="{Binding todate,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTemplateColumn Header=" To Time ">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <!--<DatePicker Background="Transparent"  SelectedDate="{Binding totime,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:HH:MM}}" />-->
+                                                            <time:TimePicker x:Name="tpStartTime1" HorizontalAlignment="Left"  BorderBrush="Silver" 
+                                                              BorderThickness="1" SelectedTime="{Binding totime,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh:tt:mm} }" 
+                                                             Margin="15,0,0,0" Width="135" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTemplateColumn Header=" Machine " Width="Auto">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate >
+                                                            <Grid x:Name="gridMachine">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="7*"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBox Grid.Column="0" Tag="{Binding machine_id,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Text="{Binding MachineCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"/>
+                                                                <ToggleButton Grid.Column="1" x:Name="btnMachine" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Padding="4,2">
+                                                                    <ToggleButton.Style>
+                                                                        <Style TargetType="ToggleButton">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                        Path=IsKeyboardFocusWithin}" Value="True" >
+                                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                        Path=IsKeyboardFocusWithin}" Value="False">
+                                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </ToggleButton.Style>
+                                                                </ToggleButton>
+                                                                <Popup Height="200" ScrollViewer.HorizontalScrollBarVisibility="Visible"  DataContext="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Local:WindowElement}, Path=DataContext.CollectionMachine}" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnMachine}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnMachine}" Placement="Bottom" PopupAnimation="Slide" >
+                                                                    <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                                        <Local:PopUpWindowSingle Background="CornflowerBlue" DataFilter="{Binding Path=DataContext.FilterStringMachine, Mode=TwoWay, 
+                                                                     RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1},UpdateSourceTrigger=PropertyChanged}"
+                                                                     Command="{Binding Path=DataContext.SelectionChangedCommandMachine, 
+                                                                     RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"/>
+                                                                    </Border>
+                                                                </Popup>
+                                                            </Grid>
+                                                            <DataTemplate.Triggers>
+                                                                <Trigger SourceName="gridMachine" Property="Grid.IsKeyboardFocusWithin" Value="True">
+                                                                    <Setter TargetName="btnMachine" Property="Visibility" Value="Visible" />
+                                                                </Trigger>
+                                                                <Trigger SourceName="gridMachine" Property="Grid.IsKeyboardFocusWithin" Value="False">
+                                                                    <Setter TargetName="btnMachine" Property="Visibility" Value="Hidden" />
+                                                                </Trigger>
+                                                            </DataTemplate.Triggers>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTemplateColumn Header=" Job Card No " Width="Auto">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate >
+                                                            <Grid x:Name="gridJobCart">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="7*"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBox Grid.Column="0" Tag="{Binding jobcard,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Text="{Binding jobcard,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"/>
+                                                                <ToggleButton Grid.Column="1" x:Name="btnJobCart" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Padding="4,2">
+                                                                    <ToggleButton.Style>
+                                                                        <Style TargetType="ToggleButton">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                        Path=IsKeyboardFocusWithin}" Value="True" >
+                                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                        Path=IsKeyboardFocusWithin}" Value="False">
+                                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </ToggleButton.Style>
+                                                                </ToggleButton>
+                                                                <Popup Height="200" ScrollViewer.HorizontalScrollBarVisibility="Visible"  DataContext="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Local:WindowElement}, Path=DataContext.CollectionJobCart}" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnJobCart}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnJobCart}" Placement="Bottom" PopupAnimation="Slide" >
+                                                                    <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                                        <Local:PopUpWindowSingle Background="CornflowerBlue" DataFilter="{Binding Path=DataContext.FilterStringJobCart, Mode=TwoWay, 
+                                                                     RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1},UpdateSourceTrigger=PropertyChanged}"
+                                                                     Command="{Binding Path=DataContext.SelectionChangedCommandJobCart, 
+                                                                     RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"/>
+                                                                    </Border>
+                                                                </Popup>
+                                                            </Grid>
+                                                            <DataTemplate.Triggers>
+                                                                <Trigger SourceName="gridJobCart" Property="Grid.IsKeyboardFocusWithin" Value="True">
+                                                                    <Setter TargetName="btnJobCart" Property="Visibility" Value="Visible" />
+                                                                </Trigger>
+                                                                <Trigger SourceName="gridJobCart" Property="Grid.IsKeyboardFocusWithin" Value="False">
+                                                                    <Setter TargetName="btnJobCart" Property="Visibility" Value="Hidden" />
+                                                                </Trigger>
+                                                            </DataTemplate.Triggers>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTextColumn Header=" Item "  Binding="{Binding itemcode, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+
+                                                <DataGridTextColumn Header=" Unit "  Binding="{Binding unit_name, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+
+                                                <DataGridTextColumn Header=" Production Quantity "  Binding="{Binding prod_qty, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=0}" />
+
+                                                <DataGridTextColumn Header=" Rejection Quantity "  Binding="{Binding rejtn_qty, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=0}"/>
+
+                                                <DataGridTextColumn Header=" Usable Production Quantity "  Binding="{Binding usable_prod_qty, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=0}"/>
+
+                                                <DataGridTextColumn Header=" Balance Quantity "  Binding="{Binding bal_qty, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=0}" IsReadOnly="True"/>
+
+                                                <DataGridTextColumn Header=" Operation "  Binding="{Binding operation, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                                                <DataGridComboBoxColumn Header=" Type Of Activity "  SelectedItemBinding="{Binding Path=activity,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Draft">
+                                                    <DataGridComboBoxColumn.ItemsSource >
+                                                        <CompositeCollection>
+                                                            <system:String>Daily Maintainence</system:String>
+                                                            <system:String>No job card allocation</system:String>
+                                                            <system:String>Break down</system:String>
+                                                            <system:String>Power failure</system:String>
+                                                            <system:String>Job Setting</system:String>                                                         
+
+                                                        </CompositeCollection>
+                                                    </DataGridComboBoxColumn.ItemsSource>
+                                                </DataGridComboBoxColumn>
+
+                                                <DataGridTextColumn Header=" Operator1 "  Binding="{Binding operator1, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+
+                                                <DataGridTextColumn Header=" Operator2 "  Binding="{Binding operator2, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+
+                                                <DataGridComboBoxColumn Header=" Type "  SelectedItemBinding="{Binding Path=type,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Draft">
+                                                    <DataGridComboBoxColumn.ItemsSource >
+                                                        <CompositeCollection>
+                                                            <system:String>Production</system:String>
+                                                            <system:String>Maintenance</system:String>
+                                                        </CompositeCollection>
+                                                    </DataGridComboBoxColumn.ItemsSource>
+                                                </DataGridComboBoxColumn>
+
+                                                <DataGridCheckBoxColumn IsReadOnly="True" Header=" Status "  Binding="{Binding active,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"  IsThreeState="False"/>
+                                             
+                                                 
+                                            </DataGrid.Columns>
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="CellEditEnding">
+                                                    <i:InvokeCommandAction Command="{Binding CellChangedCommand}" 
+                                                     CommandParameter="{Binding SelectedItems, ElementName=dgData}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </DataGrid>
+                                    </Grid>
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+            </Local:ContentControl3D.Content>
+
+            <!-- BACK SIDE -->
+
+            <!-- BACK SIDE -->
+            <Local:ContentControl3D.BackContent >
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <Grid Grid.Row="0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Local:SearchTextBox Height="20" Grid.Column="0" Name="SearchBox" Background="Transparent" Text="{Binding FilterString, UpdateSourceTrigger=PropertyChanged}"  />
+                            <Button Grid.Row="0" Grid.Column="1" Height="20" Margin="4,0,0,0" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding ExportCommand}">Export</Button>
+
+                        </Grid>
+                        <DataGrid x:Name="DataLV" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="False" IsReadOnly="True" 
+                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"                                                                        
+                                  Background="Transparent" RowBackground="Transparent" GridLinesVisibility="Horizontal" BorderThickness="1" 
+                                   VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible" SelectionMode="Single" SelectionUnit="FullRow" Height="400" Width="700">
+                            <DataGrid.Resources>
+
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Select">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ToggleButton x:Name="btnitmprts"
+                                                      Command="{Binding Path=DataContext.SelectionChangedCommandDetails, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                         Style="{StaticResource CircleToggleButtonStyle}" Width="25" Height="25" Content="{Binding SetQty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" >
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click">
+                                                        <i:InvokeCommandAction Command="Local:ContentControl3D.RotateCommand"  />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </ToggleButton>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header=" Entry No " Binding="{Binding entryno}" />
+                                <DataGridTextColumn Header=" Entry Date " Binding="{Binding entrydt, StringFormat={}{0:dd/MM/yyyy}}"  IsReadOnly="True"/>
+                                <DataGridTextColumn Header=" Entry Type " Binding="{Binding entrytype}" />
+                                <DataGridTextColumn Header=" Type " Binding="{Binding type}" />
+                                <DataGridTextColumn Header=" Machine " Binding="{Binding MachineCode}" />
+                                <DataGridTextColumn Header=" Job Card No " Binding="{Binding jobcard}" />
+                                <DataGridTextColumn Header=" From Date " Binding="{Binding fromdate, StringFormat={}{0:dd/MM/yyyy}}"  IsReadOnly="True"/>
+                                <DataGridTextColumn Header=" To Date " Binding="{Binding todate, StringFormat={}{0:dd/MM/yyyy}}"  IsReadOnly="True"/>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Grid>
+            </Local:ContentControl3D.BackContent>
+
+        </Local:ContentControl3D>
+    </Grid>
+</Local:WindowElement>
+

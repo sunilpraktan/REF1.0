@@ -1,0 +1,1066 @@
+﻿<Local:WindowElement x:Class="Reflection.Modules.Production.Views.WritingTestForProduction_2"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml" 
+             xmlns:Child="clr-namespace:Reflection.Modules.Production.Views"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+               
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"  
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"    
+             mc:Ignorable="d" 
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"                     
+             Title="{x:Static Local:AppSessionState.ViewTitle}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding Text, ElementName=txtStatus}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid Height="550" Width="900" Margin="0,0,0,0" >
+        <Local:ContentControl3D CameraZoomDestination="0,0,5" FontFamily="Arial" FontSize="13" FontWeight="Normal" Foreground="Maroon" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" >
+            <Local:ContentControl3D.CameraPrototype>
+                <PerspectiveCamera FieldOfView="44" Position="0,0,13" UpDirection="0,1,0">
+                    <PerspectiveCamera.Transform>
+                        <Transform3DGroup>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
+                            <ScaleTransform3D ScaleX="0.2" ScaleY="0.30" ScaleZ="1"/>
+                            <RotateTransform3D d:EulerAngles="0,0,0"/>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0.00" OffsetZ="0"/>
+                            <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
+                        </Transform3DGroup>
+                    </PerspectiveCamera.Transform>
+                </PerspectiveCamera>
+            </Local:ContentControl3D.CameraPrototype>
+            <!-- FRONT SIDE -->
+            <Local:ContentControl3D.InputBindings>
+                <KeyBinding Modifiers="Control" Key="F" Command="Local:ContentControl3D.RotateCommand"/>
+            </Local:ContentControl3D.InputBindings>
+            <Local:ContentControl3D.Content>
+                <!--Master Fields-->
+                <Grid Margin="0,8,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width=" *" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="20,5,0,0" Text="Writing Test No"  />
+                    <TextBox Grid.Row="0" Grid.Column="1" Width="120" Margin="10,0,0,0" x:Name="txtwtno" HorizontalAlignment="Left" Text="{Binding MasterEntity.wtno,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Barcode" Margin="20,5,0,0"/>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" >
+                        <TextBox Width="120" x:Name="txtbarcode" Margin="10,0,0,0" Local:ValidationBehavior.HasError="{Binding ErrorValue}" Local:CustomeValidationInput.ListObject="{Binding StringListBatch}" Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding StringListBatch}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" >
+                            <TextBox.Text >
+                                <Binding Path="MasterEntity.batch_no" Mode="TwoWay"  UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                    <Binding.ValidationRules >
+                                        <Local:InputValidator/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewKeyUp" SourceName="txtbarcode">
+                                    <i:InvokeCommandAction Command="{Binding CmdAddBatch}" 
+                                                            CommandParameter="{Binding Text, ElementName=txtbarcode}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
+                        <ToggleButton Grid.Column="1" Margin="0,0,0,0" x:Name="btnbarcode" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Height="23" Padding="4,2">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                  Path=IsKeyboardFocusWithin}" Value="True" >
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                   Path=IsKeyboardFocusWithin}" Value="False">
+                                            <Setter Property="Visibility" Value="Hidden" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <Local:ReflectionPopup x:Name="popbarcode"  IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnbarcode}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnbarcode}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                            <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                <Grid Background="CornflowerBlue">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBox Name="txtsearchbarcode" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringBatch, UpdateSourceTrigger=PropertyChanged}"  />
+                                    <DataGrid x:Name="dgPopupbarcode"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  AutoGenerateColumns="False" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Popup,AncestorLevel=1}, Path=DataContext.BatchCollection}" 
+                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtsearchbarcode, Path=Text, UpdateSourceTrigger=PropertyChanged}" 
+                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+                                                  Margin="2" Unloaded="dgUnLoaded_Event" MaxHeight="200" Width="150">
+                                        <DataGrid.Columns>
+                                            
+                                            <DataGridTextColumn Header="Batch No" Binding="{Binding batch_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }" Width="150"/>
+
+                                            
+                                        </DataGrid.Columns>
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddBatch,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupbarcode}" />
+                                            </i:EventTrigger>
+
+                                        </i:Interaction.Triggers>
+                                    </DataGrid>
+                                </Grid>
+                            </Border>
+                        </Local:ReflectionPopup>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Date"  Margin="0,5,0,0"/>
+                    <DatePicker x:Name="dtpwtdt" Grid.Row="0" Grid.Column="3" Margin="10,0,0,0" Width="120" HorizontalAlignment="Left" SelectedDate="{Binding MasterEntity.wtdt,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}" Background="Transparent" />
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="2" Text="Conversion Lot" Margin="0,5,0,0"  HorizontalAlignment="Left"/>
+                    <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal" >
+                        <TextBox Width="120" x:Name="txtConvLot" Margin="10,0,0,0" Local:ValidationBehavior.HasError="{Binding ErrorValue}" Local:CustomeValidationInput.ListObject="{Binding StringListConvLot}" Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding StringListConvLot}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" >
+                            <TextBox.Text >
+                                <Binding Path="MasterEntity.Conv_lot" Mode="TwoWay"  UpdateSourceTrigger="Default" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                    <Binding.ValidationRules >
+                                        <Local:InputValidator/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                            <!--<i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="LostFocus">
+                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddConvLot,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                        CommandParameter="{Binding Text, ElementName=txtConvLot}" />
+                                                                </i:EventTrigger>
+                                                        </i:Interaction.Triggers>-->
+                        </TextBox>
+                        <ToggleButton Grid.Column="1" Margin="0,0,0,0" x:Name="btnConv" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Height="23" Padding="4,2">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                  Path=IsKeyboardFocusWithin}" Value="True" >
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                   Path=IsKeyboardFocusWithin}" Value="False">
+                                            <Setter Property="Visibility" Value="Hidden" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <Local:ReflectionPopup x:Name="popConvLot"  IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnConv}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnConv}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                            <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                <Grid Background="CornflowerBlue">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBox Name="txtSConvLot" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringConvLot, UpdateSourceTrigger=PropertyChanged}"  />
+                                    <DataGrid x:Name="dgPopupConvLot"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  AutoGenerateColumns="False" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Popup,AncestorLevel=1}, Path=DataContext.ConvLotCollection}" 
+                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtSConvLot, Path=Text, UpdateSourceTrigger=PropertyChanged}" 
+                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+                                                  Margin="2" Unloaded="dgUnLoaded_Event" >
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Status" Binding="{Binding Status,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                            <DataGridTextColumn Header="Start Date" Binding="{Binding start_dt,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}" IsReadOnly="True"/>
+                                            <DataGridTextColumn Header="Model No" Binding="{Binding modelno,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                            <DataGridTextColumn Header="Machine No" Visibility="Hidden" Binding="{Binding machinecode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                            <DataGridTextColumn Header="Product" Binding="{Binding ItemName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                            <DataGridTextColumn Header="Min Value" Binding="{Binding min_val,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                            <DataGridTextColumn Header="Max Value" Binding="{Binding max_val,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                            <DataGridTextColumn Header="Max Value" Binding="{Binding max_val,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                            <DataGridTextColumn Header="Max Value" Binding="{Binding max_val,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                            <DataGridTextColumn Header="Conversion No" Binding="{Binding order_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+
+                                            <DataGridTextColumn Header="Conversion Lot" Binding="{Binding Conv_lot,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+
+                                            <DataGridTextColumn Header="ID" Binding="{Binding id,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }" Visibility="Hidden" />
+                                        </DataGrid.Columns>
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddConvLot,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupConvLot}" />
+                                            </i:EventTrigger>
+
+                                        </i:Interaction.Triggers>
+                                    </DataGrid>
+                                </Grid>
+                            </Border>
+                        </Local:ReflectionPopup>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Machine No" Margin="20,5,0,0"/>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" >
+                        <TextBox Width="120" x:Name="txtMachineNo" Margin="10,0,0,0" Tag="{Binding MasterEntity.mchn_id,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Local:ValidationBehavior.HasError="{Binding ErrorValue}" Local:CustomeValidationInput.ListObject="{Binding StringListMachine}" Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding StringListMachine}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" >
+                            <TextBox.Text >
+                                <Binding Path="MasterEntity.machinecode" Mode="TwoWay"  UpdateSourceTrigger="Default" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                    <Binding.ValidationRules >
+                                        <Local:InputValidator/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                            <i:Interaction.Triggers>
+                                                                <!--<i:EventTrigger EventName="LostFocus">
+                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddMachine,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                        CommandParameter="{Binding Text, ElementName=txtMachineNo}" />
+                                                                </i:EventTrigger>-->
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInvoke_Reference_Document, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Local:WindowElement}}}" 
+                                                                                    CommandParameter="{Binding Path=Text, ElementName=txtMachineNo}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
+                        <ToggleButton Grid.Column="1" Margin="0,0,0,0" x:Name="btnMchn" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Height="23" Padding="4,2">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                  Path=IsKeyboardFocusWithin}" Value="True" >
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                   Path=IsKeyboardFocusWithin}" Value="False">
+                                            <Setter Property="Visibility" Value="Hidden" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <Local:ReflectionPopup x:Name="popMachine"  IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnMchn}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnMchn}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                            <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                <Grid Background="CornflowerBlue">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBox Name="txtSMchn" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringMachine, UpdateSourceTrigger=PropertyChanged}"  />
+                                    <DataGrid x:Name="dgPopupMachine"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  AutoGenerateColumns="False" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Popup,AncestorLevel=1}, Path=DataContext.MachineCollection}" 
+                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtSMchn, Path=Text, UpdateSourceTrigger=PropertyChanged}" 
+                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+                                                  Margin="2" Unloaded="dgUnLoaded_Event" >
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Machine No" Binding="{Binding machinecode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                        </DataGrid.Columns>
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddMachine,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupMachine}" />
+                                            </i:EventTrigger>
+
+                                        </i:Interaction.Triggers>
+                                    </DataGrid>
+                                </Grid>
+                            </Border>
+                        </Local:ReflectionPopup>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Production Date"  Margin="20,5,0,0"/>
+                    <DatePicker Grid.Row="3" Grid.Column="1"  IsEnabled="True" Width="120" Height="30" Margin="10,0,0,0" x:Name="dtpprddt"  SelectedDate="{Binding MasterEntity.prddt,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd/MM/yyyy}}" Background="Transparent" HorizontalAlignment="Left" />
+
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Conversion No" Margin="0,5,0,0"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" Width="120" Margin="10,0,0,0" x:Name="txtConvNo" HorizontalAlignment="Left" Text="{Binding MasterEntity.order_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Grid Grid.Row="4" Grid.ColumnSpan="4" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <TabControl Margin="0,0,0,10" VerticalAlignment="Top" HorizontalAlignment="Left" Width="700" Height="400" >
+                            <TabItem Foreground="Black"  TabIndex="1">
+                                <TabItem.Header>
+                                    <TextBlock Foreground="White">General Details</TextBlock>
+                                </TabItem.Header>
+
+                                <Grid Margin="0,10,0,0" VerticalAlignment="Top" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Lot no" Margin="20,0,0,0"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" x:Name="cmblotno" HorizontalAlignment="Left" SelectedItem="{Binding MasterEntity.lotno,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="13,3,0,0" Background="Transparent" Foreground="Black">
+                                        <sys:String>01</sys:String>
+                                        <sys:String>02</sys:String>
+                                        <sys:String>03</sys:String>
+                                        <sys:String>04</sys:String>
+                                        <sys:String>05</sys:String>
+                                        <sys:String>06</sys:String>
+                                        <sys:String>07</sys:String>
+                                        <sys:String>08</sys:String>
+                                        <sys:String>Trial</sys:String>
+                                        <sys:String>Recheck</sys:String>
+                                        <sys:String>B-Grade</sys:String>
+                                        <sys:String>01R/C</sys:String>
+                                        <sys:String>02R/C</sys:String>
+                                        <sys:String>03R/C</sys:String>
+                                        <sys:String>04R/C</sys:String>
+                                        <sys:String>05R/C</sys:String>
+                                        <sys:String>06R/C</sys:String>
+                                        <sys:String>07R/C</sys:String>
+                                        <sys:String>08R/C</sys:String>
+                                        <sys:String>Adjust</sys:String>
+                                        <sys:String>Liva Test</sys:String>
+                                    </ComboBox>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Shift"  Margin="20,0,0,0"/>
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" >
+                                        <TextBox Width="120" x:Name="txtShift" Margin="10,0,0,0" Tag="{Binding MasterEntity.shift,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Local:ValidationBehavior.HasError="{Binding ErrorValue}" Local:CustomeValidationInput.ListObject="{Binding StringListShift}" Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding StringListShift}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" >
+                                            <TextBox.Text >
+                                                <Binding Path="MasterEntity.shift" Mode="TwoWay"  UpdateSourceTrigger="Default" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                                    <Binding.ValidationRules >
+                                                        <Local:InputValidator/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                            <!--<i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="LostFocus">
+                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddShift,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                        CommandParameter="{Binding Text, ElementName=txtShift}" />
+                                                                </i:EventTrigger>
+                                                        </i:Interaction.Triggers>-->
+                                        </TextBox>
+                                        <ToggleButton Grid.Column="1" Margin="0,0,0,0" x:Name="btnShift" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Height="23" Padding="4,2">
+                                            <ToggleButton.Style>
+                                                <Style TargetType="ToggleButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                  Path=IsKeyboardFocusWithin}" Value="True" >
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                   Path=IsKeyboardFocusWithin}" Value="False">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>
+                                        <Local:ReflectionPopup x:Name="popShift"  IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnShift}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnShift}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                                            <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                <Grid Background="CornflowerBlue">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBox Name="txtSShift" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringShift, UpdateSourceTrigger=PropertyChanged}"  />
+                                                    <DataGrid x:Name="dgPopupShift"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  AutoGenerateColumns="False" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Popup,AncestorLevel=1}, Path=DataContext.ShiftCollection}" 
+                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtSShift, Path=Text, UpdateSourceTrigger=PropertyChanged}" 
+                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+                                                  Margin="2" Unloaded="dgUnLoaded_Event" >
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Shift" Binding="{Binding shift,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                        </DataGrid.Columns>
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddShift,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupShift}" />
+                                                            </i:EventTrigger>
+
+                                                        </i:Interaction.Triggers>
+                                                    </DataGrid>
+                                                </Grid>
+                                            </Border>
+                                        </Local:ReflectionPopup>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Model"  Margin="20,0,0,0"/>
+                                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                                        <TextBox  x:Name="txtmodel"  Width="120" Tag="{Binding MasterEntity.modlno,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.modlno,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="10,0,0,0" IsReadOnly="True" />
+                                        <ToggleButton x:Name="btnmodel" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Padding="4,2" Height="23">
+                                            <ToggleButton.Style>
+                                                <Style TargetType="ToggleButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                               Path=IsKeyboardFocusWithin}" Value="True" >
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                               Path=IsKeyboardFocusWithin}" Value="False">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>
+                                        <Local:ReflectionPopup  x:Name="model_popup" AllowsTransparency="True" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnmodel}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnmodel}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                                            <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                <Grid Background="CornflowerBlue">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBox Name="txtsearchmodel" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringModel, UpdateSourceTrigger=PropertyChanged}"  />
+                                                    <DataGrid x:Name="dgPopUpmodel" AutoGenerateColumns="False" SelectedIndex="0" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}, Path=DataContext.ModelsCollection}" 
+                                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtsearchmodel, Path=Text, UpdateSourceTrigger=LostFocus}" 
+                                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"   
+                                                                  Margin="2" MaxHeight="300" Unloaded="dgUnLoaded_Event" >
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Model No" Binding="{Binding modelno,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                            <!--<DataGridTextColumn Header="Model" Binding="{Binding basicmodel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>-->
+                                                            <!--<DataGridTextColumn Header="Description" Binding="{Binding modeldesc,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>-->
+                                                        </DataGrid.Columns>
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddModels,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopUpmodel}" />
+                                                            </i:EventTrigger>
+                                                            <!--<Local:SpaceKeyDownEventTrigger  EventName="KeyUp">
+                                                                            <i:ChangePropertyAction TargetObject="{Binding ElementName=model_popup}" PropertyName="IsOpen"  Value="False"/>
+                                                             </Local:SpaceKeyDownEventTrigger>-->
+                                                        </i:Interaction.Triggers>
+                                                        <!--<i:Interaction.Behaviors>
+                                                                        <Local:ColumnHeaderBehavior />
+                                                        </i:Interaction.Behaviors>-->
+                                                    </DataGrid>
+                                                </Grid>
+                                            </Border>
+                                        </Local:ReflectionPopup>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Ink"  Margin="20,0,0,0"/>
+                                    <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBox  x:Name="txtink" Width="120" Tag="{Binding MasterEntity.ink,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.ink,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="10,0,0,0" IsReadOnly="True"/>
+
+                                        <ToggleButton Grid.Column="1" x:Name="btnINK" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Padding="4,2" Height="23">
+                                            <ToggleButton.Style>
+                                                <Style TargetType="ToggleButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                               Path=IsKeyboardFocusWithin}" Value="True" >
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                               Path=IsKeyboardFocusWithin}" Value="False">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>
+                                        <Local:ReflectionPopup  x:Name="INK_popup" AllowsTransparency="True" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnINK}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnINK}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                                            <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                <Grid Background="CornflowerBlue">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBox Name="txtsearchINK" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringINK, UpdateSourceTrigger=PropertyChanged}"  />
+                                                    <DataGrid x:Name="dgPopUpINK" AutoGenerateColumns="False" SelectedIndex="0" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}, Path=DataContext.INKCollection}" 
+                                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtsearchINK, Path=Text, UpdateSourceTrigger=LostFocus}" 
+                                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"   
+                                                                  Margin="2" MaxHeight="300" Unloaded="dgUnLoaded_Event">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="INK" Binding="{Binding ink,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                        </DataGrid.Columns>
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddInk,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                                            CommandParameter="{Binding SelectedItems, ElementName=dgPopUpINK}" />
+                                                            </i:EventTrigger>
+                                                            <!--<Local:SpaceKeyDownEventTrigger  EventName="KeyUp">
+                                                                <i:ChangePropertyAction TargetObject="{Binding ElementName=INK_popup}" PropertyName="IsOpen"  Value="False"/>
+                                                            </Local:SpaceKeyDownEventTrigger>-->
+                                                        </i:Interaction.Triggers>
+                                                        <i:Interaction.Behaviors>
+                                                            <!--<Local:ColumnHeaderBehavior />-->
+                                                        </i:Interaction.Behaviors>
+                                                    </DataGrid>
+                                                </Grid>
+                                            </Border>
+                                        </Local:ReflectionPopup>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Time"  Margin="20,0,0,0"/>
+                                    <TextBox Grid.Row="4" Grid.Column="1" Width="120" Margin="10,0,0,0" x:Name="txtTime" HorizontalAlignment="Left" Text="{Binding MasterEntity.timeto,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Temp"  Margin="20,0,0,0"/>
+                                    <TextBox Grid.Row="5" Grid.Column="1" Width="120" Margin="10,0,0,0" x:Name="txtTemp" HorizontalAlignment="Left" Text="{Binding MasterEntity.tmp,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Humidity"  Margin="20,0,0,0"/>
+                                    <TextBox Grid.Row="6" Grid.Column="1" Width="120" Margin="10,0,0,0" x:Name="txtHumidity" HorizontalAlignment="Left" Text="{Binding MasterEntity.humdt,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Test Meter"  Margin="20,0,0,0"/>
+                                    <ComboBox Grid.Row="7" Grid.Column="1" x:Name="cmbTm" HorizontalAlignment="Left" SelectedItem="{Binding MasterEntity.tm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="13,3,0,0" Background="Transparent" Foreground="Black">
+                                        <sys:String>200</sys:String>
+                                        <sys:String>100</sys:String>
+                                        <sys:String>50</sys:String>
+                                        <sys:String>25</sys:String>
+                                    </ComboBox>
+                                    
+                                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Status"  Margin="20,0,0,0"/>
+                                    <TextBox Grid.Row="8" Grid.Column="1" Width="120" Margin="10,0,0,0" x:Name="txtStatus" HorizontalAlignment="Left" Text="{Binding MasterEntity.t_status,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Product"  Margin="0,0,0,0"/>
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="0,0,0,0">
+                                       <TextBox  x:Name="txtProdct" Width="120" Tag="{Binding MasterEntity.prdct_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding MasterEntity.itemname,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" Margin="10,0,0,0" IsReadOnly="True"/>
+                                        <ToggleButton Grid.Column="1" x:Name="btnProdct" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Padding="4,2" Height="23">
+                                            <ToggleButton.Style>
+                                                <Style TargetType="ToggleButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                        Path=IsKeyboardFocusWithin}" Value="True" >
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                        Path=IsKeyboardFocusWithin}" Value="False">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>
+                                        <Local:ReflectionPopup  x:Name="Prodct_popup" AllowsTransparency="True" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnProdct}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnProdct}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                                            <Border>
+                                                <Grid Background="CornflowerBlue">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBox Name="txtsearchProdct" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringProdct, UpdateSourceTrigger=PropertyChanged}"  />
+                                                    <DataGrid x:Name="dgPopUpProdct" AutoGenerateColumns="False" SelectedIndex="0" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}, Path=DataContext.ItemCollection}" 
+                                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtsearchProdct, Path=Text, UpdateSourceTrigger=LostFocus}" 
+                                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"   
+                                                                  Margin="2" MaxHeight="300" Unloaded="dgUnLoaded_Event">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Product No" Binding="{Binding prdct_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                            <DataGridTextColumn Header="Product Name" Binding="{Binding ItemName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        </DataGrid.Columns>
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddItem,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                                            CommandParameter="{Binding SelectedItems, ElementName=dgPopUpProdct}" />
+                                                            </i:EventTrigger>
+                                                            <!--<Local:SpaceKeyDownEventTrigger  EventName="KeyUp">
+                                                                            <i:ChangePropertyAction TargetObject="{Binding ElementName=Prodct_popup}" PropertyName="IsOpen"  Value="False"/>
+                                                                        </Local:SpaceKeyDownEventTrigger>-->
+                                                        </i:Interaction.Triggers>
+                                                        <i:Interaction.Behaviors>
+                                                                        <!--<Local:ColumnHeaderBehavior />-->
+                                                                    </i:Interaction.Behaviors>
+                                                    </DataGrid>
+                                                </Grid>
+                                            </Border>
+                                        </Local:ReflectionPopup>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Operator"  Margin="0,0,0,0"/>
+                                    <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal" >
+                                        <TextBox Width="120" x:Name="txtOperator" Margin="10,0,0,0" Local:ValidationBehavior.HasError="{Binding ErrorValue}" Local:CustomeValidationInput.ListObject="{Binding StringListOperator}" Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding StringListOperator}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" >
+                                            <TextBox.Text >
+                                                <Binding Path="MasterEntity.EmpNm" Mode="TwoWay"  UpdateSourceTrigger="Default" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                                    <Binding.ValidationRules >
+                                                        <Local:InputValidator/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                            <i:Interaction.Triggers>
+                                                                <!--<i:EventTrigger EventName="LostFocus">
+                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddOperator,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                        CommandParameter="{Binding Text, ElementName=txtOperator}" />
+                                                                </i:EventTrigger>-->
+                                                <i:EventTrigger EventName="MouseDoubleClick">
+                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdInvoke_Reference_Document, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Local:WindowElement}}}" 
+                                                                                    CommandParameter="{Binding Path=Text, ElementName=txtOperator}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </TextBox>
+                                        <ToggleButton Grid.Column="1" Margin="0,0,0,0" x:Name="btnOper" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Height="23" Padding="4,2">
+                                            <ToggleButton.Style>
+                                                <Style TargetType="ToggleButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                  Path=IsKeyboardFocusWithin}" Value="True" >
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                   Path=IsKeyboardFocusWithin}" Value="False">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>
+                                        <Local:ReflectionPopup x:Name="popOper"  IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnOper}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnOper}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                                            <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                <Grid Background="CornflowerBlue">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBox Name="txtSOper" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringOperator, UpdateSourceTrigger=PropertyChanged}"  />
+                                                    <DataGrid x:Name="dgPopupOperator"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  AutoGenerateColumns="False" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Popup,AncestorLevel=1}, Path=DataContext.OperatorCollection}" 
+                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtSOper, Path=Text, UpdateSourceTrigger=PropertyChanged}" 
+                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+                                                  Margin="2" Unloaded="dgUnLoaded_Event">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Employee Id" Binding="{Binding EmpId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                            <DataGridTextColumn Header="Employee Name" Binding="{Binding EmpLName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                        </DataGrid.Columns>
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddOperator,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupOperator}" />
+                                                            </i:EventTrigger>
+
+                                                        </i:Interaction.Triggers>
+                                                    </DataGrid>
+                                                </Grid>
+                                            </Border>
+                                        </Local:ReflectionPopup>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="Test Type"  Margin="0,0,0,0"/>
+                                    <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal" >
+                                        <TextBox Width="120" x:Name="txtTestType" Margin="10,0,0,0" Local:ValidationBehavior.HasError="{Binding ErrorValue}" Local:CustomeValidationInput.ListObject="{Binding StringListTestType}" Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding StringListTestType}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase" >
+                                            <TextBox.Text >
+                                                <Binding Path="MasterEntity.test_code" Mode="TwoWay"  UpdateSourceTrigger="Default" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" ValidatesOnExceptions="True" >
+                                                    <Binding.ValidationRules >
+                                                        <Local:InputValidator/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                            <!--<i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="LostFocus">
+                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddTestType,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                        CommandParameter="{Binding Text, ElementName=txtTestType}" />
+                                                                </i:EventTrigger>
+                                                        </i:Interaction.Triggers>-->
+                                        </TextBox>
+                                        <ToggleButton Grid.Column="1" Margin="0,0,0,0" x:Name="btnTest" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Height="23" Padding="4,2">
+                                            <ToggleButton.Style>
+                                                <Style TargetType="ToggleButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                  Path=IsKeyboardFocusWithin}" Value="True" >
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=StackPanel},
+                                                                                   Path=IsKeyboardFocusWithin}" Value="False">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>
+                                        <Local:ReflectionPopup x:Name="popTest"  IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnTest}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnTest}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                                            <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                <Grid Background="CornflowerBlue">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBox Name="txtSTest" Grid.Row="0" Background="Aqua" Text="{Binding FilterStringTestType, UpdateSourceTrigger=PropertyChanged}"  />
+                                                    <DataGrid x:Name="dgPopupTestType"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  AutoGenerateColumns="False" FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Popup,AncestorLevel=1}, Path=DataContext.TestTypeCollection}" 
+                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtSTest, Path=Text, UpdateSourceTrigger=PropertyChanged}" 
+                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+                                                  Margin="2" Unloaded="dgUnLoaded_Event" >
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Test Type" Binding="{Binding test_code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+                                                        </DataGrid.Columns>
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddTestType,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                CommandParameter="{Binding SelectedItems, ElementName=dgPopupTestType}" />
+                                                            </i:EventTrigger>
+
+                                                        </i:Interaction.Triggers>
+                                                    </DataGrid>
+                                                </Grid>
+                                            </Border>
+                                        </Local:ReflectionPopup>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="Tip Type"  Margin="0,0,0,0"/>
+                                    <TextBox Grid.Row="3" Grid.Column="3" Width="120" Margin="10,0,0,0" x:Name="txtTipType" HorizontalAlignment="Left" Text="{Binding MasterEntity.tiptp,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="Counter Qty."  Margin="0,0,0,0"/>
+                                    <TextBox Grid.Row="4" Grid.Column="3" Width="120" Margin="10,0,0,0" x:Name="txtCounterQty" HorizontalAlignment="Left" Text="{Binding MasterEntity.counter_qty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#0.00#', FallbackValue='0.00'}" />
+
+                                    <TextBlock Grid.Row="5" Grid.Column="2" Text="Check Qty."  Margin="0,0,0,0"/>
+                                    <TextBox Grid.Row="5" Grid.Column="3" Width="120" Margin="10,0,0,0" x:Name="txtChkQty" HorizontalAlignment="Left" Text="{Binding MasterEntity.check_qty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#0.00#', FallbackValue='0.00'}" />
+
+                                    <TextBlock Grid.Row="6" Grid.Column="2" Text="Remark" Grid.RowSpan="2" Margin="0,0,0,0"/>
+                                    <TextBox Grid.Row="6" Grid.Column="3" Width="120" Grid.RowSpan="2" Margin="10,0,0,0" x:Name="txtRemark" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Text="{Binding MasterEntity.remusr,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                                    <TextBlock Grid.Row="8" Grid.Column="2" Text="Active"  Margin="0,0,0,0"/>
+                                    <CheckBox Grid.Row="8" Grid.Column="3" Content="" Margin="12,0,0,0" HorizontalAlignment="Left" IsChecked="{Binding MasterEntity.active,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }" />
+
+                                </Grid>
+
+                            </TabItem>
+                            <TabItem Foreground="Black"  TabIndex="1">
+                                <TabItem.Header >
+                                    <TextBlock Foreground="White">ILD Reading And Details</TextBlock>
+                                </TabItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <DataGrid  x:Name="dgData" VerticalAlignment="Top"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" GridLinesVisibility="All" IsReadOnly="False"  
+                                               Margin="0,0,0,0" FontSize="14" AutoGenerateColumns="False" 
+                                               SelectedIndex="{Binding dgSelectedIndexItem,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" BorderBrush="Transparent" 
+                                               VerticalScrollBarVisibility="Visible"  
+                                               ItemsSource="{Binding  ItemsEntity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="200" Width="700"  Background="Transparent"  HorizontalScrollBarVisibility="Visible"  >
+                                        <DataGrid.Resources>
+                                            <Local:IsReadOnlyConverter x:Key="isRead"/>
+                                            <Local:VisibilityConverter x:Key="VisibilityConverter"/>
+                                            <Local:IsGreaterThanZero x:Key="IsGreaterThanZero"/>
+                                            <Local:BindingProxy x:Key="proxy" Data="{Binding}"/>
+                                        </DataGrid.Resources>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="id" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay,FallbackValue='0'}" Visibility="Hidden"/>
+
+                                            <DataGridTextColumn Header="Refill No"  Binding="{Binding refilno,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"  >
+                                                <DataGridTextColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Data.blNew, Source={StaticResource proxy}}" Value = "True">
+                                                                <Setter Property="IsEnabled" Value="True" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Data.blNew , Source={StaticResource proxy}}" Value = "False">
+                                                                <Setter Property="IsEnabled" Value="False" />
+                                                            </DataTrigger>
+                                                            <Trigger Property="IsSelected" Value="True" >
+                                                                <Setter Property="Background" Value="PowderBlue" />
+                                                                <Setter Property="Foreground" Value="Black"></Setter>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </DataGridTextColumn.CellStyle>
+                                            </DataGridTextColumn>
+
+                                            <DataGridTextColumn Header="A-Wt. Before Test" Binding="{Binding wbtsta,Converter={StaticResource IsGreaterThanZero},Mode=TwoWay,UpdateSourceTrigger=LostFocus}"  >
+                                                <DataGridTextColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Data.blA, Source={StaticResource proxy}}" Value = "True">
+                                                                <Setter Property="IsEnabled" Value="True" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Data.blA , Source={StaticResource proxy}}" Value = "False">
+                                                                <Setter Property="IsEnabled" Value="False" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </DataGridTextColumn.CellStyle>
+                                                <DataGridTextColumn.EditingElementStyle>
+                                                    <Style TargetType="TextBox">
+                                                        <Setter Property="MaxLength" Value="6"/>
+                                                    </Style>
+                                                </DataGridTextColumn.EditingElementStyle>
+
+                                            </DataGridTextColumn>
+
+                                            <DataGridTextColumn Header="B-Wt.After Test"    Binding="{Binding watstb,Converter={StaticResource IsGreaterThanZero},Mode=TwoWay,UpdateSourceTrigger=LostFocus}"  >
+                                                <DataGridTextColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Data.blB, Source={StaticResource proxy}}" Value = "True">
+                                                                <Setter Property="IsEnabled" Value="True" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Data.blB , Source={StaticResource proxy}}" Value = "False">
+                                                                <Setter Property="IsEnabled" Value="False" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </DataGridTextColumn.CellStyle>
+                                                <DataGridTextColumn.EditingElementStyle>
+                                                    <Style TargetType="TextBox">
+                                                        <Setter Property="MaxLength" Value="6"/>
+                                                    </Style>
+                                                </DataGridTextColumn.EditingElementStyle>
+                                            </DataGridTextColumn>
+
+                                            <DataGridTextColumn Header="C-Wt.After Cleaning"  Binding="{Binding waclgc,Mode=TwoWay,UpdateSourceTrigger=LostFocus}">
+                                                <DataGridTextColumn.EditingElementStyle>
+                                                    <Style TargetType="TextBox">
+                                                        <Setter Property="MaxLength" Value="6"/>
+                                                    </Style>
+                                                </DataGridTextColumn.EditingElementStyle>
+                                            </DataGridTextColumn>
+
+                                            <DataGridTemplateColumn Header="ILD(mg/100m)" IsReadOnly="True" Visibility="{Binding hide, Converter={StaticResource VisibilityConverter}}">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Label Name="lbl" Content="{Binding Path=ild}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTextColumn Header="Gooping(%)" Binding="{Binding gooping,StringFormat='#0.00#', Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                            <DataGridTemplateColumn Header="Defects" Width="80">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate >
+                                                        <Grid x:Name="gridDefects">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="2*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox Name="txtDefect"  Grid.Column="0" Tag ="{Binding defects,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay }" Local:ValidationBehavior.HasError="{Binding ErrorValue}" Local:CustomeValidationInput.ListObject="{Binding StringListDefect}" Local:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding StringListDefect}" Local:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase">
+                                                                <TextBox.Text >
+                                                                    <Binding Path="defects" Mode="TwoWay"  UpdateSourceTrigger="LostFocus" NotifyOnValidationError="True" >
+                                                                        <Binding.ValidationRules >
+                                                                            <Local:InputValidator/>
+                                                                        </Binding.ValidationRules>
+                                                                    </Binding>
+                                                                </TextBox.Text>
+                                                                <!--<i:Interaction.Triggers>
+                                                                 <i:EventTrigger EventName="LostFocus">
+                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddDefect,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                                            CommandParameter="{Binding Text, ElementName=txtDefect}" />
+                                                                </i:EventTrigger>
+                                                              </i:Interaction.Triggers>-->
+                                                            </TextBox>
+                                                            <ToggleButton Grid.Column="1" x:Name="btnDefects" Content="q" FontFamily="Wingdings 3" HorizontalAlignment="Left" Padding="4,2"/>
+
+                                                            <Local:ReflectionPopup  x:Name="Defects_popup" AllowsTransparency="True" IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=btnDefects}" StaysOpen="False"  PlacementTarget="{Binding ElementName=btnDefects}" Placement="Bottom" PopupAnimation="Slide" Local:PopupBehavior.ClosesOnInput="False" >
+                                                                <Border BorderBrush="SlateBlue" BorderThickness="1"  CornerRadius="2" >
+                                                                    <Grid Background="CornflowerBlue">
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition Height="Auto" />
+                                                                            <RowDefinition Height="Auto" />
+
+                                                                        </Grid.RowDefinitions>
+                                                                        <TextBox Name="txtsearchDefects" Grid.Row="0" Background="Aqua" Text="{Binding  Path=DataContext.FilterStringDefect, UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"  />
+                                                                        <DataGrid x:Name="dgPopUpDefects" AutoGenerateColumns="False"  FrozenColumnCount="0" IsReadOnly="True" Grid.Row="1" 
+                                                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}, Path=DataContext.DefectCollection}" 
+                                                                                  Local:DataGridTextSearch.SearchValue="{Binding ElementName=txtsearchDefects, Path=Text, UpdateSourceTrigger=LostFocus}" 
+                                                                                  CanUserAddRows="False" RowHeaderWidth="0" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"   
+                                                                                  Margin="2"  MaxHeight="300" MaxWidth="300" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" >
+                                                                            <DataGrid.Columns>
+                                                                                <DataGridTextColumn Header="Defect Description" Binding="{Binding dfctdsc,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+
+                                                                            </DataGrid.Columns>
+                                                                            <i:Interaction.Triggers>
+                                                                                <i:EventTrigger EventName="SelectionChanged">
+                                                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAddDefect,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" 
+                                                                                            CommandParameter="{Binding SelectedItems, ElementName=dgPopUpDefects}" />
+                                                                                </i:EventTrigger>
+                                                                                <!--<Local:SpaceKeyDownEventTrigger  EventName="KeyUp">
+                                                                        <i:ChangePropertyAction TargetObject="{Binding ElementName=Defects_popup}" PropertyName="IsOpen"  Value="False"/>
+                                                                    </Local:SpaceKeyDownEventTrigger>-->
+                                                                            </i:Interaction.Triggers>
+                                                                            <i:Interaction.Behaviors>
+                                                                                <!--<Local:ColumnHeaderBehavior />-->
+                                                                            </i:Interaction.Behaviors>
+                                                                        </DataGrid>
+                                                                    </Grid>
+                                                                </Border>
+                                                            </Local:ReflectionPopup>
+                                                        </Grid>
+                                                        <DataTemplate.Triggers>
+                                                            <Trigger SourceName="gridDefects" Property="Grid.IsKeyboardFocusWithin" Value="True">
+                                                                <Setter TargetName="btnDefects" Property="Visibility" Value="Visible" />
+                                                            </Trigger>
+                                                            <Trigger SourceName="gridDefects" Property="Grid.IsKeyboardFocusWithin" Value="False">
+                                                                <Setter TargetName="btnDefects" Property="Visibility" Value="Hidden" />
+                                                            </Trigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Remark" Binding="{Binding remusr,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="70" />
+                                            <DataGridCheckBoxColumn Header="Active"  Binding="{Binding active,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"/>
+
+                                            <DataGridTemplateColumn Header="Action">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Width="20" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="-4"
+                                                                                    Command="{Binding Path=DataContext.cmdDeleteDataGridRowItem,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                                                    CommandParameter="{Binding SelectedIndex, ElementName=dgData}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Image Height="20" Width="20" Source="{StaticResource imgTrash}">
+                                                                </Image>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                        
+                                    </DataGrid>
+                                    <Grid Grid.Row="1" Margin="40,0,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Particulars" Margin="30,3,0,3" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Target" Margin="0,3,0,3" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Actual" Margin="0,3,0,3" HorizontalAlignment="Center"/>
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Min ILD" Margin="20,5,0,0"/>
+                                        <TextBox x:Name="txtMinIld1" Grid.Row="1" Grid.Column="1" Width="70" HorizontalAlignment="Center" IsReadOnly="False"  Margin="0,5,0,0" Text="{Binding MasterEntity.tmnild,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}"  Background="Transparent" />
+                                        <TextBox x:Name="txtMinIld2" Grid.Row="1" Grid.Column="2" Width="70" HorizontalAlignment="Center" IsReadOnly="True" Margin="0,5,0,0" Text="{Binding MasterEntity.amnild,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}"  Background="Transparent" />
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Max ILD"  Margin="20,0,0,0"/>
+                                        <TextBox x:Name="txtMaxIld1" Grid.Row="2" Grid.Column="1" Width="70" HorizontalAlignment="Center" IsReadOnly="False" Margin="0,0,0,0" Text="{Binding MasterEntity.tmxild,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}" Background="Transparent" />
+                                        <TextBox x:Name="txtMaxIld2" Grid.Row="2" Grid.Column="2" Width="70" HorizontalAlignment="Center" IsReadOnly="True" Margin="0,0,0,0" Text="{Binding MasterEntity.amxild,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}" Background="Transparent" />
+
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Average ILD"  Margin="20,0,0,0"/>
+                                        <TextBox x:Name="txtAvIld1" Grid.Row="3" Grid.Column="1" Width="70" HorizontalAlignment="Center" IsReadOnly="False" Margin="0,0,0,0" Text="{Binding MasterEntity.tavild,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}" Background="Transparent" />
+                                        <TextBox x:Name="txtAvIld2" Grid.Row="3" Grid.Column="2" Width="70" HorizontalAlignment="Center" IsReadOnly="True" Margin="0,0,0,0" Text="{Binding MasterEntity.aavild,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}" Background="Transparent" />
+
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Range"  Margin="20,0,0,0"/>
+                                        <TextBox x:Name="txtRange1" Grid.Row="4" Grid.Column="1" Width="70" HorizontalAlignment="Center" IsReadOnly="True" Margin="0,0,0,0" Text="{Binding MasterEntity.Ranget,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}" Background="Transparent" />
+                                        <TextBox x:Name="txtRange2" Grid.Row="4" Grid.Column="2" Width="70" HorizontalAlignment="Center" IsReadOnly="True" Margin="0,0,0,0" Text="{Binding MasterEntity.Rangea,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}" Background="Transparent" />
+
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Average Gooping(%)" Margin="20,0,0,0"/>
+                                        <TextBox x:Name="txtAvGoo1" Grid.Row="5" Grid.Column="1" Width="70" HorizontalAlignment="Center" IsReadOnly="False" Margin="0,0,0,0" Text="{Binding MasterEntity.tavgoo,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}"  Background="Transparent" />
+                                        <TextBox x:Name="txtAvGoo2" Grid.Row="5" Grid.Column="2" Width="70" HorizontalAlignment="Center" IsReadOnly="True" Margin="0,0,0,0" Text="{Binding MasterEntity.aavgoo,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue='0'}"  Background="Transparent" />
+
+                                    </Grid>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </Grid>
+            </Local:ContentControl3D.Content>
+            <!-- BACK SIDE -->
+            <Local:ContentControl3D.BackContent >
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Width="700" Margin="0,10,0,0" Grid.Row="0" BorderBrush="Black"  BorderThickness="0.8"  VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <GroupBox.Header> Search Criteria </GroupBox.Header>
+                        
+                        <Grid Grid.Row="0" Width="700" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="From Date" FontSize="12" Margin="10,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"  />
+                            <DatePicker Grid.Row="0" Grid.Column="1"  IsEnabled="True" FontSize="12" Width="100"   Margin="5,0,0,0"  x:Name="dtpFrmDate"  SelectedDate="{Binding MasterEntity.Fromdate,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}"  Background="Transparent"   HorizontalAlignment="Left" />
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="To Date" Margin="10,5,0,0" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left"  />
+
+                            <DatePicker x:Name="dtpToDate" Width="120" Grid.Row="0" Grid.Column="3" FontSize="12" Margin="5,0,0,0" SelectedDate="{Binding MasterEntity.ToDate,Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Background="Transparent">
+                            </DatePicker>
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Machine Type" FontSize="12"  Margin="10,5,0,0"/>
+                            <TextBox Grid.Row="0" Grid.Column="5" x:Name="txtMachineType" FontSize="12" Text="{Binding MasterEntity.prdct_codeBack,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="80" Height="30" MaxLength="30" Margin="10,0,0,0" IsReadOnly="True"/>
+
+                            <Button Name="button2" Style="{StaticResource NormalButtonStyle}" Grid.Row="0" FontSize="12" Grid.Column="6" Command="{Binding Path=ReportCommand}"   Content="Load"   Background="White"  Width="80"  Height="25"  Margin="20,0,0,0" />
+
+                        </Grid>
+                    </GroupBox>
+
+                    <Grid Grid.Row="2" Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Local:SearchTextBox Height="25" Grid.Row="1" Grid.Column="0" Name="SearchBox" Background="Transparent" Text="{Binding FilterString, UpdateSourceTrigger=PropertyChanged}"  />
+                        <Button Grid.Row="1" Grid.Column="1" Height="25"  Style="{StaticResource NormalButtonStyle}" Width="80"  Command="{Binding ExportCommand}">Export</Button>
+                    </Grid>
+                    <Grid Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <DataGrid x:Name="DataLV" Margin="0,0,0,10" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding DataGridCollection}" Width="700" Height="500" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow"
+                                Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"  FontSize="12"                                                                      
+                                Background="Transparent"  RowBackground="Transparent" GridLinesVisibility="All" BorderThickness="1" SelectionMode="Single"  VerticalScrollBarVisibility="Visible">
+                            <DataGrid.Resources>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Select">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ToggleButton x:Name="btnSO"
+                                                      Command="{Binding Path=DataContext.CmdLoadDocumentByDocumentNumber, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                         Style="{StaticResource CircleToggleButtonStyle}" Width="25" Height="25" Content="{Binding SetQty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" >
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click">
+                                                        <i:InvokeCommandAction Command="Local:ContentControl3D.RotateCommand"  />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+
+                                            </ToggleButton>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Machine No"  Binding="{Binding machinecode}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Lot No" Binding="{Binding lotno}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Shift"  Binding="{Binding shift}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Product Name"  Binding="{Binding itemname}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Production Date"  Binding="{Binding prddt, StringFormat={}{0:dd/MM/yyyy}}"  IsReadOnly="True"/>
+                                <DataGridTextColumn Header="WT No" Binding="{Binding wtno}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="WT Date"  Binding="{Binding wtdt, StringFormat={}{0:dd/MM/yyyy}}"  IsReadOnly="True"/>
+                            </DataGrid.Columns>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction Command="{Binding SelectionIDCommand}" 
+                                                        CommandParameter="{Binding SelectedItems,  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </Local:ContentControl3D.BackContent>
+        </Local:ContentControl3D>
+    </Grid>
+</Local:WindowElement>

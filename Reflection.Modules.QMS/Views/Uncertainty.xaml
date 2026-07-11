@@ -1,0 +1,146 @@
+﻿<Local:WindowElement x:Class="Reflection.Modules.QMS.Views.Uncertainty"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:Child="clr-namespace:Reflection.Modules.QMS.Views"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+               
+             xmlns:time="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"            
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}" 
+             Title="{x:Static Local:AppSessionState.ViewTitle}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.cmdWindowLoadEvent,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}" CommandParameter="{Binding Text, ElementName=txtStatus}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+            <TabControl SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinHeight="400" MinWidth="1050" >
+                <TabItem Header="Transaction" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Instrument uncer Calibration" Grid.Row="0" Grid.Column="0" />
+                        <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="170" Text="{Binding MasterEntity.doc_no,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"/>
+
+                        <TextBlock Text="Test Name" Grid.Row="0" Grid.Column="2" />
+                        <TextBox Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Width="170" Text="{Binding MasterEntity.lab_name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    
+                        <TabControl Grid.Row="1" Grid.ColumnSpan="4" MinHeight="365" MinWidth="1015">
+                            <TabItem Header="Datasheet">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <DataGrid x:Name="dgDataSheet" Grid.Row="1" Grid.ColumnSpan="3" BorderBrush="Black" CanUserSortColumns="False" Margin="0,5,0,0" 
+                                            IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="False" GridLinesVisibility="All"
+                                            SelectedIndex="{Binding dgSelectedIndexTestType,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" 
+                                            ItemsSource="{Binding TestTypeEntity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                            CanUserAddRows="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
+                                            Width="1000" Height="315" RowHeight="25">
+                                        <DataGrid.Resources>
+                                            <Local:CustomDecimalConverter x:Key="CustomConverter" />
+                                        </DataGrid.Resources>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Benchmark Names"/>
+                                            <DataGridTextColumn Header="Bench Values"/>
+                                            <DataGridTextColumn Header="Parameter Name"/>
+                                            <DataGridTextColumn Header="Parameter Values"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="View">
+                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Local:SearchTextBox Height="25" Grid.Column="0" Name="SearchBox" Background="Transparent" Text="{Binding FilterString, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Aquamarine" />
+                            <Button Grid.Column="1" Height="25" Margin="4,0,0,0" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding ExportCommand}">Export</Button>
+                        </Grid>
+                        <DataGrid Grid.Row="1" x:Name="DataLV" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="False" IsReadOnly="True"
+                              Width="1030" Height="560" HorizontalAlignment="Left" SelectionMode="Single" SelectionUnit="FullRow" BorderBrush="Black"
+                              Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"
+                              GridLinesVisibility="All" BorderThickness="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button x:Name="btnlabtrs" Width="20" Height="20"
+                                                    Command="{Binding Path=DataContext.CmdLoadDocumentByDocumentNumber, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                    CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                    Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Center" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="{StaticResource imgArrow_right}"   >
+                                                    </Image>
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Calibration Records" IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="5,0,0,5" >
+                                                <Hyperlink 
+                                                    Command="{Binding Path=DataContext.CmdLoadDocumentByDocumentNumber,RelativeSource={RelativeSource AncestorType=Local:WindowElement,AncestorLevel=1}}"
+                                                    CommandParameter="{Binding SelectedItems, ElementName=DataLV}" Background="Transparent" >
+                                                <Hyperlink.Inlines>
+                                                    <!--<Image Source="{StaticResource imgArrow_right}" Width="15" Height="15" VerticalAlignment="Center"/>-->
+                                                    <Run Text="{Binding doc_no}"/>
+                                                </Hyperlink.Inlines>                                     
+                                                </Hyperlink>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Document Date" Width="110" Binding="{Binding doc_date, StringFormat={}{0:dd/MM/yyyy}}"/>
+                                <DataGridTextColumn Header="Instrument Name" Width="250" Binding="{Binding inst_name}"/>
+                                <DataGridTextColumn Header="Test Name" Width="150" Binding="{Binding test_name}"/>
+                                <DataGridTextColumn Header="Calibrated By" Width="180" Binding="{Binding EmpNm}"/>
+                                <!--<DataGridTextColumn Header="Calibration Category" Binding="{Binding cal_cat}"/>-->
+                                <!--<DataGridTextColumn Header="Calibration Agency" Width="250" Binding="{Binding PartyNm}"/>-->
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</Local:WindowElement>

@@ -1,0 +1,172 @@
+﻿using Dapper;
+using Reflection.EF;
+using Reflection.EF.Asset_Management;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Reflection.BusinessLogic
+{
+   
+    public class ACC_M002_C_BL :ReflectionBusinessLogic
+    {
+        public static string connectionString;
+        MultipleContext_ACC_M002_C MC = new MultipleContext_ACC_M002_C();
+        ACC_M002_C MasterEntity = new ACC_M002_C();
+
+        public ACC_M002_C_BL (string BusinessEntity)
+        {
+            connectionString = base.ReflectionConnectionString;
+        }
+        public ACC_M002_C_BL()
+        {
+            connectionString = base.ReflectionConnectionString;
+        }
+
+        public string Insert(string Request)
+        {
+            String strReturnData = "";
+
+            try
+            {
+                using (IDbConnection conn = new SqlConnection(connectionString))
+                {
+                    var reader = conn.QueryMultiple("ACC_M002_C_Insert", new { @Request = Request }, commandType: CommandType.StoredProcedure);
+
+                    var _FlipGridData = reader.Read<ACC_M002_C_Flip>().ToList();
+                    MC.FlipGridData = _FlipGridData.ToList();
+
+                    var _MasterData = reader.Read<ACC_M002_C>().ToList();
+                    List<ACC_M002_C> Masterlist = _MasterData.ToList();
+                    if (Masterlist.Count > 0)
+                    {
+                        MasterEntity = Masterlist[0];
+                    }
+                    MasterEntity.XmlDataDocument_ACC_M002_C_FLIP = ObjectSerializationService.ObjectToXML(MC.FlipGridData);
+                }
+
+                strReturnData = ObjectSerializationService.ObjectToXML(MasterEntity);
+                return strReturnData;
+            }
+            catch (SqlException ex)
+            {
+                throw new CreateException(ex.ErrorCode, ex.Message, ex);
+            }
+            catch (CreateException ex)
+            {
+                throw new CreateException(ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new CreateException(ex.Message, ex);
+            }
+
+        }
+
+        public string Update(string Request)
+        {
+            String strReturnData = "";
+
+            try
+            {
+                using (IDbConnection conn = new SqlConnection(connectionString))
+                {
+                    var reader = conn.QueryMultiple("ACC_M002_C_Update", new { @Request = Request }, commandType: CommandType.StoredProcedure);
+
+                    var _FlipGridData = reader.Read<ACC_M002_C_Flip>().ToList();
+                    MC.FlipGridData = _FlipGridData.ToList();
+
+                    var _MasterData = reader.Read<ACC_M002_C>().ToList();
+                    List<ACC_M002_C> Masterlist = _MasterData.ToList();
+                    if (Masterlist.Count > 0)
+                    {
+                        MasterEntity = Masterlist[0];
+                    }
+
+                    MasterEntity.XmlDataDocument_ACC_M002_C_FLIP = ObjectSerializationService.ObjectToXML(MC.FlipGridData);
+
+                }
+
+                strReturnData = ObjectSerializationService.ObjectToXML(MasterEntity);
+                return strReturnData;
+            }
+            catch (SqlException ex)
+            {
+                throw new CreateException(ex.ErrorCode, ex.Message, ex);
+            }
+            catch (CreateException ex)
+            {
+                throw new CreateException(ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new CreateException(ex.Message, ex);
+            }
+        }
+
+        public string GetData(string RequestValue, string strType, int intValue, string strValue)
+        {
+            MultipleContext_ACC_M002_C MC = new MultipleContext_ACC_M002_C();
+            string RequestOption = RequestValue.Split('!')[0];
+            string strReturnData = "";
+
+            try
+            {
+                using (IDbConnection conn = new SqlConnection(connectionString))
+                {
+                    var reader = conn.QueryMultiple("ACC_M002_C_LoadAll", new { @Request = RequestValue }, commandType: CommandType.StoredProcedure);
+                    {
+                        if (RequestOption == "LoadInitialData")
+                        {
+                            //var _FlipGridData = reader.Read<ACC_M002_C_Flip>().ToList();
+                            //MC.FlipGridData = _FlipGridData.ToList();
+
+                            var _BaseUnitList = reader.Read<ADM_M038_B_P>().ToList();
+                            MC.BaseUnitList = _BaseUnitList.ToList();
+
+                            var _AccDtrList = reader.Read<ACC_M002_L_P>().ToList();
+                            MC.AccDtrList = _AccDtrList.ToList();
+                        }
+                        else if (RequestOption == "LoadDocumentByDocumentNumber")
+                        {
+                            var _MasterData = reader.Read<ACC_M002_C>().ToList();
+                            MC.MasterList = _MasterData.ToList();
+                        }
+                        else if (RequestOption == "LoadHistory")
+                        {
+                            var BackFlip = reader.Read<ACC_M002_C_Flip>().ToList();
+                            MC.FlipGridData = BackFlip.ToList();
+                        }
+
+                        strReturnData = ObjectSerializationService.ObjectToXML(MC);
+                        return strReturnData;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new CreateException(ex.ErrorCode, ex.Message, ex);
+            }
+            catch (DivideByZeroException ex)
+            {
+                throw new CreateException(ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new CreateException(ex.Message, ex);
+            }
+        }
+    }
+
+    public class MultipleContext_ACC_M002_C
+    {
+        public List<ACC_M002_C> MasterList { get; set; }
+        public List<ACC_M002_C_Flip> FlipGridData { get; set; }
+        public List<ADM_M038_B_P> BaseUnitList { get; set; }
+        public List<ACC_M002_L_P> AccDtrList { get; set; }
+    }
+}

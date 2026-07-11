@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Reflection.Apps.Store.TaskManager
+{
+    /// <summary>
+    /// Interaction logic for FolderView.xaml
+    /// </summary>
+    public partial class FolderView : UserControl
+    {
+        public FolderView()
+        {
+            InitializeComponent();
+        }
+        private void DetailsDropDown_RequestFolderRename(object sender, RequestFolderRenameEventArgs e)
+        {
+            TaskManagerView.Root.TaskData.RenameFolder(e.Folder, e.NewName);
+        }
+    }
+}

@@ -1,0 +1,94 @@
+﻿<Local:WindowElement x:Class="Reflection.Module.Project.Views.Phasemaster"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:loc="clr-namespace:Reflection.Module.Project.Views"
+                
+             xmlns:system="clr-namespace:System;assembly=mscorlib" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"      
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+             Title="{x:Static Local:AppSessionState.ViewTitle}" >
+    
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Height="300" Width="705" >
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black" />
+            </Style>
+        </Grid.Resources>
+
+        <TabControl SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="300" Width="700" >
+            <TabItem Header="Transaction">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Phase ID" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="2" x:Name="txtPhaseID" Width="140" Text="{Binding MasterEntity.phase_id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" HorizontalAlignment="Left" />
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Phase Name" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="2" Width="250" Text="{Binding MasterEntity.phase_name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50" HorizontalAlignment="Left" />
+
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="Description" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="3" Grid.Column="2" Width="250" Height="50" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" Text="{Binding MasterEntity.description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" MaxLength="250" />
+                    
+                    <TextBlock Grid.Row="4" Grid.Column="1" Text="Active" />
+                    <CheckBox Grid.Row="4" Grid.Column="2" IsChecked ="{Binding MasterEntity.active,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="308" Checked="CheckBox_Checked"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="View">
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Local:SearchTextBox Height="25" Grid.Column="0" Name="SearchBox" Background="Transparent" Text="{Binding filterStringPhases, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Aquamarine" />
+                        <Button Grid.Column="1" Height="25" Margin="4,0,0,0" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding ExportCommand}">Export</Button>
+                    </Grid>
+                    <DataGrid Grid.Row="1" x:Name="DataLV" ItemsSource="{Binding FlipDataGridCollection}" AutoGenerateColumns="False" IsReadOnly="True"
+                              Width="690" Height="250" HorizontalAlignment="Left" SelectionMode="Single" SelectionUnit="FullRow" BorderBrush="Black"
+                              Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"
+                              GridLinesVisibility="Horizontal" BorderThickness="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Select">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton x:Name="btnitmprts"
+                                                      Command="{Binding Path=DataContext.CommandLoadDocumentByDocumentNumber, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                      CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                      Style="{StaticResource CircleToggleButtonStyle}" Width="25" Height="25" Content="{Binding SetQty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Phase ID" Width="Auto" Binding="{Binding phase_id}"/>
+                            <DataGridTextColumn Header="Phase Name" Width="Auto" Binding="{Binding phase_name}"/>
+                            <DataGridTextColumn Header="Description" Width="Auto" Binding="{Binding description}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid> 
+
+</Local:WindowElement>

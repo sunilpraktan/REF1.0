@@ -1,0 +1,441 @@
+﻿using Reflection.EF.CRM;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Reflection.EF.Procurement
+{
+    public partial class PUR_T005 : ObjectBase
+    {
+        public int id { get; set; }
+        public string doc_no { get; set; }
+        public string doc_type { get; set; }
+        public string doc_desc { get; set; }
+        public string doc_cat { get; set; }
+        public Nullable<System.DateTime> doc_date { get; set; }
+        public Nullable<System.DateTime> post_date { get; set; }
+        public string comp_code { get; set; }
+        public string location_Id { get; set; }
+        public string PartyId { get; set; }
+        public string curr_code { get; set; }
+        public string trns_code { get; set; }
+        public Nullable<System.DateTime> scc_doc_date { get; set; }
+        public string entry_time { get; set; }
+        public string ref_doc_no { get; set; }
+        public string ref_doc_type { get; set; }
+        public string ref_doc_cat { get; set; }
+        public Nullable<int> item_ref_doc { get; set; }
+        public Nullable<decimal> exch_rate { get; set; }
+        public Nullable<decimal> del_cost { get; set; }
+        public Nullable<decimal> gross_amount { get; set; }
+        public Nullable<decimal> tax_amount { get; set; }
+        public string tax_code { get; set; }
+        public string tax_juri { get; set; }
+        public Nullable<decimal> total { get; set; }
+        public Nullable<decimal> subtotal { get; set; }
+        public Nullable<decimal> round_up { get; set; }
+        public Nullable<decimal> roundup_total { get; set; }
+        public string amt_word { get; set; }
+        public string tax_reg_no { get; set; }
+        public string p_term_code { get; set; }
+        public Nullable<decimal> cash_disc_day1 { get; set; }
+        public Nullable<decimal> cash_disc_per1 { get; set; }
+        public Nullable<decimal> cash_disc_day2 { get; set; }
+        public Nullable<decimal> cash_disc_per2 { get; set; }
+        public Nullable<decimal> net_pay_period { get; set; }
+        public Nullable<decimal> cash_disc_amt { get; set; }
+        public string inv_no { get; set; }
+        public Nullable<bool> invoice_verify { get; set; }
+        public string inv_doc_status { get; set; }
+        public Nullable<bool> post_invoice { get; set; }
+        public string invoice_ref { get; set; }
+        public string org_inv_fin_year { get; set; }
+        public string inv_fin_year { get; set; }
+        public Nullable<System.DateTime> inv_rec_date { get; set; }
+        public Nullable<System.DateTime> inv_date { get; set; }
+        public string payee_payer { get; set; }
+        public string bank_code { get; set; }
+        public string branch { get; set; }
+        public string bank_acc { get; set; }
+        public string account_no { get; set; }
+        public string acc_code { get; set; }
+        public Nullable<decimal> acc_amount { get; set; }
+        public string ifsc_code { get; set; }
+        public string swift_code { get; set; }
+        public string nastro_bank_cd { get; set; }
+        public string j_code { get; set; }
+        public string pay_method { get; set; }
+        public Nullable<bool> pay_block { get; set; }
+        public string pay_ref { get; set; }
+        public Nullable<bool> cap_ind { get; set; }
+        public string vat_no { get; set; }
+        public string pre_pay { get; set; }
+        public string source_type { get; set; }
+        public string source_no { get; set; }
+        public string form_tp { get; set; }
+        public string para1 { get; set; }
+        public string para2 { get; set; }
+        public string para3 { get; set; }
+        public string para4 { get; set; }
+        public string para5 { get; set; }
+        public string note { get; set; }
+        public string description { get; set; }
+        public string del_note { get; set; }
+        public Nullable<System.DateTime> del_note_date { get; set; }
+        public string grnno { get; set; }
+        public string gl_code { get; set; }
+        public string address { get; set; }
+        public string address1 { get; set; }
+        public string city { get; set; }
+        public string state_code { get; set; }
+        public string state_name { get; set; }
+        public string country_code { get; set; }
+        public string pincode { get; set; }
+        public string unit_code { get; set; }
+        public string volume_unit { get; set; }
+        public Nullable<decimal> volume { get; set; }
+        public Nullable<decimal> gross_wt { get; set; }
+        public Nullable<decimal> net_wt { get; set; }
+        public string ProdNmCd { get; set; }
+        public string incoterms { get; set; }
+        public string inco_desc { get; set; }
+        public string po_code { get; set; }
+        public string dc_code { get; set; }
+        public string ship_cnd { get; set; }
+        public string div_code { get; set; }
+        public string rec_plant { get; set; }
+        public string supp_plant { get; set; }
+        public Nullable<int> pack_no_service { get; set; }
+        public Nullable<int> line_no_service { get; set; }
+        public string ind_disc { get; set; }
+        public string t_status { get; set; }
+        public Nullable<bool> active { get; set; }
+        public System.DateTime add_date { get; set; }
+        public string add_by { get; set; }
+        public Nullable<System.DateTime> edit_date { get; set; }
+        public string editby { get; set; }
+        public string fin_year { get; set; }
+        public string posting_period { get; set; }
+        public Nullable<bool> doc_cancel { get; set; }
+        public string cancel_reason { get; set; }
+        public string pg_code { get; set; }
+        public string cost_center { get; set; }
+        public string local_export { get; set; }
+        public string ind_trade { get; set; }
+        public string export_ind { get; set; }
+        public string cust_acc { get; set; }
+        public Nullable<decimal> loc_curr { get; set; }
+        public string doc_history_no { get; set; }
+        public string local_currency { get; set; }
+        public Nullable<decimal> net_value { get; set; }
+        public string withholding_tax { get; set; }
+        public Nullable<decimal> withholding_value { get; set; }
+        public Nullable<decimal> withholding_ex_amt { get; set; }
+        public Nullable<decimal> local_net_value { get; set; }
+        public Nullable<decimal> local_gross_amount { get; set; }
+        public Nullable<decimal> local_tax_amount { get; set; }
+        public Nullable<decimal> local_total { get; set; }
+        public Nullable<decimal> local_subtotal { get; set; }
+        public Nullable<decimal> local_round_up { get; set; }
+        public Nullable<decimal> local_roundup_total { get; set; }
+        public Nullable<decimal> other_charges { get; set; }
+
+        //scaler
+        public string supplier_party_Nm { get; set; }
+        public string payee_name { get; set; }
+        public string pur_org { get; set; }
+        public string bank_name { get; set; }
+        public string nastro_bank_name { get; set; }
+        public string pg_name { get; set; }
+        public string cost_center_Desc { get; set; }
+        public string j_name { get; set; }
+        public Nullable<System.DateTime> inv_due_date { get; set; }
+        public string amt_in_wordsLoc { get; set; }
+        public Nullable<System.DateTime> FrmDate { get; set; }
+        public Nullable<System.DateTime> ToDate { get; set; }
+
+        //Newly Added Fields 9/12/2016
+        public Nullable<int> exc_rate_tp { get; set; }
+        public string assign_no { get; set; }
+        public Nullable<decimal> disc_amt { get; set; }
+        public Nullable<decimal> fright_values { get; set; }
+        public string cancel_doc { get; set; }
+        public Nullable<decimal> lc_exc_rate { get; set; }
+        public string party_bank { get; set; }
+        public string buss_place { get; set; }
+        public string contract_acc { get; set; }
+        public string cancel_re { get; set; }
+        public string lc_cond { get; set; }
+        public string consignee { get; set; }
+        public Nullable<int> form_type { get; set; }
+        public string lr_no { get; set; }
+        public Nullable<System.DateTime> lr_date { get; set; }
+        public string del_no { get; set; }
+        public Nullable<System.DateTime> del_date { get; set; }
+        public string trans_mode { get; set; }
+        public string transporter { get; set; }
+        public string pack_det { get; set; }
+        public string pre_carrage { get; set; }
+        public string pre_carrage_place { get; set; }
+        public string dest_country_cd { get; set; }
+        public string port_load { get; set; }
+        public string port_desc { get; set; }
+        public string port_final { get; set; }
+        public string final_dest { get; set; }
+        public string ship_terms { get; set; }
+        public string advance_lic { get; set; }
+        public string cf_agent_cd { get; set; }
+        public string cf_agent_name { get; set; }
+        public string lic_cod { get; set; }
+        public string org_country_cd { get; set; }
+        public string pack_rem { get; set; }
+        public string ship_mark { get; set; }
+        public string vess_flight { get; set; }
+        public string ref_data { get; set; }
+        public string ref_data2 { get; set; }
+        public string notify_party { get; set; }
+        public string cust_cat_no { get; set; }
+        public string bill_address_id { get; set; }
+        public string shipping_mark { get; set; }
+        public string insurance { get; set; }
+        public string packing { get; set; }
+        public string transhipment { get; set; }
+        public string partshipment { get; set; }
+        public Nullable<System.DateTime> shipment_date { get; set; }
+        public Nullable<System.DateTime> validity_date { get; set; }
+        public string payment_mode { get; set; }
+        public string sg_code { get; set; }
+        public Nullable<System.DateTime> po_date { get; set; }
+        public Nullable<System.DateTime> ref_date { get; set; }
+        public string stock_code { get; set; }
+        public string incoterm2 { get; set; }
+        public string status_remark { get; set; }
+        public string symbol { get; set; }
+        public string bom_no { get; set; }
+        public Nullable<decimal> gross_value { get; set; }
+        public Nullable<decimal> effective_value { get; set; }
+        //Added by Priya
+        public string po_no { get; set; }
+        public Nullable<decimal> ass_value { get; set; }
+        public string round_up_type { get; set; }
+        public string gst_PartyId { get; set; }
+        //public string buss_place { get; set; }
+        public string plc_name { get; set; }
+        public string ref_gst_PartyId { get; set; }
+        public string ref_buss_place { get; set; }
+        public string data1 { get; set; }
+        public string del_address_id { get; set; }
+        public string add_code { get; set; }
+        public string add_code_del { get; set; }
+        public string add_code_bil { get; set; }
+
+        public string t_display { get; set; }
+        public decimal? order_limit { get; set; }
+        public bool? order_limit_tax { get; set; }
+        public string amt_word_local { get; set; }
+        public string pt_name { get; set; } // payment Term Name
+        public string pt_code { get; set; } // payment Term code
+    }
+    public partial class PUR_T005_A
+    {
+        public int id { get; set; }
+        public string client { get; set; }
+        public int line_id { get; set; }
+        public string doc_no { get; set; }
+        public string comp_code { get; set; }
+        public string location_Id { get; set; }
+        public string PartyId { get; set; }
+        public string curr_code { get; set; }
+        public string ItemCode { get; set; }
+        public string item_desc { get; set; }
+        public string item_cat { get; set; }
+        public string doc_item_code { get; set; }
+        public string pur_doc_no { get; set; }
+        public string pur_doc_item_cd { get; set; }
+        public string tax_id { get; set; }
+        public string tax_code { get; set; }
+        public string tax_juri { get; set; }
+        public Nullable<decimal> tax_amt { get; set; }
+        public Nullable<decimal> discount { get; set; }
+        public Nullable<decimal> discount_amt { get; set; }
+        public string discount_type { get; set; }
+        public Nullable<decimal> amount { get; set; }
+        public Nullable<decimal> subtotal { get; set; }
+        public string debt_cr { get; set; }
+        public Nullable<decimal> qty { get; set; }
+        public Nullable<decimal> unit_price { get; set; }
+        public string unit_code { get; set; }
+        public string base_unit_cd { get; set; }
+        public Nullable<decimal> volume { get; set; }
+        public string volume_unit { get; set; }
+        public string weight_unit { get; set; }
+        public Nullable<decimal> gross_wt { get; set; }
+        public Nullable<decimal> net_wt { get; set; }
+        public Nullable<decimal> net_value { get; set; }
+        public Nullable<decimal> gross_value { get; set; }
+        public Nullable<decimal> exch_rate { get; set; }
+        public Nullable<decimal> stock_val { get; set; }
+        public Nullable<decimal> stock_valuated { get; set; }
+        public string acc_assign { get; set; }
+        public string acc_code { get; set; }
+        public string pre_post { get; set; }
+        public string ref_doc { get; set; }
+        public string ref_doc_no { get; set; }
+        public string ref_doc_type { get; set; }
+        public string ref_doc_cat { get; set; }
+        public string ref_item_code { get; set; }
+        public Nullable<decimal> inv_amt { get; set; }
+        public string ladding_bill { get; set; }
+        public string para1 { get; set; }
+        public string para2 { get; set; }
+        public string para3 { get; set; }
+        public string para4 { get; set; }
+        public string para5 { get; set; }
+        public string note { get; set; }
+        public string sku { get; set; }
+        public string sku_desc { get; set; }
+        public string t_status { get; set; }
+        public Nullable<bool> active { get; set; }
+        public string user_source1 { get; set; }
+        public string user_source2 { get; set; }
+        public System.DateTime add_date { get; set; }
+        public string add_by { get; set; }
+        public Nullable<System.DateTime> edit_date { get; set; }
+        public string editby { get; set; }
+        public string fin_year { get; set; }
+        public string posting_period { get; set; }
+        public string grnno { get; set; }
+        public string po_no { get; set; }
+        public string profit_center { get; set; }
+        public string po_code { get; set; }
+        public string dc_code { get; set; }
+        public string div_code { get; set; }
+        public string country_code { get; set; }
+        public string region { get; set; }
+        public string city { get; set; }
+        public string cost_center { get; set; }
+        public string pg_code { get; set; }
+        public string store_code { get; set; }
+        public string order_no { get; set; }
+        public Nullable<decimal> conv_fact { get; set; }
+        public string description { get; set; }
+        public string block_price { get; set; }
+        public string block_qty { get; set; }
+        public string block_date { get; set; }
+        public string block_budget { get; set; }
+        public string ref_item_line_id { get; set; }
+        public string doc_history_no { get; set; }
+        public Nullable<decimal> local_net_value { get; set; }
+        public Nullable<decimal> local_gross_value { get; set; }
+        public Nullable<decimal> local_discount { get; set; }
+        public Nullable<decimal> local_amount { get; set; }
+        public Nullable<decimal> local_subtotal { get; set; }
+        public Nullable<decimal> local_inv_amt { get; set; }
+        
+        //Newly Added Fields 9/12/2016
+        public Nullable<decimal> qty_base_uom { get; set; }
+        public Nullable<System.DateTime> price_date { get; set; }       
+        public Nullable<System.DateTime> serv_date { get; set; }
+        public string batch { get; set; }
+        public string located_country { get; set; }
+        public string tax_class1 { get; set; }
+        public string cash_dis { get; set; }
+        public Nullable<decimal> disc_amt_elig { get; set; }
+        public string eu_art { get; set; }
+        public string value_type { get; set; }        
+        public Nullable<decimal> doc_cost { get; set; }
+        public string art_no { get; set; }
+        public string batch_split { get; set; }
+        public Nullable<decimal> credit_price { get; set; }
+        public string credit_ind { get; set; }
+        public string pay_gua { get; set; }
+        public string value_con { get; set; }
+        public string cont_ItemCode { get; set; }
+        public string cont_no { get; set; }
+        public decimal lc_exch_rate { get; set; }
+        public string ref_doc_item_cd { get; set; }
+        public decimal loc_rate { get; set; }
+        public Nullable <int> no_of_pkgs { get; set; }
+        public string cust_cat_no { get; set; }
+        public Nullable<int> package_id { get; set; }
+        public string symbol { get; set; }
+
+        //scalar
+        public Nullable<bool> StockUnt { get; set; }
+        public string SubCatCode { get; set; }
+        public string textdata { get; set; }
+        public Nullable<decimal> effective_value { get; set; }
+        public Nullable<decimal> tax_amount { get; set; }
+        public string article_no { get; set; }
+        public string bom_no { get; set; }
+        public Nullable<int> ref_item_row_id { get; set; }
+        public Nullable<int> po_item_row_id { get; set; }
+        //Added by Priya
+
+        public string pro_inv_no { get; set; }
+        public Nullable<int> pro_inv_item_row_id {get; set;}
+        public string gl_code { get; set; }
+        public string ship_rec_point { get; set; }
+        public Nullable<int> grn_row_id { get; set; }
+        public string recon_acc { get; set; }
+        public string ship_to_Party { get; set; }
+        public Nullable<int> ship_to_add { get; set; }
+        public string buss_place { get; set; }
+        public string ref_ship_to_Party { get; set; }
+        public Nullable<int> ref_ship_to_add { get; set; }
+        public string ref_buss_place { get; set; }
+        public string t_display { get; set; }
+        public string hs_code { get; set; }
+        public string hsn_code { get; set; }
+        public string hsn_code2 { get; set; }
+    }
+    public partial class PUR_T005_B
+    {
+        public int id { get; set; }
+        public int line_id { get; set; }
+        public int tax_id { get; set; }
+    }
+    public partial class PUR_T005_C
+    {
+        public int id { get; set; }
+        public Nullable<decimal> tax_amount { get; set; }
+        public Nullable<int> account_id { get; set; }
+        public Nullable<int> sequence { get; set; }
+        public string doc_no { get; set; }
+        public string manual { get; set; }
+        public Nullable<decimal> base_amount { get; set; }
+        public Nullable<decimal> amount { get; set; }
+        public Nullable<decimal> @base { get; set; }
+        public Nullable<int> tax_code_id { get; set; }
+        public Nullable<int> account_analytic_id { get; set; }
+        public Nullable<int> base_code_id { get; set; }
+        public string tax_name { get; set; }
+        public string gl_code { get; set; }
+        public string ItemCode { get; set; }
+        public string sku { get; set; }
+        public Nullable<int> item_line_id { get; set; }
+        public string fin_year { get; set; }
+        public string posting_period { get; set; }
+        public Nullable<bool> active { get; set; }
+        public string location_Id { get; set; }
+        public string comp_code { get; set; }
+        public string dc_ind { get; set; }
+        public string curr_code { get; set; }
+        public Nullable<decimal> exch_rate { get; set; }
+        public string local_curr { get; set; }
+        public Nullable<decimal> amt_local_curr { get; set; }
+        public string fix_per { get; set; }
+        public string symbol { get; set; }
+    }
+
+    public class MC_PUR_T005 : MC_FICO_BE
+    {
+        public List<PUR_T005> MasterEntity { get; set; }
+        public List<PUR_T005_A> ItemsEntity { get; set; }
+        public List<ACC_T006_C> TaxEntity { get; set; }
+        public List<ACC_T006_D> LicenceEntity { get; set; }
+    }
+
+}

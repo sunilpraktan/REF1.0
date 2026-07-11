@@ -1,0 +1,167 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Reflection.BusinessEntity.Production
+{
+    public class Rpt_MIS_PDI_Entry
+    {
+        public string doc_no { get; set; }
+        public DateTime? doc_date { get; set; }
+        public string bill_doc { get; set; }
+        public DateTime? bill_date { get; set; }
+        public DateTime? prod_dt { get; set; }
+        public string shift { get; set; }
+        public Nullable<int> ink_id { get; set; }
+        public string ink { get; set; }
+        public Nullable<int> ild_id { get; set; }
+        public string ild { get; set; }
+        public Nullable<int> machine_id { get; set; }
+        public string machinecode { get; set; }
+        public string lotno { get; set; }
+        public string refilno { get; set; }
+        public string prdct_code { get; set; }
+        public string ItemName { get; set; }
+        public string wtno { get; set; }
+        public Decimal? minild { get; set; }
+        public Decimal? maxild { get; set; }
+        public Decimal? aavild { get; set; }
+        public Decimal? ild_value { get; set; }
+        public string unit_code { get; set; }
+        public string location_Id { get; set; }
+        public string comp_code { get; set; }
+        public string doc_cat { get; set; }
+        public string doc_type { get; set; }
+        public Decimal? total_qty { get; set; }
+        public string tip_type { get; set; }
+        public string PartyId { get; set; }
+        public string PartyNm { get; set; }
+        public string EmpId { get; set; }
+        public string EmpName { get; set; }
+        public string para1 { get; set; }
+        public string para2 { get; set; }
+        public Decimal? para3 { get; set; }
+        public Decimal? para4 { get; set; }
+        public string t_status { get; set; }
+        public DateTime? start_date { get; set; }
+        public DateTime? end_date { get; set; }
+        public string machineorder { get; set; }
+        public Decimal? min_target { get; set; }
+        public Decimal? max_target { get; set; }
+        public Decimal? avg_target { get; set; }
+        public Decimal? range_target { get; set; }
+
+        public string wc_code { get; set; }
+        public string wc_name { get; set; }
+        public string item_code { get; set; }
+        public string order_no { get; set; }
+        public DateTime? order_date { get; set; }
+        public string defect_code { get; set; }
+        public string defect_desc { get; set; }
+        public string defect_type { get; set; }
+        public Decimal? defect_qty { get; set; }
+        public string defect_cond { get; set; }
+        public string user_name { get; set; }
+        public string operator_name { get; set; }
+        public string shift_incharge { get; set; }
+        public string remark1 { get; set; }
+        public string remark2 { get; set; }
+        public string remark3 { get; set; }
+        public string remark4 { get; set; }
+        public string remark5 { get; set; }
+        public string remark6 { get; set; }
+        public string remark7 { get; set; }
+        public string remark8 { get; set; }
+        public string remark9 { get; set; }
+        public string remark10 { get; set; }
+        public string para_var1 { get; set; }
+        public string para_var2 { get; set; }
+        public string para_var3 { get; set; }
+        public string para_var4 { get; set; }
+        public string para_var5 { get; set; }
+        public string para_var6 { get; set; }
+        public string para_var7 { get; set; }
+        public string para_var8 { get; set; }
+        public string para_var9 { get; set; }
+        public string para_var10 { get; set; }
+        public string para_var11 { get; set; }
+        public string para_var12 { get; set; }
+        public string para_var13 { get; set; }
+        public string para_var14 { get; set; }
+        public string para_var15 { get; set; }
+        public string para_var16 { get; set; }
+        public string para_var17 { get; set; }
+        public string para_var18 { get; set; }
+        public string para_var19 { get; set; }
+        public string para_var20 { get; set; }
+        public string para_var21 { get; set; }
+        public string para_var22 { get; set; }
+        public string para_var23 { get; set; }
+        public string para_var24 { get; set; }
+        public string para_var25 { get; set; }
+        public decimal? para_max1 { get; set; }
+        public decimal? para_max2 { get; set; }
+        public decimal? para_max3 { get; set; }
+        public decimal? para_max4 { get; set; }
+        public decimal? para_max5 { get; set; }
+        public decimal? para_max6 { get; set; }
+        public decimal? para_max7 { get; set; }
+        public decimal? para_max8 { get; set; }
+        public decimal? para_max9 { get; set; }
+        public decimal? para_max10 { get; set; }
+        public decimal? para_max11 { get; set; }
+        public decimal? para_max12 { get; set; }
+        public decimal? para_max13 { get; set; }
+        public decimal? para_max14 { get; set; }
+        public decimal? para_max15 { get; set; }
+        public decimal? para_max16 { get; set; }
+        public decimal? para_max17 { get; set; }
+        public decimal? para_max18 { get; set; }
+        public decimal? para_max19 { get; set; }
+        public decimal? para_max20 { get; set; }
+        public decimal? para_max21 { get; set; }
+        public decimal? para_max22 { get; set; }
+        public decimal? para_max23 { get; set; }
+        public decimal? para_max24 { get; set; }
+        public decimal? para_max25 { get; set; }
+        public decimal? para_min1 { get; set; }
+        public decimal? para_min2 { get; set; }
+        public decimal? para_min3 { get; set; }
+        public decimal? para_min4 { get; set; }
+        public decimal? para_min5 { get; set; }
+        public decimal? para_min6 { get; set; }
+        public decimal? para_min7 { get; set; }
+        public decimal? para_min8 { get; set; }
+        public decimal? para_min9 { get; set; }
+        public decimal? para_min10 { get; set; }
+        public decimal? para_min11 { get; set; }
+        public decimal? para_min12 { get; set; }
+        public decimal? para_min13 { get; set; }
+        public decimal? para_min14 { get; set; }
+        public decimal? para_min15 { get; set; }
+        public decimal? para_min16 { get; set; }
+        public decimal? para_min17 { get; set; }
+        public decimal? para_min18 { get; set; }
+        public decimal? para_min19 { get; set; }
+        public decimal? para_min20 { get; set; }
+        public decimal? para_min21 { get; set; }
+        public decimal? para_min22 { get; set; }
+        public decimal? para_min23 { get; set; }
+        public decimal? para_min24 { get; set; }
+        public decimal? para_min25 { get; set; }
+        public decimal? para_avg1 { get; set; }
+        public decimal? para_avg2 { get; set; }
+        public decimal? para_avg3 { get; set; }
+        public decimal? para_avg4 { get; set; }
+        public decimal? para_avg5 { get; set; }
+        public decimal? para_avg6 { get; set; }
+        public decimal? para_avg7 { get; set; }
+        public decimal? para_avg8 { get; set; }
+        public decimal? para_avg9 { get; set; }
+        public decimal? para_avg10 { get; set; }
+
+
+    }
+}

@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Reflection.EF.CRM
+{
+    public partial class SEL_T001_E : ObjectBase
+    {
+
+        //public string tc_code { get; set; }
+        public int id { get; set; }
+        public Nullable<int> sequence_code { get; set; }
+        public string doc_no { get; set; }
+        public string doc_cat { get; set; }
+        public string doc_type { get; set; }
+        public Nullable<System.DateTime> doc_date { get; set; }
+        public string comp_code { get; set; }
+        public string location_Id { get; set; }
+        public string client { get; set; }
+        public string PartyId { get; set; }
+        public string sg_code { get; set; }
+        public string so_code { get; set; }
+        public string CatCode { get; set; }
+        public string ItemTypeCd { get; set; }
+        public string ItemCode { get; set; }
+        public Nullable<int> sequence1 { get; set; }
+        public Nullable<int> sequence2 { get; set; }
+        public Nullable<int> sequence3 { get; set; }
+        public string short_text { get; set; }
+        public string long_text { get; set; }
+        public string unit_code { get; set; }
+        public Nullable<bool> compulsory { get; set; }
+        public string language_code { get; set; }
+        public string con_type { get; set; }
+        public string con_desc { get; set; }
+        public string info_group { get; set; }
+        public string info_desc { get; set; }
+        public string info_sub_group { get; set; }
+        public string info_sub_desc { get; set; }
+        public Nullable<bool> active { get; set; }
+        public string user_source1 { get; set; }
+        public string user_source2 { get; set; }
+        public string add_by { get; set; }
+        public System.DateTime add_date { get; set; }
+        public string editby { get; set; }
+        public Nullable<System.DateTime> edit_date { get; set; }
+
+    }
+}

@@ -1,0 +1,104 @@
+﻿<Local:WindowElement x:Class="Reflection.Modules.Administration.Views.MakeMaster"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="http://Reflection/schemas/2010/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+             xmlns:Res="clr-namespace:Reflection.Presentation.Resources;assembly=Reflection.Presentation.Resources"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
+             Style="{StaticResource DefaultWorkspaceWindowStyle}"
+             Title="{x:Static Local:AppSessionState.ViewTitle}" FontFamily="Arial" Foreground="Black" FontWeight="Normal" FontSize="12" MinWidth="350" MinHeight="250" Margin="0,0,0,-40">
+
+    <Grid MinHeight="250" MinWidth="350">
+        <TabControl  SelectedIndex="{Binding Path=SelectedTabControlIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="550" Margin="10,0,10,5">
+            <TabItem Header="Transaction" >
+                <Grid x:Name="gRoot" VerticalAlignment="Top" HorizontalAlignment="Left" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Make" Margin="5,0,0,0" Foreground="Black" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Width="200"  x:Name="txtMake" Text="{Binding MasterEntity.Make, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             CharacterCasing="Upper" Margin="5,0,0,0"  TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+
+                    <TextBlock  Grid.Row="1" Grid.Column="0" Text="Description" Margin="5,5,0,0" Foreground="Black" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtDescription" Text="{Binding MasterEntity.Descriptn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="4" HorizontalAlignment="Left"
+                             CharacterCasing="Normal" Margin="5,5,0,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Width="400" Height="50" AcceptsReturn="True" HorizontalScrollBarVisibility="Visible"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Make Type" Foreground="Black" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                    <ComboBox Grid.Row="0" Grid.Column="3" SelectedItem="{Binding MasterEntity.make_type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Foreground="Black">
+                        <sys:String>Ball</sys:String>
+                        <sys:String>Customer</sys:String>
+                        <sys:String>Ink</sys:String>
+                        <sys:String>Machine</sys:String>
+                        <sys:String>Wire</sys:String>
+                        </ComboBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="View" >
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="19*"/>
+                        <ColumnDefinition Width="431*"/>
+                        <ColumnDefinition Width="0*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Local:SearchTextBox Grid.Column="0" Name="SearchBox" Background="Transparent" Text="{Binding FilterStringFlipGridData, UpdateSourceTrigger=PropertyChanged}"  />
+                        <Button Grid.Row="0" Grid.Column="1" Height="20" Margin="4,0,0,0" Width="100" Style="{StaticResource NormalButtonStyle}" Command="{Binding ExportCommand}">Export</Button>
+                    </Grid>
+                    <DataGrid x:Name="DataLV" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding FlipDataGridCollection}" Width="550" Height="200" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow"
+                                Local:DataGridTextSearch.SearchValue="{Binding ElementName=SearchBox, Path=Text, UpdateSourceTrigger=LostFocus}"                                                                        
+                                Background="Transparent" RowBackground="Transparent" GridLinesVisibility="All" BorderThickness="1" SelectionMode="Single"  VerticalScrollBarVisibility="Visible"  HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="2" >
+                        <DataGrid.Columns>
+
+                            <DataGridTemplateColumn Header="Select">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton x:Name="btnlabtrs"
+                                                      Command="{Binding Path=DataContext.CommandLoadDocumentByDocumentNumber, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}"                                                    
+                                                         Style="{StaticResource CircleToggleButtonStyle}" Width="25" Height="25" Content="{Binding SetQty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" >
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <i:InvokeCommandAction Command="Local:ContentControl3D.RotateCommand"  />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+
+                                        </ToggleButton>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            
+                            <DataGridTextColumn Header="Make Code" MinWidth="70" Binding="{Binding MakeCode}" />
+                            <DataGridTextColumn Header="Make" MinWidth="70"  Binding="{Binding Make}"/>
+                            <DataGridTextColumn Header="Description" MinWidth="70" Binding="{Binding Descriptn}" />
+                            <DataGridTextColumn Header="Make Type" MinWidth="70" Binding="{Binding make_type}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        
+    </Grid>
+</Local:WindowElement>
