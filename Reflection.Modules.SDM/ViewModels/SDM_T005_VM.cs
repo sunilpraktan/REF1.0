@@ -7198,7 +7198,7 @@ namespace Reflection.Modules.SDM.ViewModels
                 cmdRefContactPerson = new RelayCommand<object>(items => { if (items == null) { return; } InsertRefContactPerson(items); });
                 cmdLoadBackFlip = new RelayCommand<object>(cmdPara => { if (cmdPara == null) { return; } LoadBackFlipData(cmdPara); });
                 CmdUnitPrice = new RelayCommand<object>(cmdPara => { if (cmdPara == null) { return; } CheckPrice(cmdPara, false, true, true); });
-                //CmdItemInfo = new RelayCommand<object>(items => { if (items == null) { return; } FilterItemSalesData(items); });
+                CmdItemInfo = new RelayCommand<object>(item => { if (item == null) { return; } FilterItemSalesData(item); });
                 cmdOpenAttachments = new RelayCommand<object>(cmdPara => { if (cmdPara == null) { return; } OpenDocumentViewer(cmdPara); });
                 CmddgShipToParty = new RelayCommand<object>(cmdPara => { if (cmdPara == null) { return; } InsertdgShipToParty(cmdPara, false, true, true); });
                 CmdInsert_t_status = new RelayCommand<object>(cmdPara => { if (cmdPara == null) { return; } Insert_t_status(cmdPara); });
@@ -7365,73 +7365,30 @@ namespace Reflection.Modules.SDM.ViewModels
 
         }
 
-        //private async void FilterItemSalesData(object InputValue)
-        //{
-        //    try
-        //    {
+        private async void FilterItemSalesData(object InputValue)
+        {
+            try
+            {
+                SEL_T001_A SelectedItem = InputValue as SEL_T001_A;
+                PRICE_HISTORY_COLLECTION = new List<STD_LIST_BE>();
 
-        //        SEL_T001_A ItemsEntityObject = null;
+                if (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.ItemCode) || MasterEntity == null)
+                {
+                    return;
+                }
 
-        //        if (((IEnumerable)InputValue).Cast<SEL_T001_A>().Count() > 0)
-        //        {
-        //            ItemsEntityObject = ((IEnumerable)InputValue).Cast<SEL_T001_A>().ToList()[0];
-        //            PRICE_HISTORY_COLLECTION.Clear();
-        //            QMS_HISTORY_COLLECTION.Clear();
-        //            DISPATCH_HISTORY_COLLECTION.Clear();
-        //            PROJECTION_COLLECTION.Clear();
-
-        //            //string Request1 = "GetItemPrice" + "!@" + AppSessionState.client + "!@" + AppSessionState.OBJ_COMPANY.comp_code + "!@" + AppSessionState.OBJ_LOCATION.location_id + "!@" + doc_cat_vm + "!@" + MasterEntity.doc_type + "!@" + MasterEntity.sono  + "!@" + AppSessionState.UserID + "!@" + AppSessionState.EmpId + "!@" + ts_code_vm + "!@" + AppSessionState.so_code + "!@" + (AppSessionState.sg_code ?? "") + "!@" + MasterEntity.PartyId + "!@" + ItemsEntityObject.ItemCode;
-        //            string Request1 = "GetItemPrice" + "!@" + ItemsEntityObject.ItemCode + "!@" + MasterEntity.PartyId + "!@" + MasterEntity.sono + "!@" + MasterEntity.doc_type + "!@" + MasterEntity.doc_cat + "!@" + AppSessionState.client + "!@" + MasterEntity.comp_code + "!@" + MasterEntity.location_Id + "!@" + MasterEntity.EmpId + "!@" + AppSessionState.UserID + "!@" + MasterEntity.ts_code;
-        //            MCTemp = await repository_MCTemp.GetDataWithReturnDomainObjectASynchronus<MC_SDM_BE>(MCTemp, Request1, "SEL_T001_BL", "SDM", "", 0, "GetItemPriceData");
-
-
-        //            if (ItemsEntity != null && MCTemp.UnitPriceList != null && dgSelectedIndexItem >= 0 && dgSelectedIndexItem < ItemsEntity.Count)
-        //            {
-        //                if (MCTemp.UnitPriceList.Count > 0 && ItemsEntity.Count > 0)
-        //                {
-
-        //                    var tempUnitPrice = MCTemp.UnitPriceList;
-        //                    PRICE_HISTORY_COLLECTION = tempUnitPrice;
-        //                }
-        //            }
-
-        //            if (ItemsEntity != null && MCTemp.QFRList != null && dgSelectedIndexItem >= 0 && dgSelectedIndexItem < ItemsEntity.Count)
-        //            {
-        //                if (MCTemp.QFRList.Count > 0 && ItemsEntity.Count > 0)
-        //                {
-
-        //                    var tempQFR = MCTemp.QFRList;
-        //                    QMS_HISTORY_COLLECTION = tempQFR.ToList();
-        //                }
-        //            }
-
-        //            if (ItemsEntity != null && MCTemp.DispatchList != null && dgSelectedIndexItem >= 0 && dgSelectedIndexItem < ItemsEntity.Count)
-        //            {
-        //                if (MCTemp.DispatchList.Count > 0 && ItemsEntity.Count > 0)
-        //                {
-
-        //                    var tempDispatch = MCTemp.DispatchList;
-        //                    DISPATCH_HISTORY_COLLECTION = tempDispatch;
-        //                }
-        //            }
-
-        //            if (ItemsEntity != null && MCTemp.ProjectedDispList != null && dgSelectedIndexItem >= 0 && dgSelectedIndexItem < ItemsEntity.Count)
-        //            {
-        //                if (MCTemp.ProjectedDispList.Count > 0 && ItemsEntity.Count > 0)
-        //                {
-
-        //                    var tempProj = MCTemp.ProjectedDispList;
-        //                    PROJECTION_COLLECTION = tempProj;
-        //                }
-        //            }
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        sms.ButtonSetup = DialogButton.Ok;sms.Caption = "Message";sms.Text = String.Format(ex.Message, this.Title);sms.ShowMessage();
-        //    }
-        //}
+                string Request = "GET_LAST_5_ITEM_PRICES" + "!@" + AppSessionState.client + "!@" + MasterEntity.comp_code + "!@" + SelectedItem.ItemCode;
+                MCTemp = await repository_MCTemp.GetDataWithReturnDomainObjectASynchronus<MC_SDM_BE>(MCTemp, Request, "SEL_T001_BL", "SDM", "", 0, "");
+                PRICE_HISTORY_COLLECTION = MCTemp.PRICE_LIST ?? new List<STD_LIST_BE>();
+            }
+            catch (Exception ex)
+            {
+                sms.ButtonSetup = DialogButton.Ok;
+                sms.Caption = "Price History";
+                sms.Text = ex.Message;
+                sms.ShowMessage();
+            }
+        }
         private void Computation(bool Compute, bool AutoRoundUpFlag)
         {
             try

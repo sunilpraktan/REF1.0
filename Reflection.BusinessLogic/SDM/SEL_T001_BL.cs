@@ -148,7 +148,29 @@ namespace Reflection.BusinessLogic.SDM
             string RequestOption = RequestValue.Split('!')[0];
             try
             {
-                if (strValue == "GetItemPriceData")
+                if (RequestOption == "GET_LAST_5_ITEM_PRICES")
+                {
+                    string[] RequestParameters = RequestValue.Split(new[] { "!@" }, StringSplitOptions.None);
+                    if (RequestParameters.Length < 4)
+                    {
+                        throw new ArgumentException("Invalid request for sales price history.");
+                    }
+
+                    using (IDbConnection conn = new SqlConnection(ReflectionConnectionString))
+                    {
+                        MC.PRICE_LIST = conn.Query<STD_LIST_BE>("SEL_T001_PRICE_HISTORY_GET",
+                            new
+                            {
+                                @client = RequestParameters[1],
+                                @comp_code = RequestParameters[2],
+                                @item_code = RequestParameters[3]
+                            }, commandTimeout: 60, commandType: CommandType.StoredProcedure).ToList();
+
+                        base.ReturnValue = ObjectSerializationService.ObjectToXML(MC);
+                        return base.ReturnValue;
+                    }
+                }
+                else if (strValue == "GetItemPriceData")
                 {
                     using (IDbConnection conn = new SqlConnection(ReflectionConnectionString))
                     {
