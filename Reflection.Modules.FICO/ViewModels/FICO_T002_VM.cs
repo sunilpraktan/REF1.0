@@ -5563,6 +5563,7 @@ namespace Reflection.Modules.FICO.ViewModels
                         VarData.msg_body = VarData.msg_body.Replace(kvp.Key, kvp.Value);
                     }
                     VarData.cc_mail_id = (VarData.cc_mail_id ?? "") + ";" + (AppSessionState.EmpEmailId ?? "");
+                    //string t1 = MailMessenger.SendMail(AppSessionState.MailAccount, VarData.to_mail_id, VarData.cc_mail_id, VarData.bcc_mail_id, VarData.subject, VarData.msg_body, null);
                     Task t = MailMessenger.SendMailAsync(AppSessionState.MailAccount, VarData.to_mail_id, VarData.cc_mail_id, VarData.bcc_mail_id, VarData.subject, VarData.msg_body, null);
 
                 }
